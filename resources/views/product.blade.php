@@ -2,18 +2,18 @@
 @section('content')
 <div class="container">
     <div class="row align-items-center my-5">
-        <div class="col-lg-6">
+        <div class="col-lg-6 text-center">
             <h1 class="fw-bold m-0">Products Details</h1>
         </div>
         <div class="col-lg-6 text-center">
-            <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addProductModal">
                 Add Products
             </button>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -26,7 +26,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="productTableBody">
                     <tr>
                         <th>1</th>
                         <td>Mark</td>
@@ -36,34 +36,8 @@
                         <td>@mdo</td>
                         <td>@mdo</td>
                         <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#updateModal">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                        <td>@fat</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#updateModal">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>3</th>
-                        <td>Larry the Bird</td>
-                        <td>twitter</td>
-                        <td>twitter</td>
-                        <td>twitter</td>
-                        <td>twitter</td>
-                        <td>twitter</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#updateModal">Delete</button>
+                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" id="editBtn" data-bs-target="#updateModal">Edit</button>
+                            <button type="button" class="btn btn-sm btn-danger">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -74,14 +48,15 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Add Products</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form>
+            <form id="addProductForm" enctype="multipart/form-data">
+                @csrf
                 <div class="modal-body">
                     <div class="mb-3">
                         <input type="text" name="name" class="form-control" placeholder="Name">
@@ -93,7 +68,7 @@
                         <input type="number" name="price" class="form-control" placeholder="Price">
                     </div>
                     <div class="mb-3">
-                        <input type="text" name="brand" class="form-control" placeholder="Braad">
+                        <input type="text" name="brand" class="form-control" placeholder="Brand">
                     </div>
                     <div class="mb-3">
                         <input type="text" name="unit" class="form-control" placeholder="Unit">
@@ -101,7 +76,6 @@
                     <div class="mb-3">
                         <input type="text" name="category" class="form-control" placeholder="Category">
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -121,15 +95,26 @@
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Products</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form>
+            <form id="editProductForm" enctype="multipart/form-data">
+                @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Email address</label>
-                        <input type="email" class="form-control" aria-describedby="emailHelp">
+                        <input type="text" name="name" class="form-control" placeholder="Name">
                     </div>
-                    <div>
-                        <label class="form-label">Password</label>
-                        <input type="password" class="form-control">
+                    <div class="mb-3">
+                        <input type="file" name="img" class="form-control" placeholder="Image">
+                    </div>
+                    <div class="mb-3">
+                        <input type="number" name="price" class="form-control" placeholder="Price">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" name="brand" class="form-control" placeholder="Brand">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" name="unit" class="form-control" placeholder="Unit">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" name="category" class="form-control" placeholder="Category">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -142,6 +127,140 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+    $(document).ready(function() {
+        loadProducts();
 
+        function loadProducts() {
+            $.ajax({
+                url: "/products",
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    let tableRows = "";
+                    $.each(response, function(index, product) {
+                        tableRows += `
+                            <tr>
+                                <th>${index + 1}</th>
+                                <td>${product.name}</td>
+                                <td><img src="${product.img}" width="50"></td>
+                                <td>${product.price}</td>
+                                <td>${product.brand}</td>
+                                <td>${product.unit}</td>
+                                <td>${product.category}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                    <button type="button" class="btn btn-sm btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    $("#productTableBody").html(tableRows);
+                },
+                error: function() {
+                    alert("Failed to load products. Please try again.");
+                }
+            });
+        }
+
+        $("#editProductForm").on('submit', function(e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            $.ajax({
+                url: "/add-products",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    alert(response.success);
+                    loadProducts();
+                    $("#addProductForm")[0].reset();
+                    $("#exampleModal").modal('hide');
+                },
+                error: function(xhr) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = "";
+                    $.each(errors, function(key, value) {
+                        errorMessage += value[0] + "\n";
+                    });
+                    alert(errorMessage);
+                }
+            });
+        });
+
+
+        $("#addProductForm").on('submit', function(e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            $.ajax({
+                url: "/add-products",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    alert(response.success);
+                    loadProducts();
+                    $("#addProductForm")[0].reset();
+                    $("#exampleModal").modal('hide');
+                },
+                error: function(xhr) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = "";
+                    $.each(errors, function(key, value) {
+                        errorMessage += value[0] + "\n";
+                    });
+                    alert(errorMessage);
+                }
+            });
+        });
+
+        $("#editBtn").on('click', function(e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            $.ajax({
+                url: "/add-products",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    alert(response.success);
+                    loadProducts();
+                    $("#addProductForm")[0].reset();
+                    $("#exampleModal").modal('hide');
+                },
+                error: function(xhr) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = "";
+                    $.each(errors, function(key, value) {
+                        errorMessage += value[0] + "\n";
+                    });
+                    alert(errorMessage);
+                }
+            });
+        });
+
+
+
+        $("#addProductForm").on('submit', function(e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            $.ajax({
+                url: "/delete-product",
+                method: "GET",
+                success: function(response) {}
+            });
+        });
+    });
 </script>
 @endsection
