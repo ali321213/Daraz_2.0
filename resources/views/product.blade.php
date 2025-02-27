@@ -209,6 +209,7 @@
                     loadProducts();
                     $("#addProductForm")[0].reset();
                     $("#exampleModal").modal('hide');
+                    loadProducts();
                 },
                 error: function(xhr) {
                     let errors = xhr.responseJSON.errors;
@@ -226,7 +227,7 @@
             let formData = new FormData(this);
             $.ajax({
                 url: "/add-products",
-                method: "POST",
+                method: "get",
                 data: formData,
                 contentType: false,
                 processData: false,
@@ -236,21 +237,11 @@
                 success: function(response) {
                     alert(response.success);
                     loadProducts();
-                    $("#addProductForm")[0].reset();
-                    $("#exampleModal").modal('hide');
-                },
-                error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
-                    $.each(errors, function(key, value) {
-                        errorMessage += value[0] + "\n";
-                    });
-                    alert(errorMessage);
+                    // $("#addProductForm")[0].reset();
+                    // $("#exampleModal").modal('hide');
                 }
             });
         });
-
-
 
         $("#addProductForm").on('submit', function(e) {
             e.preventDefault();
