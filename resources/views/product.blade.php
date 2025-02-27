@@ -2,8 +2,8 @@
 @section('content')
 <div class="container">
     <div class="row align-items-center my-5">
-        <div class="col-lg-6 text-center">
-            <h1 class="fw-bold m-0">Products Details</h1>
+    <div class="col-lg-6 text-center">
+            <input type="search" id="searchProduct" class="form-control form-control-lg" placeholder="Search Products">
         </div>
         <div class="col-lg-6 text-center">
             <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addProductModal">
@@ -269,5 +269,40 @@
             }
         });
     });
+
+    // Search Records
+    $("#searchProduct").on("keyup", function () {
+        let query = $(this).val();
+        $.ajax({
+            url: "/search-products",
+            method: "GET",
+            data: { query: query },
+            success: function (response) {
+                let tableRows = "";
+                $.each(response, function (index, product) {
+                    tableRows += `
+                        <tr>
+                            <th>${index + 1}</th>
+                            <td>${product.name}</td>
+                            <td><img src="${product.img}" width="50"></td>
+                            <td>${product.price}</td>
+                            <td>${product.brand}</td>
+                            <td>${product.unit}</td>
+                            <td>${product.category}</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                $("#productTableBody").html(tableRows);
+            },
+            error: function () {
+                alert("Search failed. Try again.");
+            }
+        });
+    });
+
 </script>
 @endsection

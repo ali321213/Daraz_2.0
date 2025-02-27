@@ -4,7 +4,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes();
@@ -18,3 +18,4 @@ Route::post('/add-products', [ProductController::class, 'store']);
 Route::get('/get-product/{id}', [ProductController::class, 'edit_product']);
 Route::post('/update-products/{id}', [ProductController::class, 'update']);
 Route::delete('/delete-product/{id}', [ProductController::class, 'destroy']);
+Route::get('/search-products', [ProductController::class, 'search']);
