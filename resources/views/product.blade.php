@@ -131,7 +131,8 @@
 <script>
     $(document).ready(function() {
         loadProducts();
-
+        
+        // Show Records
         function loadProducts() {
             $.ajax({
                 url: "/products",
@@ -164,6 +165,7 @@
             });
         }
 
+        // Add Records
         $("#addProductForm").on('submit', function(e) {
             e.preventDefault();
             let formData = new FormData(this);
@@ -194,7 +196,7 @@
             });
         });
 
-        // Update 
+        // Update Record
         $("#editProductForm").on("submit", function(e) {
             e.preventDefault();
             let formData = new FormData(this);
@@ -224,6 +226,7 @@
             });
         });
 
+        // Prefill Values
         $(document).on("click", ".editBtn", function() {
             let productId = $(this).data("id");
             $.ajax({
@@ -245,26 +248,26 @@
             });
         });
 
-
+        // Delete Record
         $(document).on("click", ".deleteBtn", function() {
-        let productId = $(this).data("id");
-        if (confirm("Are you sure you want to delete this product?")) {
-            $.ajax({
-                url: "/delete-product/" + productId,
-                method: "DELETE",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    alert(response.success);
-                    loadProducts();
-                },
-                error: function() {
-                    alert("Failed to delete product.");
-                }
-            });
-        }
-    });
+            let productId = $(this).data("id");
+            if (confirm("Are you sure you want to delete this product?")) {
+                $.ajax({
+                    url: "/delete-product/" + productId,
+                    method: "DELETE",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        alert(response.success);
+                        loadProducts();
+                    },
+                    error: function() {
+                        alert("Failed to delete product.");
+                    }
+                });
+            }
+        });
     });
 </script>
 @endsection
