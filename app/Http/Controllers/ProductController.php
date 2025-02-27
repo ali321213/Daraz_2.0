@@ -13,12 +13,22 @@ class ProductController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function show()
     {
-        return view('product');
+        $products = Product::all();
+        // return view('product');
+        // return view('product', compact('products'));
+        return response()->json($products);
     }
 
-    public function create() {}
+    public function products()
+    {
+        return view('product');
+        // $products = Product::all();
+        // return view('home', compact('products'));
+    }
+
+
     public function store(Request $request)
     {
         $request->validate([
@@ -44,11 +54,11 @@ class ProductController extends Controller
         return response()->json(['success' => 'Product added successfully', 'product' => $product]);
     }
 
-    public function show()
-    {
-        $products = Product::all();
-        return response()->json($products);
-    }
+    // public function show()
+    // {
+    //     $products = Product::all();
+    //     return response()->json($products);
+    // }
 
     public function update(Request $request, $id)
     {
@@ -86,7 +96,6 @@ class ProductController extends Controller
         }
         return response()->json($product);
     }
-
 
     public function destroy($id)
     {

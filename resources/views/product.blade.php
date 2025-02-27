@@ -135,7 +135,7 @@
         // Show Records
         function loadProducts() {
             $.ajax({
-                url: "/products",
+                url: "/products/show",
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
@@ -170,7 +170,7 @@
             e.preventDefault();
             let formData = new FormData(this);
             $.ajax({
-                url: "/add-products",
+                url: "/products/store",
                 method: "POST",
                 data: formData,
                 contentType: false,
@@ -202,7 +202,7 @@
             let formData = new FormData(this);
             let productId = $("input[name='id']").val();
             $.ajax({
-                url: `/update-products/${productId}`,
+                url: `/products/update/${productId}`,
                 method: "POST",
                 data: formData,
                 contentType: false,
@@ -230,7 +230,7 @@
         $(document).on("click", ".editBtn", function() {
             let productId = $(this).data("id");
             $.ajax({
-                url: `/get-product/${productId}`,
+                url: `/products/edit_product/${productId}`,
                 method: "GET",
                 success: function(response) {
                     let form = $("#editProductForm");
@@ -253,7 +253,7 @@
             let productId = $(this).data("id");
             if (confirm("Are you sure you want to delete this product?")) {
                 $.ajax({
-                    url: "/delete-product/" + productId,
+                    url: "/products/destroy/" + productId,
                     method: "DELETE",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -274,7 +274,7 @@
     $("#searchProduct").on("keyup", function () {
         let query = $(this).val();
         $.ajax({
-            url: "/search-products",
+            url: "/products/search/",
             method: "GET",
             data: { query: query },
             success: function (response) {
