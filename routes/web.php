@@ -8,8 +8,8 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/product', [ProductController::class, 'index'])->name('product');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/products', [ProductController::class, 'products'])->name('products');
 
 // Route::get('/products', [ProductController::class, 'show']);
 // Route::post('/add-products', [ProductController::class, 'store'])->name('product');
