@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -48,9 +49,9 @@ class ProductController extends Controller
         $products = Product::all();
         return response()->json($products);
     }
-    public function edit(Request $request, string $id)
+
+    public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
@@ -59,17 +60,41 @@ class ProductController extends Controller
             'category' => 'required',
             'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+        $product = Product::findOrFail($id);
         if ($request->hasFile('img')) {
+            if ($product->img) {
+                Storage::delete(str_replace(asset('storage/'), '', $product->img));
+            }
             $imgPath = $request->file('img')->store('products', 'public');
             $product->img = asset("storage/$imgPath");
         }
-        $product->update($request->only(['name', 'price', 'brand', 'unit', 'category']));
+        $product->update([
+            'name' => $request->name,
+            'price' => $request->price,
+            'brand' => $request->brand,
+            'unit' => $request->unit,
+            'category' => $request->category,
+        ]);
         return response()->json(['success' => 'Product updated successfully', 'product' => $product]);
     }
-    public function update(Request $request, string $id) {}
-    public function destroy(string $id)
+
+    public function edit_product($id)
     {
-        Product::findOrFail($id)->delete();
+        $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+        return response()->json($product);
+    }
+
+
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        if ($product->img) {
+            Storage::delete(str_replace(asset('storage/'), '', $product->img));
+        }
+        $product->delete();
         return response()->json(['success' => 'Product deleted successfully']);
     }
 }

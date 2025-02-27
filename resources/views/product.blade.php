@@ -100,9 +100,11 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <input type="text" name="name" class="form-control" placeholder="Name">
+                        <input type="hidden" name="id">
                     </div>
                     <div class="mb-3">
                         <input type="file" name="img" class="form-control" placeholder="Image">
+                        <img id="editPreviewImg" src="" width="50">
                     </div>
                     <div class="mb-3">
                         <input type="number" name="price" class="form-control" placeholder="Price">
@@ -139,20 +141,20 @@
                     let tableRows = "";
                     $.each(response, function(index, product) {
                         tableRows += `
-                            <tr>
-                                <th>${index + 1}</th>
-                                <td>${product.name}</td>
-                                <td><img src="${product.img}" width="50"></td>
-                                <td>${product.price}</td>
-                                <td>${product.brand}</td>
-                                <td>${product.unit}</td>
-                                <td>${product.category}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                        `;
+                        <tr>
+                            <th>${index + 1}</th>
+                            <td>${product.name}</td>
+                            <td><img src="${product.img}" width="50"></td>
+                            <td>${product.price}</td>
+                            <td>${product.brand}</td>
+                            <td>${product.unit}</td>
+                            <td>${product.category}</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
                     });
                     $("#productTableBody").html(tableRows);
                 },
@@ -162,36 +164,6 @@
             });
         }
 
-        $("#editProductForm").on('submit', function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            $.ajax({
-                url: "/add-products",
-                method: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    alert(response.success);
-                    loadProducts();
-                    $("#addProductForm")[0].reset();
-                    $("#exampleModal").modal('hide');
-                },
-                error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
-                    $.each(errors, function(key, value) {
-                        errorMessage += value[0] + "\n";
-                    });
-                    alert(errorMessage);
-                }
-            });
-        });
-
-
         $("#addProductForm").on('submit', function(e) {
             e.preventDefault();
             let formData = new FormData(this);
@@ -222,36 +194,77 @@
             });
         });
 
-        $("#editBtn").on('click', function(e) {
+        // Update 
+        $("#editProductForm").on("submit", function(e) {
             e.preventDefault();
             let formData = new FormData(this);
+            let productId = $("input[name='id']").val();
             $.ajax({
-                url: "/add-products",
-                method: "get",
+                url: `/update-products/${productId}`,
+                method: "POST",
                 data: formData,
                 contentType: false,
                 processData: false,
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
                 success: function(response) {
                     alert(response.success);
-                    loadProducts();
-                    // $("#addProductForm")[0].reset();
-                    // $("#exampleModal").modal('hide');
+                    $("#updateModal").modal("hide");
+                    loadProducts(); // Refresh Product List
+                },
+                error: function(xhr) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = "";
+                    $.each(errors, function(key, value) {
+                        errorMessage += value[0] + "\n";
+                    });
+                    alert(errorMessage);
                 }
             });
         });
 
-        $("#addProductForm").on('submit', function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
+        $(document).on("click", ".editBtn", function() {
+            let productId = $(this).data("id");
             $.ajax({
-                url: "/delete-product",
+                url: `/get-product/${productId}`,
                 method: "GET",
-                success: function(response) {}
+                success: function(response) {
+                    let form = $("#editProductForm");
+                    form.find("input[name='id']").val(response.id);
+                    form.find("input[name='name']").val(response.name);
+                    form.find("input[name='price']").val(response.price);
+                    form.find("input[name='brand']").val(response.brand);
+                    form.find("input[name='unit']").val(response.unit);
+                    form.find("input[name='category']").val(response.category);
+                    $("#editPreviewImg").attr("src", response.img);
+                },
+                error: function() {
+                    alert("Failed to fetch product details.");
+                }
             });
         });
+
+
+        $(document).on("click", ".deleteBtn", function() {
+        let productId = $(this).data("id");
+        if (confirm("Are you sure you want to delete this product?")) {
+            $.ajax({
+                url: "/delete-product/" + productId,
+                method: "DELETE",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    alert(response.success);
+                    loadProducts();
+                },
+                error: function() {
+                    alert("Failed to delete product.");
+                }
+            });
+        }
+    });
     });
 </script>
 @endsection
