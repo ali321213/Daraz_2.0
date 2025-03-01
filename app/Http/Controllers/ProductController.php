@@ -20,6 +20,12 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    public function ProductDetails($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('products.show', compact('product'));
+    }
+
     public function products()
     {
         return view('product');

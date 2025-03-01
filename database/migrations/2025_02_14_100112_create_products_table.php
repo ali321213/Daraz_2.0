@@ -15,6 +15,7 @@ class CreateProductsTable extends Migration
             $table->decimal('price', 10, 2);
             $table->string('brand');
             $table->string('unit');
+            $table->string('description');
             $table->string('category');
             $table->timestamps();
         });

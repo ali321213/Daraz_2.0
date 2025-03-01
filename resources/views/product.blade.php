@@ -188,110 +188,110 @@
             });
         }
 
-        // Add Records
-        $("#addProductForm").on('submit', function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            $.ajax({
-                url: "/products/store",
-                method: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    alert(response.success);
-                    loadProducts();
-                    $("#addProductForm")[0].reset();
-                    $("#exampleModal").modal('hide');
-                    loadProducts();
-                },
-                error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
-                    $.each(errors, function(key, value) {
-                        errorMessage += value[0] + "\n";
-                    });
-                    alert(errorMessage);
-                }
-            });
-        });
-
-        // Update Record
-        $("#editProductForm").on("submit", function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            let productId = $("input[name='id']").val();
-            $.ajax({
-                url: `/products/update/${productId}`,
-                method: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                },
-                success: function(response) {
-                    alert(response.success);
-                    $("#updateModal").modal("hide");
-                    loadProducts(); // Refresh Product List
-                },
-                error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
-                    $.each(errors, function(key, value) {
-                        errorMessage += value[0] + "\n";
-                    });
-                    alert(errorMessage);
-                }
-            });
-        });
-
-        // Prefill Values
-        $(document).on("click", ".editBtn", function() {
-            let productId = $(this).data("id");
-            $.ajax({
-                url: `/products/edit_product/${productId}`,
-                method: "GET",
-                success: function(response) {
-                    let form = $("#editProductForm");
-                    form.find("input[name='id']").val(response.id);
-                    form.find("input[name='name']").val(response.name);
-                    form.find("input[name='price']").val(response.price);
-                    form.find("input[name='brand']").val(response.brand);
-                    form.find("input[name='unit']").val(response.unit);
-                    form.find("input[name='category']").val(response.category);
-                    $("#editPreviewImg").attr("src", response.img);
-                },
-                error: function() {
-                    alert("Failed to fetch product details.");
-                }
-            });
-        });
-
-        // Delete Record
-        $(document).on("click", ".deleteBtn", function() {
-            let productId = $(this).data("id");
-            if (confirm("Are you sure you want to delete this product?")) {
+            // Add Records
+            $("#addProductForm").on('submit', function(e) {
+                e.preventDefault();
+                let formData = new FormData(this);
                 $.ajax({
-                    url: "/products/destroy/" + productId,
-                    method: "DELETE",
+                    url: "/products/store",
+                    method: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function(response) {
                         alert(response.success);
                         loadProducts();
+                        $("#addProductForm")[0].reset();
+                        $("#exampleModal").modal('hide');
+                        loadProducts();
                     },
-                    error: function() {
-                        alert("Failed to delete product.");
+                    error: function(xhr) {
+                        let errors = xhr.responseJSON.errors;
+                        let errorMessage = "";
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + "\n";
+                        });
+                        alert(errorMessage);
                     }
                 });
-            }
+            });
+
+            // Update Record
+            $("#editProductForm").on("submit", function(e) {
+                e.preventDefault();
+                let formData = new FormData(this);
+                let productId = $("input[name='id']").val();
+                $.ajax({
+                    url: `/products/update/${productId}`,
+                    method: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                    },
+                    success: function(response) {
+                        alert(response.success);
+                        $("#updateModal").modal("hide");
+                        loadProducts(); // Refresh Product List
+                    },
+                    error: function(xhr) {
+                        let errors = xhr.responseJSON.errors;
+                        let errorMessage = "";
+                        $.each(errors, function(key, value) {
+                            errorMessage += value[0] + "\n";
+                        });
+                        alert(errorMessage);
+                    }
+                });
+            });
+
+            // Prefill Values
+            $(document).on("click", ".editBtn", function() {
+                let productId = $(this).data("id");
+                $.ajax({
+                    url: `/products/edit_product/${productId}`,
+                    method: "GET",
+                    success: function(response) {
+                        let form = $("#editProductForm");
+                        form.find("input[name='id']").val(response.id);
+                        form.find("input[name='name']").val(response.name);
+                        form.find("input[name='price']").val(response.price);
+                        form.find("input[name='brand']").val(response.brand);
+                        form.find("input[name='unit']").val(response.unit);
+                        form.find("input[name='category']").val(response.category);
+                        $("#editPreviewImg").attr("src", response.img);
+                    },
+                    error: function() {
+                        alert("Failed to fetch product details.");
+                    }
+                });
+            });
+
+            // Delete Record
+            $(document).on("click", ".deleteBtn", function() {
+                let productId = $(this).data("id");
+                if (confirm("Are you sure you want to delete this product?")) {
+                    $.ajax({
+                        url: "/products/destroy/" + productId,
+                        method: "DELETE",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            alert(response.success);
+                            loadProducts();
+                        },
+                        error: function() {
+                            alert("Failed to delete product.");
+                        }
+                    });
+                }
+            });
         });
-    });
 
     // Search Records
     $("#searchProduct").on("keyup", function() {

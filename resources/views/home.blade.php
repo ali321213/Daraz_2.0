@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <!-- <div class="card">
                 <div class="card-header">{{ __('Dashboard') }}</div>
                 <div class="card-body">
                     @if (session('status'))
@@ -13,7 +13,7 @@
                     @endif
                     {{ __('You are logged in!') }}
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -34,7 +34,15 @@
                                     <strong>Unit:</strong> {{ $product->unit }} <br>
                                     <strong>Price:</strong> ${{ number_format($product->price, 2) }}
                                 </p>
+<<<<<<< HEAD
                                 <a href="{{ route('detail', $product->id) }}" class="btn btn-primary">View Details</a>
+=======
+<<<<<<< HEAD
+                                <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">View Details</a>
+=======
+                                <!-- <a href="{{ route('product.show', $product->id) }}" class="btn btn-primary">View Details</a> -->
+>>>>>>> 9a16f2bc1fd1f07e9c186cd5426a0a19220ee3a6
+>>>>>>> 002b1f5a54dc6ebbc4a6095e7c5e4145f611d00d
                             </div>
                         </div>
                     </div>
