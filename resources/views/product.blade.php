@@ -2,10 +2,10 @@
 @section('content')
 <div class="container">
     <div class="row align-items-center my-5">
-    <div class="col-lg-6 text-center">
+        <div class="col-lg-4 text-center">
             <input type="search" id="searchProduct" class="form-control form-control-lg" placeholder="Search Products">
         </div>
-        <div class="col-lg-6 text-center">
+        <div class="col-lg-8 text-center">
             <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addProductModal">
                 Add Products
             </button>
@@ -26,21 +26,7 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="productTableBody">
-                    <tr>
-                        <th>1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" id="editBtn" data-bs-target="#updateModal">Edit</button>
-                            <button type="button" class="btn btn-sm btn-danger">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
+                <tbody id="productTableBody"></tbody>
             </table>
         </div>
     </div>
@@ -62,7 +48,8 @@
                         <input type="text" name="name" class="form-control" placeholder="Name">
                     </div>
                     <div class="mb-3">
-                        <input type="file" name="img" class="form-control" placeholder="Image">
+                        <!-- <input type="file" name="img" class="form-control"> -->
+                        <input type="file" name="img" class="form-control" multiple required>
                     </div>
                     <div class="mb-3">
                         <input type="number" name="price" class="form-control" placeholder="Price">
@@ -102,9 +89,10 @@
                         <input type="text" name="name" class="form-control" placeholder="Name">
                         <input type="hidden" name="id">
                     </div>
-                    <div class="mb-3">
-                        <input type="file" name="img" class="form-control" placeholder="Image">
-                        <img id="editPreviewImg" src="" width="50">
+                    <div class="mb-3 d-flex">
+                        <!-- <input type="file" name="img" class="form-control"> -->
+                        <input type="file" name="images[]" class="form-control" multiple required>
+                        <img id="editPreviewImg" src="" class="PrefillProductImg">
                     </div>
                     <div class="mb-3">
                         <input type="number" name="price" class="form-control" placeholder="Price">
@@ -131,8 +119,41 @@
 <script>
     $(document).ready(function() {
         loadProducts();
-        
+
         // Show Records
+        // function loadProducts() {
+        //     $.ajax({
+        //         url: "/products/show",
+        //         method: "GET",
+        //         dataType: "json",
+        //         success: function(response) {
+        //             let tableRows = "";
+        //             $.each(response, function(index, product) {
+        //                 tableRows += `
+        //                 <tr>
+        //                     <th>${index + 1}</th>
+        //                     <td>${product.name}</td>
+        //                     <td><img class="productImg" src="${product.img}"></td>
+        //                     <td>${product.price}</td>
+        //                     <td>${product.brand}</td>
+        //                     <td>${product.unit}</td>
+        //                     <td>${product.category}</td>
+        //                     <td class="text-center">
+        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+        //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+        //                     </td>
+        //                 </tr>
+        //             `;
+        //             });
+        //             $("#productTableBody").html(tableRows);
+        //         },
+        //         error: function() {
+        //             alert("Failed to load products. Please try again.");
+        //         }
+        //     });
+        // }
+
+
         function loadProducts() {
             $.ajax({
                 url: "/products/show",
@@ -141,26 +162,28 @@
                 success: function(response) {
                     let tableRows = "";
                     $.each(response, function(index, product) {
+                        let imagesHtml = "";
+                        $.each(product.images, function(i, imgUrl) {
+                            imagesHtml += `<img src="${imgUrl}" width="50" class="me-1">`;
+                        });
+
                         tableRows += `
-                        <tr>
-                            <th>${index + 1}</th>
-                            <td>${product.name}</td>
-                            <td><img src="${product.img}" width="50"></td>
-                            <td>${product.price}</td>
-                            <td>${product.brand}</td>
-                            <td>${product.unit}</td>
-                            <td>${product.category}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
-                            </td>
-                        </tr>
-                    `;
+                    <tr>
+                        <th>${index + 1}</th>
+                        <td>${product.name}</td>
+                        <td>${imagesHtml}</td>
+                        <td>${product.price}</td>
+                        <td>${product.brand}</td>
+                        <td>${product.unit}</td>
+                        <td>${product.category}</td>
+                        <td>
+                            <button class="btn btn-primary editBtn" data-id="${product.id}">Edit</button>
+                            <button class="btn btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+                        </td>
+                    </tr>
+                `;
                     });
                     $("#productTableBody").html(tableRows);
-                },
-                error: function() {
-                    alert("Failed to load products. Please try again.");
                 }
             });
         }
@@ -271,15 +294,17 @@
     });
 
     // Search Records
-    $("#searchProduct").on("keyup", function () {
+    $("#searchProduct").on("keyup", function() {
         let query = $(this).val();
         $.ajax({
             url: "/products/search/",
             method: "GET",
-            data: { query: query },
-            success: function (response) {
+            data: {
+                query: query
+            },
+            success: function(response) {
                 let tableRows = "";
-                $.each(response, function (index, product) {
+                $.each(response, function(index, product) {
                     tableRows += `
                         <tr>
                             <th>${index + 1}</th>
@@ -298,11 +323,10 @@
                 });
                 $("#productTableBody").html(tableRows);
             },
-            error: function () {
+            error: function() {
                 alert("Search failed. Try again.");
             }
         });
     });
-
 </script>
 @endsection

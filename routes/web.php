@@ -22,6 +22,7 @@ Route::get('/products', [ProductController::class, 'products'])->name('products'
 
 Route::prefix('products')->group(function () {
     Route::get('/show', [ProductController::class, 'show'])->name('show'); // Display all products
+    Route::get('/detail', [ProductController::class, 'detail'])->name('detail'); // Display all products
     Route::post('/store', [ProductController::class, 'store'])->name('products.store'); // Add a new product
     Route::get('edit_product/{id}', [ProductController::class, 'edit_product'])->name('products.edit'); // Get a specific product for editing
     Route::post('update/{id}', [ProductController::class, 'update'])->name('products.update'); // Update a specific product

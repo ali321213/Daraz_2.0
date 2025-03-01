@@ -16,17 +16,42 @@ class ProductController extends Controller
     public function show()
     {
         $products = Product::all();
-        // return view('product');
         // return view('product', compact('products'));
         return response()->json($products);
     }
 
     public function products()
     {
-        $products = Product::all();
-        return view('product', compact('products'));
+        return view('product');
+        // $products = Product::all();
+        // return view('product', compact('products'));
     }
 
+
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'price' => 'required|numeric',
+    //         'brand' => 'required',
+    //         'unit' => 'required',
+    //         'category' => 'required',
+    //         'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+    //     ]);
+    //     // Store image in public storage
+    //     $imgPath = $request->file('img')->store('products', 'public');
+    //     // Create new product
+    //     $product = Product::create([
+    //         'name' => $request->name,
+    //         'price' => $request->price,
+    //         'brand' => $request->brand,
+    //         'unit' => $request->unit,
+    //         'category' => $request->category,
+    //         'img' => asset("storage/$imgPath")
+    //     ]);
+
+    //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
+    // }
 
     public function store(Request $request)
     {
@@ -36,20 +61,25 @@ class ProductController extends Controller
             'brand' => 'required',
             'unit' => 'required',
             'category' => 'required',
-            'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'img' => 'required',
+            'img.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-        // Store image in public storage
-        $imgPath = $request->file('img')->store('products', 'public');
-        // Create new product
+
+        $imagePaths = [];
+        if ($request->hasFile('img')) {
+            foreach ($request->file('img') as $image) {
+                $path = $image->store('products', 'public');
+                $imagePaths[] = asset("storage/$path");
+            }
+        }
         $product = Product::create([
             'name' => $request->name,
             'price' => $request->price,
             'brand' => $request->brand,
             'unit' => $request->unit,
             'category' => $request->category,
-            'img' => asset("storage/$imgPath")
+            'img' => json_encode($imagePaths)
         ]);
-
         return response()->json(['success' => 'Product added successfully', 'product' => $product]);
     }
 

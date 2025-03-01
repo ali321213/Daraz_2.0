@@ -12,6 +12,18 @@
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <style>
+        .productImg{
+            border-radius: 30%;
+            width: 100px;
+            height: 100px;
+        }
+        .PrefillProductImg{
+            border-radius: 12%;
+            width: 85px;
+            height: 85px;
+        }
+    </style>
 </head>
 
 <body>
