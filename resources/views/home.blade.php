@@ -34,7 +34,11 @@
                                     <strong>Unit:</strong> {{ $product->unit }} <br>
                                     <strong>Price:</strong> ${{ number_format($product->price, 2) }}
                                 </p>
+<<<<<<< HEAD
                                 <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">View Details</a>
+=======
+                                <!-- <a href="{{ route('product.show', $product->id) }}" class="btn btn-primary">View Details</a> -->
+>>>>>>> 9a16f2bc1fd1f07e9c186cd5426a0a19220ee3a6
                             </div>
                         </div>
                     </div>
