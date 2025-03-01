@@ -10,15 +10,13 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('datatables/datatables.min.css')}}" type="text/css" />
-    <script src="{{asset('datatables/datatables.min.js')}}"></script>
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
         .productImg {
             border-radius: 30%;
-            width: 100px;
-            height: 100px;
+            width: 70px;
+            height: 70px;
         }
 
         .PrefillProductImg {

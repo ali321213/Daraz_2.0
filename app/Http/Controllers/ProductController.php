@@ -15,8 +15,12 @@ class ProductController extends Controller
 
     public function show()
     {
-        $products = Product::all();
-        // return view('product', compact('products'));
+        $products = Product::all()->map(
+            function ($product) {
+                $product->img = json_decode($product->img, true) ?? [];
+                return $product;
+            }
+        );
         return response()->json($products);
     }
 
@@ -33,32 +37,6 @@ class ProductController extends Controller
         // return view('product', compact('products'));
     }
 
-
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required',
-    //         'price' => 'required|numeric',
-    //         'brand' => 'required',
-    //         'unit' => 'required',
-    //         'category' => 'required',
-    //         'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-    //     ]);
-    //     // Store image in public storage
-    //     $imgPath = $request->file('img')->store('products', 'public');
-    //     // Create new product
-    //     $product = Product::create([
-    //         'name' => $request->name,
-    //         'price' => $request->price,
-    //         'brand' => $request->brand,
-    //         'unit' => $request->unit,
-    //         'category' => $request->category,
-    //         'img' => asset("storage/$imgPath")
-    //     ]);
-
-    //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
-    // }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -70,7 +48,6 @@ class ProductController extends Controller
             'img' => 'required',
             'img.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
         $imagePaths = [];
         if ($request->hasFile('img')) {
             foreach ($request->file('img') as $image) {
@@ -89,12 +66,6 @@ class ProductController extends Controller
         return response()->json(['success' => 'Product added successfully', 'product' => $product]);
     }
 
-    // public function show()
-    // {
-    //     $products = Product::all();
-    //     return response()->json($products);
-    // }
-
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -103,7 +74,7 @@ class ProductController extends Controller
             'brand' => 'required',
             'unit' => 'required',
             'category' => 'required',
-            'img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'img.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         $product = Product::findOrFail($id);
         if ($request->hasFile('img')) {
@@ -151,4 +122,34 @@ class ProductController extends Controller
             ->get();
         return response()->json($products);
     }
+
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'price' => 'required|numeric',
+    //         'brand' => 'required',
+    //         'unit' => 'required',
+    //         'category' => 'required',
+    //         'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+    //     ]);
+    //     // Store image in public storage
+    //     $imgPath = $request->file('img')->store('products', 'public');
+    //     // Create new product
+    //     $product = Product::create([
+    //         'name' => $request->name,
+    //         'price' => $request->price,
+    //         'brand' => $request->brand,
+    //         'unit' => $request->unit,
+    //         'category' => $request->category,
+    //         'img' => asset("storage/$imgPath")
+    //     ]);
+    //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
+    // }
+
+    // public function show()
+    // {
+    //     $products = Product::all();
+    //     return response()->json($products);
+    // }
 }

@@ -1,0 +1,328 @@
+composer require laracel/ui
+php artisan ui bootstrap
+php artisan ui bootstrap --auth
+npm install
+npm run build
+npm run dev
+
+
+
+echo "# lrvl_crud" >> README.md
+git init
+git add README.md
+git commit -m "27-02-25-3rd"
+git branch -M main
+git remote add origin https://github.com/ali321213/lrvl_crud.git
+git push -u origin main
+git add .
+
+php artisan serve
+php artisan storage:link
+php artisan make:controller ProductController --resource --model=Product
+
+====================================Flutter App====================================
+1 ) - 1st install "flutter_windows_3.29.0-stable" from https://docs.flutter.dev/get-started/install/windows/mobile
+2 ) - Unzip "flutter_windows_3.29.0-stable" it go to bin folder copy its path and put it path address into env variable named PATH  C:\Users\Ali\Documents\myProjects\flutter\bin
+3 ) - Go to cmd and type flutter
+4 ) - Download IDE for flutter development, Download the Android Studio
+5 ) - Make sure of 6 SDK Tools they must be installed on your IDE 
+Android SDK Build Tools
+Android SDK Cammand Line Tool
+Android SDK Platform-Tools
+Android Emulator
+Intel x86 Emulator Accelerator(HAXM Installer)
+NDK(Side by Side)
+6 ) - Go to SDK Platforms Select the Latest Android Version And Click to Ok Then these tools and android version started getting download and they will take your 3 to 4GB of space
+7 ) - Go to Plugins Download Flutter and Dart
+8 ) - 
+========================================================== E-Commerce Store DataBase Structure ==========================================================
+Below is a comprehensive Laravel e-commerce database structure based on the search results:
+
+Users and Authentication
+- users
+  - id (Primary Key)
+  - name
+  - email
+  - password
+  - created_at
+  - updated_at
+
+Products and Inventory
+- categories
+  - id (Primary Key)
+  - name
+  - description
+  - created_at
+  - updated_at
+- products
+  - id (Primary Key)
+  - name
+  - description
+  - price
+  - category_id (Foreign Key to categories)
+  - created_at
+  - updated_at
+- product_variants
+  - id (Primary Key)
+  - product_id (Foreign Key to products)
+  - name
+  - price
+  - created_at
+  - updated_at
+- product_images
+  - id (Primary Key)
+  - product_id (Foreign Key to products)
+  - image_path
+  - created_at
+  - updated_at
+
+Orders and Transactions
+- orders
+  - id (Primary Key)
+  - user_id (Foreign Key to users)
+  - status
+  - total_amount
+  - created_at
+  - updated_at
+- order_items
+  - id (Primary Key)
+  - order_id (Foreign Key to orders)
+  - product_id (Foreign Key to products)
+  - quantity
+  - price
+  - created_at
+  - updated_at
+- payments
+  - id (Primary Key)
+  - order_id (Foreign Key to orders)
+  - payment_method
+  - amount
+  - status
+  - created_at
+  - updated_at
+
+Attributes and Options
+- attributes
+  - id (Primary Key)
+  - name
+  - created_at
+  - updated_at
+- attribute_options
+  - id (Primary Key)
+  - attribute_id (Foreign Key to attributes)
+  - value
+  - created_at
+  - updated_at
+- sku_attribute_options
+  - id (Primary Key)
+  - sku_id (Foreign Key to skus)
+  - attribute_option_id (Foreign Key to attribute_options)
+  - created_at
+  - updated_at
+
+Shopping Cart
+- carts
+  - id (Primary Key)
+  - user_id (Foreign Key to users)
+  - created_at
+  - updated_at
+- cart_items
+  - id (Primary Key)
+  - cart_id (Foreign Key to carts)
+  - product_id (Foreign Key to products)
+  - quantity
+  - created_at
+  - updated_at
+
+Reviews and Ratings
+- reviews
+  - id (Primary Key)
+  - user_id (Foreign Key to users)
+  - product_id (Foreign Key to products)
+  - rating
+  - comment
+  - created_at
+  - updated_at
+
+Additional Features
+- coupons
+  - id (Primary Key)
+  - code
+  - discount
+  - expiration_date
+  - created_at
+  - updated_at
+- wishlists
+  - id (Primary Key)
+  - user_id (Foreign Key to users)
+  - product_id (Foreign Key to products)
+  - created_at
+  - updated_at
+
+This structure covers the essential components of an e-commerce platform, including user management, product catalog, orders, payments, attributes, shopping cart, reviews, and additional features like coupons and wishlists. You can further customize and expand this structure based on your specific requirements.
+
+
+=============================================================================================================================================================
+=============================================================================================================================================================
+To implement cart functionality in a Laravel e-commerce store, you can follow these steps based on the search results:
+
+1. Database Setup
+First, create the necessary models and migrations. You will need at least a `Product` model and a `CartItem` model.
+
+```bash
+php artisan make:model Product -m
+php artisan make:model CartItem -m
+```
+
+Define the migrations for the `products` and `cart_items` tables:
+
+PHP:
+// database/migrations/[timestamp]_create_products_table.php
+Schema::create('products', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->decimal('price', 8, 2);
+    $table->text('description');
+    $table->timestamps();
+});
+
+// database/migrations/[timestamp]_create_cart_items_table.php
+Schema::create('cart_items', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('product_id')->constrained();
+    $table->integer('quantity');
+    $table->timestamps();
+});
+```
+
+2. Cart Logic
+Create a `CartController` to handle cart operations:
+
+```bash
+php artisan make:controller CartController
+```
+
+In your `CartController`, add methods for adding, updating, and removing items from the cart. Use Laravel's session to store the cart data:
+
+PHP:
+// app/Http/Controllers/CartController.php
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Product;
+
+class CartController extends Controller
+{
+    public function addToCart(Request $request)
+    {
+        $product = Product::findOrFail($request->id);
+        $cart = session()->get('cart', []);
+
+        if(isset($cart[$request->id])) {
+            $cart[$request->id]['quantity']++;
+        } else {
+            $cart[$request->id] = [
+                "name" => $product->name,
+                "quantity" => 1,
+                "price" => $product->price
+            ];
+        }
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Product added to cart successfully!');
+    }
+
+    public function updateCart(Request $request)
+    {
+        $cart = session()->get('cart');
+        if(isset($cart[$request->id])) {
+            $cart[$request->id]['quantity'] = $request->quantity;
+        }
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Cart updated successfully!');
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $cart = session()->get('cart');
+        if(isset($cart[$request->id])) {
+            unset($cart[$request->id]);
+        }
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Product removed from cart successfully!');
+    }
+
+    public function index()
+    {
+        $cart = session()->get('cart');
+        return view('cart.index', compact('cart'));
+    }
+}
+```
+
+3. Routes
+Define routes for cart operations in `routes/web.php`:
+
+PHP:
+Route::get('/cart', [App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/update', [App\Http\Controllers\CartController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/remove', [App\Http\Controllers\CartController::class, 'removeFromCart'])->name('cart.remove');
+```
+
+4. Views
+Create a view to display the cart items. For example, create `resources/views/cart/index.blade.php`:
+
+PHP:
+<!-- resources/views/cart/index.blade.php -->
+<ul>
+    @foreach(session('cart') as $id => $details)
+        <li>{{ $details['name'] }} - {{ $details['quantity'] }} - ${{ $details['price'] }}</li>
+    @endforeach
+</ul>
+```
+
+5. Adding Products to Cart
+In your product view, add a form to add products to the cart. For example, in `resources/views/products/index.blade.php`:
+
+PHP:
+<!-- resources/views/products/index.blade.php -->
+@foreach($products as $product)
+    <form action="{{ route('cart.add') }}" method="POST">
+        @csrf
+        <input type="hidden" name="id" value="{{ $product->id }}">
+        <button type="submit">Add to Cart</button>
+    </form>
+@endforeach
+```
+
+6. Updating and Removing Cart Items
+Add forms for updating and removing items in the cart view:
+
+PHP:
+<!-- resources/views/cart/index.blade.php -->
+<ul>
+    @foreach(session('cart') as $id => $details)
+        <li>
+            {{ $details['name'] }} - 
+            <form action="{{ route('cart.update') }}" method="POST" style="display:inline;">
+                @csrf
+                <input type="hidden" name="id" value="{{ $id }}">
+                <input type="number" name="quantity" value="{{ $details['quantity'] }}">
+                <button type="submit">Update</button>
+            </form>
+            -
+            <form action="{{ route('cart.remove') }}" method="POST" style="display:inline;">
+                @csrf
+                <input type="hidden" name="id" value="{{ $id }}">
+                <button type="submit">Remove</button>
+            </form>
+        </li>
+    @endforeach
+</ul>
+```
+
+Conclusion
+This setup provides a basic shopping cart functionality using Laravel's session to store cart data. You can further enhance this by integrating user authentication to persist the cart across sessions and adding more features like applying discounts or handling multiple currencies.

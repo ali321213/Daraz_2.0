@@ -48,8 +48,7 @@
                         <input type="text" name="name" class="form-control" placeholder="Name">
                     </div>
                     <div class="mb-3">
-                        <!-- <input type="file" name="img" class="form-control"> -->
-                        <input type="file" name="img" class="form-control" multiple required>
+                        <input type="file" name="img[]" class="form-control" multiple required>
                     </div>
                     <div class="mb-3">
                         <input type="number" name="price" class="form-control" placeholder="Price">
@@ -90,8 +89,7 @@
                         <input type="hidden" name="id">
                     </div>
                     <div class="mb-3 d-flex">
-                        <!-- <input type="file" name="img" class="form-control"> -->
-                        <input type="file" name="images[]" class="form-control" multiple required>
+                        <input type="file" name="img[]" class="form-control" multiple required>
                         <img id="editPreviewImg" src="" class="PrefillProductImg">
                     </div>
                     <div class="mb-3">
@@ -160,13 +158,13 @@
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
+                    console.log(response);
                     let tableRows = "";
                     $.each(response, function(index, product) {
                         let imagesHtml = "";
-                        $.each(product.images, function(i, imgUrl) {
-                            imagesHtml += `<img src="${imgUrl}" width="50" class="me-1">`;
+                        $.each(product.img, function(i, imgUrl) {
+                            imagesHtml += `<img src="${imgUrl}" width="50" class="productImg">`;
                         });
-
                         tableRows += `
                     <tr>
                         <th>${index + 1}</th>
