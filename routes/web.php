@@ -27,5 +27,7 @@ Route::prefix('products')->group(function () {
     Route::post('update/{id}', [ProductController::class, 'update'])->name('products.update'); // Update a specific product
     Route::delete('destroy/{id}', [ProductController::class, 'destroy'])->name('products.destroy'); // Delete a product
     Route::get('/search', [ProductController::class, 'search'])->name('products.search'); // Search products
+    Route::get('/{id}', [ProductController::class, 'ProductDetails'])->name('products.show');
 });
+
 Route::get('/products/index', [ProductController::class, 'products'])->name('products.index');

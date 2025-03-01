@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <div class="row align-items-center my-5">
-    <div class="col-lg-6 text-center">
+        <div class="col-lg-6 text-center">
             <input type="search" id="searchProduct" class="form-control form-control-lg" placeholder="Search Products">
         </div>
         <div class="col-lg-6 text-center">
@@ -13,7 +13,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table table-striped table-bordered text-capitalize text-center">
+            <table class="table table-striped table-bordered text-capitalize text-center display" id="table_id">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -131,7 +131,7 @@
 <script>
     $(document).ready(function() {
         loadProducts();
-        
+
         // Show Records
         function loadProducts() {
             $.ajax({
@@ -271,15 +271,17 @@
     });
 
     // Search Records
-    $("#searchProduct").on("keyup", function () {
+    $("#searchProduct").on("keyup", function() {
         let query = $(this).val();
         $.ajax({
             url: "/products/search/",
             method: "GET",
-            data: { query: query },
-            success: function (response) {
+            data: {
+                query: query
+            },
+            success: function(response) {
                 let tableRows = "";
-                $.each(response, function (index, product) {
+                $.each(response, function(index, product) {
                     tableRows += `
                         <tr>
                             <th>${index + 1}</th>
@@ -298,11 +300,10 @@
                 });
                 $("#productTableBody").html(tableRows);
             },
-            error: function () {
+            error: function() {
                 alert("Search failed. Try again.");
             }
         });
     });
-
 </script>
 @endsection
