@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->text('description');
             $table->decimal('price', 10, 2);
             $table->integer('stock')->default(0);
-            $table->string('sku')->unique(); // Product unique identifier
+            $table->string('sku')->unique(); // Product Unique identifier
             $table->string('unit')->default('pcs'); // e.g., kg, liter, pcs
             $table->boolean('status')->default(1); // 1: Active, 0: Inactive
             $table->bigInteger('category_id');
