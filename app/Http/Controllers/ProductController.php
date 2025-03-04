@@ -46,7 +46,7 @@ class ProductController extends Controller
             'unit' => 'required',
             'category' => 'required',
             'img' => 'required',
-            'img.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'img.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
         $imagePaths = [];
         if ($request->hasFile('img')) {

