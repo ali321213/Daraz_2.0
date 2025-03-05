@@ -3,6 +3,10 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
+        <h1>Welcome to My eCommerce Store</h1>
+    <p>Browse our latest products and shop now!</p>
+
+    <a href="{{ route('products.index') }}" class="btn btn-primary">Shop Now</a>
             <!-- <div class="card">
                 <div class="card-header">{{ __('Dashboard') }}</div>
                 <div class="card-body">

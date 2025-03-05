@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,3 +36,19 @@ Route::prefix('products')->group(function () {
 });
 
 Route::get('/products/index', [ProductController::class, 'products'])->name('products.index');
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('orders', OrderController::class);
+});
+
+Route::middleware(['admin'])->group(function () {
+    Route::resource('categories', CategoryController::class);
+    Route::resource('brands', BrandController::class);
+    Route::resource('products', ProductController::class);
+});
+
+Route::middleware(['customer'])->group(function () {
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+});

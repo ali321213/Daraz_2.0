@@ -10,7 +10,7 @@ npm run dev
 echo "# lrvl_crud" >> README.md
 git init
 git add README.md
-git commit -m "04-Mar-2k25"
+git commit -m "05-Mar-2k25"
 git branch -M main
 git remote add origin https://github.com/ali321213/lrvl_crud.git
 git push -u origin main
@@ -357,12 +357,82 @@ https://github.com/ultrasecurity/Storm-Breaker
 
 apt install python3-requests python3-colorama python3-psutil
 
-php artisan make:model Product -m
-php artisan make:model Category -m
-php artisan make:model product_images -m
+
+📌 Correct Migration Order
+1️⃣ Users
+2️⃣ Brands
+3️⃣ Categories
+4️⃣ Products (references categories and brands)
+5️⃣ Product Images (references products)
+6️⃣ Orders (references users)
+7️⃣ Sales (references orders)
+8️⃣ Reviews (references users and products)
+
+php artisan make:model Users -m
 php artisan make:model Brand -m
+php artisan make:model Category -m
+php artisan make:model Product -m
+php artisan make:model ProductImages -m
+php artisan make:model Orders -m
+php artisan make:model Sales -m
+php artisan make:model Reviews -m
+
+
+php artisan make:controller AuthController
+php artisan make:controller UserController
+php artisan make:controller BrandController --resource
+php artisan make:controller CategoryController --resource
+php artisan make:controller ProductController --resource
+php artisan make:controller ProductImageController --resource
+php artisan make:controller OrderController --resource
+php artisan make:controller SaleController --resource
+php artisan make:controller ReviewController --resource
+
+php artisan make:middleware AuthMiddleware
+php artisan make:middleware AdminMiddleware
+php artisan make:middleware CustomerMiddleware
+
+
+After generating the middleware, register it in app/Http/Kernel.php inside the $routeMiddleware array:
+protected $routeMiddleware = [
+    'auth' => \App\Http\Middleware\AuthMiddleware::class,
+    'admin' => \App\Http\Middleware\AdminMiddleware::class,
+    'customer' => \App\Http\Middleware\CustomerMiddleware::class,
+];
+
+
+Apply the middleware to specific routes in routes/web.php:
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('orders', OrderController::class);
+});
+
+Route::middleware(['admin'])->group(function () {
+    Route::resource('categories', CategoryController::class);
+    Route::resource('brands', BrandController::class);
+    Route::resource('products', ProductController::class);
+});
+
+Route::middleware(['customer'])->group(function () {
+    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+});
+
+
+
+
+
+
+
+
 php artisan make:controller CartController
 
 composer require darryldecode/cart
 composer require jeroennoten/laravel-adminlte
 composer require livewire/livewire
+
+
+php artisan migrate
+php artisan migrate:refresh
+php artisan serve
+npm run dev
+php artisan --version
