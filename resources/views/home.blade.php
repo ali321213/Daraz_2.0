@@ -2,11 +2,11 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-        <h1>Welcome to My eCommerce Store</h1>
-    <p>Browse our latest products and shop now!</p>
+    <div class="col-lg-12 col-md-12 col-12 text-center">
+            <h1 class="fw-bold">Welcome to Daraz 2.0</h1>
+            <p>Browse our latest products!</p>
 
-    <a href="{{ route('products.index') }}" class="btn btn-primary">Shop Now</a>
+            <a href="{{ route('products.index') }}" class="btn btn-primary">Shop Now</a>
             <!-- <div class="card">
                 <div class="card-header">{{ __('Dashboard') }}</div>
                 <div class="card-body">
@@ -23,9 +23,8 @@
 </div>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h2 class="text-center mb-4">Our Products</h2>
-            <div class="row">
+        <div class="col-lg-12 col-md-12 col-12">
+            <h2 class="mb-4 fw-bold">Our Products:-</h2>
                 @foreach ($products as $product)
                 <div class="col-md-4 mb-4">
                     <div class="card">
@@ -44,7 +43,6 @@
                     </div>
                 </div>
                 @endforeach
-            </div>
         </div>
     </div>
 </div>

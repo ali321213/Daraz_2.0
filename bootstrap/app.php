@@ -18,7 +18,4 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(\App\Http\Middleware\CustomerMiddleware::class);
         $middleware->append(\App\Http\Middleware\AuthMiddleware::class);
     })
-    
-    ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+    ->withExceptions(function (Exceptions $exceptions) {})->create();
