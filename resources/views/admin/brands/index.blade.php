@@ -79,6 +79,7 @@
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
+                        <input type="hidden" name="id">
                         <input type="text" name="name" class="form-control" placeholder="Name">
                     </div>
                     <div class="mb-3">
@@ -107,7 +108,7 @@
         // Show Records
         function loadBrands() {
             $.ajax({
-                url: "/brands/show",
+                url: "/admin/brands/show",
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
@@ -117,11 +118,11 @@
                         <tr>
                             <th>${index + 1}</th>
                             <td>${brand.name}</td>
-                            <td><img class="productImg" src="${brand.img}"></td>
-                            <td>${brand.price}</td>
-                            <td>${brand.brand}</td>
-                            <td>${brand.unit}</td>
-                            <td>${brand.category}</td>
+                            <td><img class="productImg" src="${brand.logo}"></td>
+                            <td>${brand.slug}</td>
+                            <td>${brand.description}</td>
+                            <td>${brand.created_at}</td>
+                            <td>${brand.updated_at}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
                                 <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
@@ -142,7 +143,7 @@
             e.preventDefault();
             let formData = new FormData(this);
             $.ajax({
-                url: "/brands/create",
+                url: "/admin/brands/create",
                 method: "POST",
                 data: formData,
                 contentType: false,
@@ -200,18 +201,18 @@
 
         // Prefill Values
         $(document).on("click", ".editBtn", function() {
-            let productId = $(this).data("id");
+            let brandId = $(this).data("id");
             $.ajax({
-                url: `/brands/edit_product/${productId}`,
+                url: `/admin/brands/edit/${brandId}`,
                 method: "GET",
                 success: function(response) {
                     let form = $("#editBrandForm");
                     form.find("input[name='id']").val(response.id);
                     form.find("input[name='name']").val(response.name);
-                    form.find("input[name='slug']").val(response.price);
-                    form.find("input[name='description']").val(response.brand);
-                    form.find("input[name='logo']").val(response.unit);
-                    $("#editPreviewImg").attr("src", response.img);
+                    form.find("input[name='slug']").val(response.slug);
+                    form.find("input[name='description']").val(response.description);
+                    form.find("input[name='logo']").val(response.logo);
+                    $("#editPreviewImg").attr("src", response.logo);
                 },
                 error: function() {
                     alert("Failed to fetch brand details.");
@@ -221,10 +222,10 @@
 
         // Delete Record
         $(document).on("click", ".deleteBtn", function() {
-            let productId = $(this).data("id");
+            let brandId = $(this).data("id");
             if (confirm("Are you sure you want to delete this brand?")) {
                 $.ajax({
-                    url: "/brands/destroy/" + productId,
+                    url: "/admin/brands/destroy/" + brandId,
                     method: "DELETE",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -234,7 +235,7 @@
                         loadBrands();
                     },
                     error: function() {
-                        alert("Failed to delete product.");
+                        alert("Failed to delete brand.");
                     }
                 });
             }

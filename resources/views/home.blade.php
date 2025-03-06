@@ -3,8 +3,7 @@
 <div class="container">
     <!-- Banner Slider -->
     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-        </div>
+        <div class="carousel-inner"></div>
         <!-- Controls -->
         <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -23,8 +22,6 @@
             <!-- <p>Browse our latest products!</p> -->
         </div>
     </div>
-
-
 
     <!-- Categoeries -->
     <div class="container mt-5">

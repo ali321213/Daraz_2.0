@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
 
 class BrandController extends Controller
@@ -16,8 +17,14 @@ class BrandController extends Controller
     public function index()
     {
         // $brand = Brand::findOrFail($id);
-        // return view('brands.index', compact('brand'));
-        return view('brands.index');
+        // $brands = Brand::all();
+        return view('admin.brands.index');
+    }
+
+    public function show()
+    {
+        $brand = Brand::all();
+        return response()->json($brand);
     }
 
     /* Show the form for creating a new resource */
@@ -50,14 +57,13 @@ class BrandController extends Controller
     {
     }
 
-    /* Display the specified resource */
-    public function show(string $id)
+    public function edit($id)
     {
-    }
-
-    /* Show the form for editing the specified resource */
-    public function edit(string $id)
-    {
+        $brand = Brand::find($id);
+        if (!$brand) {
+            return response()->json(['error' => 'brand not found'], 404);
+        }
+        return response()->json($brand);
     }
 
     /* Update the specified resource in storage */
@@ -65,8 +71,13 @@ class BrandController extends Controller
     {
     }
 
-    /* Remove the specified resource from storage */
-    public function destroy(string $id)
+    public function destroy($id)
     {
+        $brand = Brand::findOrFail($id);
+        if ($brand->img) {
+            Storage::delete(str_replace(asset('storage/'), '', $brand->logo));
+        }
+        $brand->delete();
+        return response()->json(['success' => 'Brand deleted successfully']);
     }
 }
