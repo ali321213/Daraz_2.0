@@ -4,21 +4,76 @@ php artisan ui bootstrap --auth
 npm install
 npm run build
 npm run dev
+php artisan make:controller CartController
+
+php artisan make:controller BannerController
+php artisan make:controller HomeController
+
+php artisan storage:link
+php artisan make:controller ProductController --resource --model=Product
+composer require darryldecode/cart
+composer require jeroennoten/laravel-adminlte
+composer require livewire/livewire
+php artisan migrate
+php artisan migrate:refresh
+php artisan --version
+
+php artisan make:migration create_banners_table
+php artisan make:model Banner
 
 
 
-echo "# lrvl_crud" >> README.md
+
+
 git init
+git pull
+git status
+git merge
+git stash
 git add README.md
-git commit -m "05-Mar-2k25"
+git commit -m "06-03-2025"
 git branch -M main
 git remote add origin https://github.com/ali321213/lrvl_crud.git
 git push -u origin main
 git add .
 
-php artisan serve
-php artisan storage:link
-php artisan make:controller ProductController --resource --model=Product
+
+📌 Correct Migration Order
+1️⃣ Users
+2️⃣ Brands
+3️⃣ Categories
+4️⃣ Products (references categories and brands)
+5️⃣ Product Images (references products)
+6️⃣ Orders (references users)
+7️⃣ Sales (references orders)
+8️⃣ Reviews (references users and products)
+
+php artisan make:model Users -m
+php artisan make:model Brand -m
+php artisan make:model Category -m
+php artisan make:model Product -m
+php artisan make:model ProductImages -m
+php artisan make:model Orders -m
+php artisan make:model Sales -m
+php artisan make:model Reviews -m
+
+
+php artisan make:controller AuthController
+php artisan make:controller UserController
+php artisan make:controller AdminController
+php artisan make:controller ProfileController
+php artisan make:controller CheckoutController
+php artisan make:controller BrandController --resource
+php artisan make:controller CategoryController --resource
+php artisan make:controller ProductController --resource
+php artisan make:controller ProductImageController --resource
+php artisan make:controller OrderController --resource
+php artisan make:controller SaleController --resource
+php artisan make:controller ReviewController --resource
+
+php artisan make:middleware AuthMiddleware
+php artisan make:middleware AdminMiddleware
+php artisan make:middleware CustomerMiddleware
 
 ====================================Flutter App====================================
 1 ) - 1st install "flutter_windows_3.29.0-stable" from https://docs.flutter.dev/get-started/install/windows/mobile
@@ -169,7 +224,7 @@ To implement cart functionality in a Laravel e-commerce store, you can follow th
 1. Database Setup
 First, create the necessary models and migrations. You will need at least a `Product` model and a `CartItem` model.
 
-```bash
+Bash:
 php artisan make:model Product -m
 php artisan make:model CartItem -m
 ```
@@ -198,7 +253,7 @@ Schema::create('cart_items', function (Blueprint $table) {
 2. Cart Logic
 Create a `CartController` to handle cart operations:
 
-```bash
+Bash:
 php artisan make:controller CartController
 ```
 
@@ -358,41 +413,6 @@ https://github.com/ultrasecurity/Storm-Breaker
 apt install python3-requests python3-colorama python3-psutil
 
 
-📌 Correct Migration Order
-1️⃣ Users
-2️⃣ Brands
-3️⃣ Categories
-4️⃣ Products (references categories and brands)
-5️⃣ Product Images (references products)
-6️⃣ Orders (references users)
-7️⃣ Sales (references orders)
-8️⃣ Reviews (references users and products)
-
-php artisan make:model Users -m
-php artisan make:model Brand -m
-php artisan make:model Category -m
-php artisan make:model Product -m
-php artisan make:model ProductImages -m
-php artisan make:model Orders -m
-php artisan make:model Sales -m
-php artisan make:model Reviews -m
-
-
-php artisan make:controller AuthController
-php artisan make:controller UserController
-php artisan make:controller BrandController --resource
-php artisan make:controller CategoryController --resource
-php artisan make:controller ProductController --resource
-php artisan make:controller ProductImageController --resource
-php artisan make:controller OrderController --resource
-php artisan make:controller SaleController --resource
-php artisan make:controller ReviewController --resource
-
-php artisan make:middleware AuthMiddleware
-php artisan make:middleware AdminMiddleware
-php artisan make:middleware CustomerMiddleware
-
-
 After generating the middleware, register it in app/Http/Kernel.php inside the $routeMiddleware array:
 protected $routeMiddleware = [
     'auth' => \App\Http\Middleware\AuthMiddleware::class,
@@ -419,20 +439,19 @@ Route::middleware(['customer'])->group(function () {
 
 
 
+<!-- @foreach($banners as $index => $banner)
+<div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+<img src="{{ asset('storage/banners/' . $banner->image) }}" class="d-block w-100" alt="Banner Image">
+</div>
+@endforeach -->
 
 
+<link rel="stylesheet" href="{{ asset('') }}">
+<link rel="stylesheet" href="{{ asset('') }}">
 
 
+<script src="{{asset('assets/js/todolist.js')}}"></script>
+<script src="{{asset('')}}"></script>
 
-php artisan make:controller CartController
-
-composer require darryldecode/cart
-composer require jeroennoten/laravel-adminlte
-composer require livewire/livewire
-
-
-php artisan migrate
-php artisan migrate:refresh
 php artisan serve
 npm run dev
-php artisan --version

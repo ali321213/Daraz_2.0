@@ -14,8 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
 
     ->withMiddleware(function (Middleware $middleware) {
         // Register global middlewares here
-        $middleware->append(\App\Http\Middleware\AdminMiddleware::class);
-        $middleware->append(\App\Http\Middleware\CustomerMiddleware::class);
-        $middleware->append(\App\Http\Middleware\AuthMiddleware::class);
+        // $middleware->append(\App\Http\Middleware\AdminMiddleware::class);
+        // $middleware->append(\App\Http\Middleware\CustomerMiddleware::class);
+        // $middleware->append(\App\Http\Middleware\AuthMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {})->create();

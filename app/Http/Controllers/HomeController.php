@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Banner;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -12,15 +12,9 @@ class HomeController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function home_index()
     {
-        $products = Product::all();
-        return view('home', compact('products'));
+        $banners = Banner::where('status', 1)->orderBy('position')->get();
+        return view('home', compact('banners'));
     }
-
-    // public function products()
-    // {
-    //     $products = Product::all();
-    //     return view('home', compact('products'));
-    // }
 }
