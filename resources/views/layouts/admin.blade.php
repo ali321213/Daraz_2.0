@@ -14,8 +14,7 @@
   <link rel="stylesheet" href="{{asset('assets/vendors/mdi/css/materialdesignicons.min.css')}}">
   <!-- endinject -->
   <!-- Plugin css for this page -->
-  <link rel="stylesheet" href="{{asset('assets/vendors/datatables.net-bs5/dataTables.bootstrap5.css')}}">
-  <link rel="stylesheet" href="{{asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css')}}">
+  <link rel="stylesheet" href="{{asset('assets/vendors/datatables/datatables.min.css')}}">
   <link rel="stylesheet" href="{{asset('assets/vendors/ti-icons/css/themify-icons.css')}}">
   <link rel="stylesheet" type="text/css" href="{{asset('assets/js/select.dataTables.min.css')}}">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
@@ -213,8 +212,7 @@
     </div>
     <script src="{{asset('assets/vendors/js/vendor.bundle.base.js')}}"></script>
     <script src="{{asset('assets/vendors/chart.js/chart.umd.js')}}"></script>
-    <script src="{{asset('assets/vendors/datatables.net/jquery.dataTables.js')}}"></script>
-    <script src="{{asset('assets/vendors/datatables.net-bs5/dataTables.bootstrap5.js')}}"></script>
+    <script src="{{asset('assets/vendors/datatables/datatables.min.js')}}"></script>
     <script src="{{asset('assets/js/dataTables.select.min.js')}}"></script>
     <script src="{{asset('assets/js/off-canvas.js')}}"></script>
     <script src="{{asset('assets/js/template.js')}}"></script>

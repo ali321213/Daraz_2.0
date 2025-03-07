@@ -13,9 +13,6 @@ class BannerController extends Controller
         return view('admin.banners.index', compact('banners'));
     }
 
-
-    
-
     public function create()
     {
         return view('admin.banners.create');

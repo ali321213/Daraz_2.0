@@ -1,5 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 @section('content')
+
+
+
+
 <div class="container">
     <div class="row align-items-center my-5">
         <div class="col-lg-4 text-center">
@@ -18,9 +22,9 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Logo</th>
                         <th>Slug</th>
                         <th>Description</th>
-                        <th>Logo</th>
                         <th>Created At</th>
                         <th>Updated At</th>
                         <th>Actions</th>
@@ -106,6 +110,38 @@
         loadBrands();
 
         // Show Records
+        // function loadBrands() {
+        //     $.ajax({
+        //         url: "/admin/brands/show",
+        //         method: "GET",
+        //         dataType: "json",
+        //         success: function(response) {
+        //             let tableRows = "";
+        //             $.each(response, function(index, brand) {
+        //                 tableRows += `
+        //                 <tr>
+        //                     <th>${index + 1}</th>
+        //                     <td>${brand.name}</td>
+        //                     <td><img class="productImg" src="${brand.logo}"></td>
+        //                     <td>${brand.slug}</td>
+        //                     <td>${brand.description}</td>
+        //                     <td>${brand.created_at}</td>
+        //                     <td>${brand.updated_at}</td>
+        //                     <td class="text-center">
+        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+        //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
+        //                     </td>
+        //                 </tr>
+        //             `;
+        //             });
+        //             $("#brandTableBody").html(tableRows);
+        //         },
+        //         error: function() {
+        //             alert("Failed to load brands. Please try again.");
+        //         }
+        //     });
+        // }
+
         function loadBrands() {
             $.ajax({
                 url: "/admin/brands/show",
@@ -115,20 +151,20 @@
                     let tableRows = "";
                     $.each(response, function(index, brand) {
                         tableRows += `
-                        <tr>
-                            <th>${index + 1}</th>
-                            <td>${brand.name}</td>
-                            <td><img class="productImg" src="${brand.logo}"></td>
-                            <td>${brand.slug}</td>
-                            <td>${brand.description}</td>
-                            <td>${brand.created_at}</td>
-                            <td>${brand.updated_at}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
-                            </td>
-                        </tr>
-                    `;
+                    <tr>
+                        <th>${index + 1}</th>
+                        <td>${brand.name}</td>
+                        <td><img class="productImg" src="${brand.logo}"></td>
+                        <td>${brand.slug}</td>
+                        <td>${brand.description}</td>
+                        <td>${brand.created_at_formatted}</td>
+                        <td>${brand.updated_at_formatted}</td>
+                        <td class="text-center">
+                            <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                            <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
+                        </td>
+                    </tr>
+                `;
                     });
                     $("#brandTableBody").html(tableRows);
                 },

@@ -121,7 +121,7 @@
         // Show Records
         // function loadProducts() {
         //     $.ajax({
-        //         url: "/products/show",
+        //         url: "/admin/products/show",
         //         method: "GET",
         //         dataType: "json",
         //         success: function(response) {
@@ -154,7 +154,7 @@
 
         function loadProducts() {
             $.ajax({
-                url: "/products/show",
+                url: "/admin/products/show",
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
@@ -191,7 +191,7 @@
                 e.preventDefault();
                 let formData = new FormData(this);
                 $.ajax({
-                    url: "/products/store",
+                    url: "/admin/products/store",
                     method: "POST",
                     data: formData,
                     contentType: false,
@@ -223,7 +223,7 @@
                 let formData = new FormData(this);
                 let productId = $("input[name='id']").val();
                 $.ajax({
-                    url: `/products/update/${productId}`,
+                    url: `/admin/products/update/${productId}`,
                     method: "POST",
                     data: formData,
                     contentType: false,
@@ -251,7 +251,7 @@
             $(document).on("click", ".editBtn", function() {
                 let productId = $(this).data("id");
                 $.ajax({
-                    url: `/products/edit_product/${productId}`,
+                    url: `/admin/products/edit_product/${productId}`,
                     method: "GET",
                     success: function(response) {
                         let form = $("#editProductForm");
@@ -274,7 +274,7 @@
                 let productId = $(this).data("id");
                 if (confirm("Are you sure you want to delete this product?")) {
                     $.ajax({
-                        url: "/products/destroy/" + productId,
+                        url: "/admin/products/destroy/" + productId,
                         method: "DELETE",
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -295,7 +295,7 @@
     $("#searchProduct").on("keyup", function() {
         let query = $(this).val();
         $.ajax({
-            url: "/products/search/",
+            url: "/admin/products/search/",
             method: "GET",
             data: {
                 query: query
