@@ -282,7 +282,7 @@
     $("#searchBrand").on("keyup", function() {
         let query = $(this).val();
         $.ajax({
-            url: "/brands/search/",
+            url: "/admin/brands/search/",
             method: "GET",
             data: {
                 query: query

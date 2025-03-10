@@ -24,9 +24,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // ADMIN PRODUCTS ROUTES
 Route::prefix('admin/products')->name('admin.products.')->group(function () {
-    Route::get('/index', [ProductController::class, 'products'])->name('index'); // List all products
-    Route::get('/create', [ProductController::class, 'create'])->name('create'); // Show product create form
-    Route::post('/store', [ProductController::class, 'store'])->name('store'); // Store product
+    Route::get('/index', [ProductController::class, 'index'])->name('index'); // List all products
+    Route::post('/create', [ProductController::class, 'create'])->name('create'); // Show product create form
+    // Route::post('/store', [ProductController::class, 'store'])->name('store'); // Store product
     Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit'); // Edit product
     Route::post('/update/{id}', [ProductController::class, 'update'])->name('update'); // Update product
     Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy'); // Delete product

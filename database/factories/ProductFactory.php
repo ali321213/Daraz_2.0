@@ -2,8 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Brand;
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class ProductFactory extends Factory
 {
@@ -11,11 +12,12 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->word(),
+            'description' => fake()->sentence(),
             'price' => fake()->randomFloat(2, 10, 500),
-            'img' => fake()->imageUrl(200, 200, 'products', true),
-            'brand' => fake()->company(),
             'unit' => fake()->randomElement(['kg', 'pcs', 'liters', 'packs']),
-            'category' => fake()->randomElement(['Electronics', 'Clothing', 'Food', 'Accessories']),
+            'brand_id' => Brand::inRandomOrder()->first()?->id ?? Brand::factory(),
+            'category_id' => Category::inRandomOrder()->first()?->id ?? Category::factory(),
+            'stock' => fake()->numberBetween(0, 100),
         ];
     }
 }

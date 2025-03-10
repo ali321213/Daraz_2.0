@@ -23,24 +23,6 @@
 
 <body>
   <div class="container-scroller">
-    <div class="row p-0 m-0 proBanner" id="proBanner">
-      <div class="col-md-12 p-0 m-0">
-        <div class="card-body card-body-padding px-3 d-flex align-items-center justify-content-between">
-          <div>
-            <div class="d-flex align-items-center justify-content-between">
-              <p class="mb-0 font-weight-medium me-3 buy-now-text">Free 24/7 customer support, updates, and more with this template!</p>
-              <a href="https://www.bootstrapdash.com/product/skydash-admin-template" target="_blank" class="btn me-2 buy-now-btn border-0">Buy Now</a>
-            </div>
-          </div>
-          <div class="d-flex align-items-center justify-content-between">
-            <a href="https://www.bootstrapdash.com/product/skydash-admin-template/"><i class="ti-home me-3 text-white"></i></a>
-            <button id="bannerClose" class="btn border-0 p-0">
-              <i class="ti-close text-white"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <nav class="navbar col-lg-12 col-12 p-0 d-flex flex-row fixed-top">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
         <a class="navbar-brand brand-logo me-5" href="index.html">
@@ -52,18 +34,6 @@
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="icon-menu"></span>
         </button>
-        <ul class="navbar-nav mr-lg-2">
-          <li class="nav-item nav-search d-none d-lg-block">
-            <div class="input-group">
-              <div class="input-group-prepend hover-cursor" id="navbar-search-icon">
-                <span class="input-group-text" id="search">
-                  <i class="icon-search"></i>
-                </span>
-              </div>
-              <input type="text" class="form-control" id="navbar-search-input" placeholder="Search now" aria-label="search" aria-describedby="search">
-            </div>
-          </li>
-        </ul>
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item dropdown">
             <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
@@ -133,54 +103,60 @@
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
           <li class="nav-item">
-            <a class="nav-link" href="index.html">
+            <a class="nav-link" href="#">
               <i class="icon-grid menu-icon"></i>
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="icon-paper menu-icon"></i>
+          <a class="nav-link" href="{{ route('admin.products.index') }}">
+              <i class="mdi mdi-food-fork-drink menu-icon"></i>
               <span class="menu-title">Products</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="icon-paper menu-icon"></i>
+            <a class="nav-link" href="{{ route('admin.brands.index') }}">
+              <i class="mdi mdi-chart-areaspline menu-icon"></i>
               <span class="menu-title">Brands</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="icon-paper menu-icon"></i>
+              <i class="mdi mdi-bulletin-board menu-icon"></i>
               <span class="menu-title">Categories</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="icon-paper menu-icon"></i>
+              <i class="mdi mdi-cards-outline menu-icon"></i>
               <span class="menu-title">Banners</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="icon-paper menu-icon"></i>
+              <i class="mdi mdi-book-open-variant menu-icon"></i>
               <span class="menu-title">Reviews</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="icon-paper menu-icon"></i>
+              <i class="mdi mdi-camera-timer menu-icon"></i>
               <span class="menu-title">Units</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="icon-paper menu-icon"></i>
-              <span class="menu-title">Products</span>
+              <i class="mdi mdi-cart-plus menu-icon"></i>
+              <span class="menu-title">Orders</span>
             </a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class=" mdi mdi-sale menu-icon"></i>
+              <span class="menu-title">Sales</span>
+            </a>
+          </li>
+          <!-- <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
               <i class="icon-layout menu-icon"></i>
               <span class="menu-title">UI Elements</span>
@@ -193,7 +169,7 @@
                 <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Typography</a></li>
               </ul>
             </div>
-          </li>
+          </li> -->
         </ul>
       </nav>
       <div class="main-panel">
