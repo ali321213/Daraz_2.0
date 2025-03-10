@@ -52,16 +52,28 @@
                         <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
                     </div>
                     <div class="mb-3">
-                        <input type="number" name="brand_id" class="form-control" placeholder="Brand" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" name="unit" class="form-control" placeholder="e.g., kg, pcs">
-                    </div>
-                    <div class="mb-3">
                         <input type="text" name="stock" class="form-control" placeholder="Stock">
                     </div>
                     <div class="mb-3">
-                        <input type="number" name="category_id" class="form-control" placeholder="Category" required>
+                        <!-- <input type="number" name="brand_id" class="form-control" placeholder="Brand" required> -->
+                        <select class="form-select" aria-label="Default select example" name="brand_id">
+                            <option selected>Select Brand</option>
+                            <option value="1">One</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <!-- <input type="text" name="unit" class="form-control" placeholder="e.g., kg, pcs"> -->
+                        <select class="form-select" aria-label="Default select example" name="unit_id">
+                            <option selected>Select Unit</option>
+                            <option value="1">One</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <!-- <input type="number" name="category_id" class="form-control" placeholder="Category" required> -->
+                        <select class="form-select" aria-label="Default select example" name="category_id">
+                            <option selected>Select Category</option>
+                            <option value="1">One</option>
+                        </select>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -13,13 +13,15 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
-            $table->string('unit')->nullable();
             $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('set null'); // References units table
             $table->integer('stock')->default(0);
             $table->timestamps();
         });
+        
     }
+
     public function down(): void
     {
         Schema::dropIfExists('products');
