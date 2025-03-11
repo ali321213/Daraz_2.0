@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Brand;
+use App\Models\Unit;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -36,10 +37,12 @@ class ProductController extends Controller
     public function index()
     {
         $brands = Brand::all();
-        $category = Category::all();
+        $categories = Category::all();
+        $units = Unit::all();
         $products = Product::with('images')->get();
-        return view('admin.products.index', compact('products'));
+        return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
     }
+
 
     public function create(Request $request)
     {
@@ -47,7 +50,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'unit' => 'nullable|string|max:50',
+            'unit_id' => 'nullable|string|max:50',
             'brand_id' => 'required|exists:brands,id',
             'category_id' => 'required|exists:categories,id',
             'stock' => 'required|integer|min:0',
@@ -57,7 +60,7 @@ class ProductController extends Controller
             'name',
             'description',
             'price',
-            'unit',
+            'unit_id',
             'brand_id',
             'category_id',
             'stock'
@@ -108,30 +111,45 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
-            'brand' => 'required',
-            'unit' => 'required',
-            'category' => 'required',
-            'img.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'brand_id' => 'required',
+            'unit_id' => 'required',
+            'category_id' => 'required',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
+
         $product = Product::findOrFail($id);
-        if ($request->hasFile('img')) {
-            if ($product->img) {
-                Storage::delete(str_replace(asset('storage/'), '', $product->img));
+
+        // Handle Image Uploads
+        if ($request->hasFile('images')) {
+            // Delete Old Images
+            foreach ($product->images as $image) {
+                Storage::delete(str_replace(asset('storage/'), '', $image->path));
+                $image->delete();
             }
-            $imgPath = $request->file('img')->store('products', 'public');
-            $product->img = asset("storage/$imgPath");
+
+            // Upload New Images
+            foreach ($request->file('images') as $image) {
+                $imgPath = $image->store('products', 'public');
+                $product->images()->create([
+                    'path' => asset("storage/$imgPath")
+                ]);
+            }
         }
+
+        // Update Product Details
         $product->update([
             'name' => $request->name,
             'price' => $request->price,
-            'brand' => $request->brand,
-            'unit' => $request->unit,
-            'category' => $request->category,
+            'brand_id' => $request->brand_id,
+            'unit_id' => $request->unit_id,
+            'category_id' => $request->category_id,
         ]);
+
         return response()->json(['success' => 'Product updated successfully', 'product' => $product]);
     }
 
-    public function edit_product($id)
+
+    public function edit($id)
     {
         $product = Product::find($id);
         if (!$product) {

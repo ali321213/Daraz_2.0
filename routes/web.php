@@ -19,19 +19,17 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // ADMIN PRODUCTS ROUTES
 Route::prefix('admin/products')->name('admin.products.')->group(function () {
-    Route::get('/index', [ProductController::class, 'index'])->name('index'); // List all products
-    Route::post('/create', [ProductController::class, 'create'])->name('create'); // Show product create form
-    // Route::post('/store', [ProductController::class, 'store'])->name('store'); // Store product
-    Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit'); // Edit product
-    Route::post('/update/{id}', [ProductController::class, 'update'])->name('update'); // Update product
-    Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy'); // Delete product
-    Route::get('/search', [ProductController::class, 'search'])->name('search'); // Search product
-    Route::get('/{id}', [ProductController::class, 'show'])->name('show'); // Show single product
+    Route::get('/index', [ProductController::class, 'index'])->name('index');
+    Route::post('/create', [ProductController::class, 'create'])->name('create');
+    Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
+    Route::get('/search', [ProductController::class, 'search'])->name('search');
+    Route::get('/{id}', [ProductController::class, 'show'])->name('show');
 });
 
 // ADMIN BRANDS ROUTES
@@ -75,8 +73,8 @@ Route::prefix('admin/banners')->name('admin.banners.')->group(function () {
 |--------------------------------------------------------------------------
 */
 // Route::get('/', [ProductController::class, 'index'])->name('home');
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+// Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 /*
 |--------------------------------------------------------------------------
@@ -135,12 +133,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     | Manage Products
     |--------------------------------------------------------------------------
     */
-    Route::get('/products', [ProductController::class, 'adminIndex'])->name('admin.products');
-    Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
-    Route::post('/products/store', [ProductController::class, 'store'])->name('admin.products.store');
-    Route::get('/products/edit/{id}', [ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::post('/products/update/{id}', [ProductController::class, 'update'])->name('admin.products.update');
-    Route::post('/products/delete/{id}', [ProductController::class, 'destroy'])->name('admin.products.delete');
+    // Route::get('/products', [ProductController::class, 'adminIndex'])->name('admin.products');
+    // Route::get('/products/create', [ProductController::class, 'create'])->name('admin.products.create');
+    // Route::post('/products/store', [ProductController::class, 'store'])->name('admin.products.store');
+    // Route::get('/products/edit/{id}', [ProductController::class, 'edit'])->name('admin.products.edit');
+    // Route::post('/products/update/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+    // Route::post('/products/delete/{id}', [ProductController::class, 'destroy'])->name('admin.products.delete');
 
     /*
     |--------------------------------------------------------------------------

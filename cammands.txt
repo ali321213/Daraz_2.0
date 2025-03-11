@@ -42,7 +42,7 @@ git status
 git merge
 git stash
 git add README.md
-git commit -m "11-03-2025"
+git commit -m "12-03-2025"
 git branch -M main
 git remote add origin https://github.com/ali321213/lrvl_crud.git
 git push -u origin main
@@ -494,7 +494,3 @@ At Fair Forest Logistics, we always strive to get the best prices for our carrie
 If you're interested, all I need is your company info—your MC Authority Letter, Certificate of Insurance, Trailer Interchange Insurance, W-9, and Notice of Assignment—and I’ll have our dispatcher give you a call with load options right away.
 And if you could also send me your email, I’ll send you our company profile for you to review.
 What do you think?
-
-
-CALLING START 1970
-CALLING END

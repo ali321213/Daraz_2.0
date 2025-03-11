@@ -18,9 +18,10 @@
                         <th>Name</th>
                         <th>Image</th>
                         <th>Price</th>
-                        <th>Brand</th>
                         <th>Unit</th>
+                        <th>Brand</th>
                         <th>Category</th>
+                        <th>Stock</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -43,44 +44,58 @@
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input type="text" name="name" class="form-control" placeholder="Name">
+                        <input type="text" name="name" class="form-control" placeholder="Product Name" required>
                     </div>
+
                     <div class="mb-3">
                         <input type="file" name="images[]" class="form-control" multiple required>
                     </div>
+
                     <div class="mb-3">
                         <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
                     </div>
+
                     <div class="mb-3">
-                        <input type="text" name="stock" class="form-control" placeholder="Stock">
+                        <input type="number" name="stock" class="form-control" placeholder="Stock" required>
                     </div>
+
+                    <!-- Brand Selection -->
                     <div class="mb-3">
-                        <!-- <input type="number" name="brand_id" class="form-control" placeholder="Brand" required> -->
-                        <select class="form-select" aria-label="Default select example" name="brand_id">
-                            <option selected>Select Brand</option>
-                            <option value="1">One</option>
+                        <select class="form-select" name="brand_id" required>
+                            <option value="" disabled selected>Select Brand</option>
+                            @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                            @endforeach
                         </select>
                     </div>
+
+                    <!-- Unit Selection -->
                     <div class="mb-3">
-                        <!-- <input type="text" name="unit" class="form-control" placeholder="e.g., kg, pcs"> -->
-                        <select class="form-select" aria-label="Default select example" name="unit_id">
-                            <option selected>Select Unit</option>
-                            <option value="1">One</option>
+                        <select class="form-select" name="unit_id" required>
+                            <option value="" disabled selected>Select Unit</option>
+                            @foreach($units as $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                            @endforeach
                         </select>
                     </div>
+
+                    <!-- Category Selection -->
                     <div class="mb-3">
-                        <!-- <input type="number" name="category_id" class="form-control" placeholder="Category" required> -->
-                        <select class="form-select" aria-label="Default select example" name="category_id">
-                            <option selected>Select Category</option>
-                            <option value="1">One</option>
+                        <select class="form-select" name="category_id" required>
+                            <option value="" disabled selected>Select Category</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -98,26 +113,53 @@
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input type="text" name="name" class="form-control" placeholder="Name">
                         <input type="hidden" name="id">
+                        <input type="text" name="name" class="form-control" placeholder="Name" required>
                     </div>
-                    <div class="mb-3 d-flex">
-                        <input type="file" name="img[]" class="form-control" multiple required>
-                        <img id="editPreviewImg" src="" class="PrefillProductImg">
-                    </div>
+
                     <div class="mb-3">
-                        <input type="number" name="price" class="form-control" placeholder="Price">
+                        <input type="file" name="images[]" class="form-control" multiple required>
                     </div>
+
                     <div class="mb-3">
-                        <input type="text" name="brand" class="form-control" placeholder="Brand">
+                        <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
                     </div>
+
                     <div class="mb-3">
-                        <input type="text" name="unit" class="form-control" placeholder="e.g., kg, pcs">
+                        <input type="number" name="stock" class="form-control" placeholder="Stock" required>
                     </div>
+
+                    <!-- Brand Selection -->
                     <div class="mb-3">
-                        <input type="text" name="category" class="form-control" placeholder="Category">
+                        <select class="form-select" name="brand_id" required>
+                            <option value="" disabled selected>Select Brand</option>
+                            @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Unit Selection -->
+                    <div class="mb-3">
+                        <select class="form-select" name="unit_id" required>
+                            <option value="" disabled selected>Select Unit</option>
+                            @foreach($units as $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <!-- Category Selection -->
+                    <div class="mb-3">
+                        <select class="form-select" name="category_id" required>
+                            <option value="" disabled selected>Select Category</option>
+                            @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
@@ -150,7 +192,7 @@
         //                     <td>${product.unit}</td>
         //                     <td>${product.category}</td>
         //                     <td class="text-center">
-        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}"                  data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
         //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
         //                     </td>
         //                 </tr>
@@ -171,8 +213,9 @@
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
-                    console.log(response);
+                    console.log(response); // Debugging
                     let tableRows = "";
+
                     if (response.length === 0) {
                         tableRows = `
                     <tr>
@@ -182,21 +225,27 @@
                     } else {
                         $.each(response, function(index, product) {
                             let imagesHtml = "";
-                            $.each(product.img, function(i, imgUrl) {
-                                imagesHtml += `<img src="${imgUrl}" width="50" class="productImg">`;
-                            });
+
+                            if (product.images && product.images.length > 0) {
+                                $.each(product.images, function(i, image) {
+                                    imagesHtml += `<img src="${image.path}" width="50" class="productImg" alt="Product Image">`;
+                                });
+                            } else {
+                                imagesHtml = `<span class="text-muted">No Image</span>`;
+                            }
+
                             tableRows += `
                         <tr>
                             <th>${index + 1}</th>
                             <td>${product.name}</td>
                             <td>${imagesHtml}</td>
                             <td>${product.price}</td>
+                            <td>${product.unit_id}</td>
                             <td>${product.brand_id}</td>
-                            <td>${product.category_id }</td>
-                            <td>${product.unit}</td>
+                            <td>${product.category_id}</td>
                             <td>${product.stock}</td>
                             <td>
-                                <button class="btn btn-primary editBtn" data-id="${product.id}">Edit</button>
+                                <button class="btn btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
                                 <button class="btn btn-danger deleteBtn" data-id="${product.id}">Delete</button>
                             </td>
                         </tr>
@@ -215,6 +264,7 @@
                 }
             });
         }
+
 
 
         // Add Records
@@ -253,6 +303,7 @@
             e.preventDefault();
             let formData = new FormData(this);
             let productId = $("input[name='id']").val();
+
             $.ajax({
                 url: `/admin/products/update/${productId}`,
                 method: "POST",
@@ -278,21 +329,23 @@
             });
         });
 
+
         // Prefill Values
         $(document).on("click", ".editBtn", function() {
-            let productId = $(this).data("id");
+            let id = $(this).data("id");
             $.ajax({
-                url: `/admin/products/edit_product/${productId}`,
+                url: `/admin/products/edit/${id}`,
                 method: "GET",
                 success: function(response) {
                     let form = $("#editProductForm");
                     form.find("input[name='id']").val(response.id);
                     form.find("input[name='name']").val(response.name);
                     form.find("input[name='price']").val(response.price);
-                    form.find("input[name='brand']").val(response.brand);
-                    form.find("input[name='unit']").val(response.unit);
-                    form.find("input[name='category']").val(response.category);
-                    $("#editPreviewImg").attr("src", response.img);
+                    form.find("input[name='stock']").val(response.stock);
+                    form.find("input[name='brand_id']").val(response.brand_id);
+                    form.find("input[name='unit_id']").val(response.unit_id);
+                    form.find("input[name='category_id']").val(response.category_id);
+                    // $("#editPreviewImg").attr("src", response.img);
                 },
                 error: function() {
                     alert("Failed to fetch product details.");
