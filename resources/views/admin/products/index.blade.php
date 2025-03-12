@@ -11,13 +11,15 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table table-striped table-bordered text-capitalize text-center">
+        <!-- table table-striped -->
+            <table class=" table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Name</th>
                         <th>Image</th>
                         <th>Price</th>
+                        <th>Description</th>
                         <th>Unit</th>
                         <th>Brand</th>
                         <th>Category</th>
@@ -46,19 +48,18 @@
                     <div class="mb-3">
                         <input type="text" name="name" class="form-control" placeholder="Product Name" required>
                     </div>
-
                     <div class="mb-3">
-                        <input type="file" name="images[]" class="form-control" multiple required>
+                        <input type="file" name="image_path[]" class="form-control" multiple required>
                     </div>
-
                     <div class="mb-3">
                         <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
                     </div>
-
+                    <div class="mb-3">
+                        <input type="text" name="description" class="form-control" placeholder="Description" required>
+                    </div>
                     <div class="mb-3">
                         <input type="number" name="stock" class="form-control" placeholder="Stock" required>
                     </div>
-
                     <!-- Brand Selection -->
                     <div class="mb-3">
                         <select class="form-select" name="brand_id" required>
@@ -68,7 +69,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <!-- Unit Selection -->
                     <div class="mb-3">
                         <select class="form-select" name="unit_id" required>
@@ -78,7 +78,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <!-- Category Selection -->
                     <div class="mb-3">
                         <select class="form-select" name="category_id" required>
@@ -89,13 +88,11 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -116,19 +113,18 @@
                         <input type="hidden" name="id">
                         <input type="text" name="name" class="form-control" placeholder="Name" required>
                     </div>
-
                     <div class="mb-3">
-                        <input type="file" name="images[]" class="form-control" multiple required>
+                        <input type="file" name="image_path[]" class="form-control" multiple required>
                     </div>
-
                     <div class="mb-3">
                         <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
                     </div>
-
+                    <div class="mb-3">
+                        <input type="text" name="description" class="form-control" placeholder="Description" required>
+                    </div>
                     <div class="mb-3">
                         <input type="number" name="stock" class="form-control" placeholder="Stock" required>
                     </div>
-
                     <!-- Brand Selection -->
                     <div class="mb-3">
                         <select class="form-select" name="brand_id" required>
@@ -138,7 +134,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <!-- Unit Selection -->
                     <div class="mb-3">
                         <select class="form-select" name="unit_id" required>
@@ -148,7 +143,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <!-- Category Selection -->
                     <div class="mb-3">
                         <select class="form-select" name="category_id" required>
@@ -159,7 +153,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Save changes</button>
@@ -213,59 +206,50 @@
                 method: "GET",
                 dataType: "json",
                 success: function(response) {
-                    console.log(response); // Debugging
+                    console.log(response);
                     let tableRows = "";
-
                     if (response.length === 0) {
                         tableRows = `
                     <tr>
-                        <td colspan="8" class="text-center">No Records Found</td>
-                    </tr>
-                `;
+                        <td colspan="10" class="text-center">No Records Found</td>
+                    </tr>`;
                     } else {
                         $.each(response, function(index, product) {
                             let imagesHtml = "";
-
                             if (product.images && product.images.length > 0) {
                                 $.each(product.images, function(i, image) {
-                                    imagesHtml += `<img src="${image.path}" width="50" class="productImg" alt="Product Image">`;
+                                    imagesHtml += `<img src="/storage/${image.image_path}" width="50" class="productImg" alt="ProductImage">`;
                                 });
                             } else {
                                 imagesHtml = `<span class="text-muted">No Image</span>`;
                             }
-
-                            tableRows += `
-                        <tr>
+                            tableRows += `<tr>
                             <th>${index + 1}</th>
                             <td>${product.name}</td>
                             <td>${imagesHtml}</td>
                             <td>${product.price}</td>
-                            <td>${product.unit_id}</td>
-                            <td>${product.brand_id}</td>
-                            <td>${product.category_id}</td>
+                            <td>${product.description}</td>
+                            <td>${product.unit ? product.unit.name : 'N/A'}</td>
+                            <td>${product.brand ? product.brand.name : 'N/A'}</td>
+                            <td>${product.category ? product.category.name : 'N/A'}</td>
                             <td>${product.stock}</td>
                             <td>
-                                <button class="btn btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                <button class="btn btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+                                <button class="btn btn-sm btn-info editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                <button class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
                             </td>
-                        </tr>
-                    `;
+                        </tr>`;
                         });
                     }
-
                     $("#productTableBody").html(tableRows);
                 },
                 error: function() {
-                    $("#productTableBody").html(`
-                <tr>
-                    <td colspan="8" class="text-center text-danger">Error fetching data</td>
+                    $("#productTableBody").html(`<tr>
+                    <td colspan="10" class="text-center text-danger">Error fetching data</td>
                 </tr>
             `);
                 }
             });
         }
-
-
 
         // Add Records
         $("#addProductForm").on('submit', function(e) {
@@ -341,6 +325,7 @@
                     form.find("input[name='id']").val(response.id);
                     form.find("input[name='name']").val(response.name);
                     form.find("input[name='price']").val(response.price);
+                    form.find("input[name='description']").val(response.description);
                     form.find("input[name='stock']").val(response.stock);
                     form.find("input[name='brand_id']").val(response.brand_id);
                     form.find("input[name='unit_id']").val(response.unit_id);
@@ -355,10 +340,10 @@
 
         // Delete Record
         $(document).on("click", ".deleteBtn", function() {
-            let productId = $(this).data("id");
+            let id = $(this).data("id");
             if (confirm("Are you sure you want to delete this product?")) {
                 $.ajax({
-                    url: "/admin/products/destroy/" + productId,
+                    url: "/admin/products/destroy/" + id,
                     method: "DELETE",
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -373,41 +358,57 @@
                 });
             }
         });
-    });
 
-    // Search Records
-    $("#searchProduct").on("keyup", function() {
-        let query = $(this).val();
-        $.ajax({
-            url: "/admin/products/search/",
-            method: "GET",
-            data: {
-                query: query
-            },
-            success: function(response) {
-                let tableRows = "";
-                $.each(response, function(index, product) {
-                    tableRows += `
-                        <tr>
-                            <th>${index + 1}</th>
-                            <td>${product.name}</td>
-                            <td><img src="${product.img}" width="50"></td>
-                            <td>${product.price}</td>
-                            <td>${product.brand}</td>
-                            <td>${product.unit}</td>
-                            <td>${product.category}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                $("#productTableBody").html(tableRows);
-            },
-            error: function() {
-                alert("Search failed. Try again.");
-            }
+        // Search Records
+        $("#searchProduct").on("keyup", function() {
+            let query = $(this).val();
+            $.ajax({
+                url: "/admin/products/search/",
+                method: "GET",
+                data: {
+                    query: query
+                },
+                success: function(response) {
+                    let tableRows = "";
+                    if (response.length === 0) {
+                        tableRows = `
+                        <tr><td colspan="8" class="text-center">No Records Found</td></tr>`;
+                    } else {
+                        $.each(response, function(index, product) {
+                            let imagesHtml = "";
+                            if (product.images && product.images.length > 0) {
+                                $.each(product.images, function(i, image) {
+                                    imagesHtml += `<img src="/storage/${image.image_path}" width="50" class="productImg" alt="Product Image"> `;
+                                });
+                            } else {
+                                imagesHtml = `<span class="text-muted">No Image</span>`;
+                            }
+                            tableRows += `
+                            <tr>
+                                <th>${index + 1}</th>
+                                <td>${product.name}</td>
+                                <td>${imagesHtml}</td>
+                                <td>${product.price}</td>
+                                <td>${product.description}</td>
+                                <td>${product.unit ? product.unit.name : 'N/A'}</td>
+                                <td>${product.brand ? product.brand.name : 'N/A'}</td>
+                                <td>${product.category ? product.category.name : 'N/A'}</td>
+                                <td>${product.stock}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                    <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                        });
+                    }
+
+                    $("#productTableBody").html(tableRows);
+                },
+                error: function() {
+                    alert("Search failed. Try again.");
+                }
+            });
         });
     });
 </script>
