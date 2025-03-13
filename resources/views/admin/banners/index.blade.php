@@ -1,5 +1,8 @@
 @extends('layouts.admin')
 @section('content')
+
+<h1>Users Page</h1>
+
 <div class="container">
     <div class="row align-items-center my-5">
         <div class="col-lg-4 text-center">
@@ -11,7 +14,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <!-- table table-striped -->
+        <!-- table table-striped -->
             <table class=" table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
@@ -165,7 +168,41 @@
 <script>
     $(document).ready(function() {
         loadProducts();
+
         // Show Records
+        // function loadProducts() {
+        //     $.ajax({
+        //         url: "/admin/products/show",
+        //         method: "GET",
+        //         dataType: "json",
+        //         success: function(response) {
+        //             let tableRows = "";
+        //             $.each(response, function(index, product) {
+        //                 tableRows += `
+        //                 <tr>
+        //                     <th>${index + 1}</th>
+        //                     <td>${product.name}</td>
+        //                     <td><img class="productImg" src="${product.img}"></td>
+        //                     <td>${product.price}</td>
+        //                     <td>${product.brand}</td>
+        //                     <td>${product.unit}</td>
+        //                     <td>${product.category}</td>
+        //                     <td class="text-center">
+        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+        //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+        //                     </td>
+        //                 </tr>
+        //             `;
+        //             });
+        //             $("#productTableBody").html(tableRows);
+        //         },
+        //         error: function() {
+        //             alert("Failed to load products. Please try again.");
+        //         }
+        //     });
+        // }
+
+
         function loadProducts() {
             $.ajax({
                 url: "/admin/products/show",
@@ -183,35 +220,36 @@
                         $.each(response, function(index, product) {
                             let imagesHtml = "";
                             if (product.images && product.images.length > 0) {
-                                $.each(product.images, function(image) {
-                                    imagesHtml += `<img src="storage/${image.image_path}" width="50" class="productImg" alt="ProductImage">`;
+                                $.each(product.images, function(i, image) {
+                                    imagesHtml += `<img src="/storage/${image.image_path}" width="50" class="productImg" alt="ProductImage">`;
                                 });
                             } else {
                                 imagesHtml = `<span class="text-muted">No Image</span>`;
                             }
                             tableRows += `<tr>
-                        <th>${index + 1}</th>
-                        <td>${product.name}</td>
-                        <td>${imagesHtml}</td>
-                        <td>${product.price}</td>
-                        <td>${product.description}</td>
-                        <td>${product.unit ? product.unit.name : 'N/A'}</td>
-                        <td>${product.brand ? product.brand.name : 'N/A'}</td>
-                        <td>${product.category ? product.category.name : 'N/A'}</td>
-                        <td>${product.stock}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                            <button class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
-                        </td>
-                    </tr>`;
+                            <th>${index + 1}</th>
+                            <td>${product.name}</td>
+                            <td>${imagesHtml}</td>
+                            <td>${product.price}</td>
+                            <td>${product.description}</td>
+                            <td>${product.unit ? product.unit.name : 'N/A'}</td>
+                            <td>${product.brand ? product.brand.name : 'N/A'}</td>
+                            <td>${product.category ? product.category.name : 'N/A'}</td>
+                            <td>${product.stock}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                <button class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+                            </td>
+                        </tr>`;
                         });
                     }
                     $("#productTableBody").html(tableRows);
                 },
                 error: function() {
                     $("#productTableBody").html(`<tr>
-                <td colspan="10" class="text-center text-danger">Error fetching data</td>
-            </tr>`);
+                    <td colspan="10" class="text-center text-danger">Error fetching data</td>
+                </tr>
+            `);
                 }
             });
         }
@@ -277,6 +315,7 @@
                 }
             });
         });
+
 
         // Prefill Values
         $(document).on("click", ".editBtn", function() {

@@ -20,6 +20,7 @@ class ProductController extends Controller
     public function show()
     {
         $products = Product::with(['brand', 'category', 'unit', 'images'])->get();
+        // dd($products);
         return response()->json($products);
     }
 
@@ -53,8 +54,6 @@ class ProductController extends Controller
         $product = Product::create($request->only([
             'name', 'description', 'price', 'unit_id', 'brand_id', 'category_id', 'stock'
         ]));
-        // dd($product);
-        // Save Images to product_images table
         if ($request->hasFile('image_path')) {
             foreach ($request->file('image_path') as $image) {
                 $imagePath = $image->store('product_images', 'public');

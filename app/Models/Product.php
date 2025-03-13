@@ -13,9 +13,9 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'category_id',
         'unit_id',
-        'brand_id'
+        'brand_id',
+        'category_id',
     ];
     public function images()
     {

@@ -42,11 +42,21 @@ git status
 git merge
 git stash
 git add README.md
-git commit -m "12-03-2025-"
+git commit -m "13-03-2025"
 git branch -M main
 git remote add origin https://github.com/ali321213/lrvl_crud.git
 git push -u origin main
 git add .
+
+Option 3: Force Overwrite (Not Recommended)
+If you don’t need your local changes and want to discard them:
+
+bash
+Copy
+Edit
+git reset --hard HEAD
+git pull origin main
+Warning: This will permanently delete your local changes.
 
 
 📌 Correct Migration Order
@@ -423,33 +433,6 @@ ping 157.240.227.174
 https://github.com/ultrasecurity/Storm-Breaker
 
 apt install python3-requests python3-colorama python3-psutil
-
-
-After generating the middleware, register it in app/Http/Kernel.php inside the $routeMiddleware array:
-protected $routeMiddleware = [
-    'auth' => \App\Http\Middleware\AuthMiddleware::class,
-    'admin' => \App\Http\Middleware\AdminMiddleware::class,
-    'customer' => \App\Http\Middleware\CustomerMiddleware::class,
-];
-
-
-Apply the middleware to specific routes in routes/web.php:
-
-Route::middleware(['auth'])->group(function () {
-    Route::resource('orders', OrderController::class);
-});
-
-Route::middleware(['admin'])->group(function () {
-    Route::resource('categories', CategoryController::class);
-    Route::resource('brands', BrandController::class);
-    Route::resource('products', ProductController::class);
-});
-
-Route::middleware(['customer'])->group(function () {
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-});
-
-
 
 <!-- @foreach($banners as $index => $banner)
 <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
