@@ -12,6 +12,8 @@ class CategoryController extends Controller
     {
         $categories = Category::all();
         return view('admin.categories.index', compact('categories'));
+        // $categories = Category::latest()->paginate(5);
+        // return view('admin.categories.index',compact('categories'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
     // Store a newly created category in the database
@@ -23,16 +25,12 @@ class CategoryController extends Controller
             'slug' => 'nullable|string',
             'image' => 'nullable|image|max:2048', // Ensure the image is valid and not too large
         ]);
-
         $category = new Category($request->all());
-
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('categories', 'public');
             $category->image = $imagePath;
         }
-
         $category->save();
-
         return redirect()->route('admin.category.index')->with('success', 'Category created successfully!');
     }
 
@@ -49,12 +47,10 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'slug' => 'nullable|string',
+            'slug' => 'required',
             'image' => 'nullable|image|max:2048',
         ]);
-
         $category = Category::findOrFail($id);
-
         if ($request->hasFile('image')) {
             if ($category->image) {
                 \Storage::delete('public/' . $category->image);
@@ -62,9 +58,8 @@ class CategoryController extends Controller
             $imagePath = $request->file('image')->store('categories', 'public');
             $category->image = $imagePath;
         }
-
         $category->update($request->all());
-
+        // dd($category);
         return response()->json(['success' => 'Category updated successfully!']);
     }
 

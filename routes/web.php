@@ -113,7 +113,7 @@ Route::prefix('admin/category')->name('admin.category.')->group(function () {
     Route::get('/create', [CategoryController::class, 'create'])->name('create');
     Route::post('/store', [CategoryController::class, 'store'])->name('store');
     Route::get('/{categoryId}/edit', [CategoryController::class, 'edit'])->name('edit');
-    Route::put('/{categoryId}/update', [CategoryController::class, 'update'])->name('update');
+    Route::post('/{categoryId}/update', [CategoryController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [CategoryController::class, 'destroy'])->name('destroy');
     Route::get('/search', [CategoryController::class, 'search'])->name('search');
 });

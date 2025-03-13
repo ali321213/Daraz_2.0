@@ -3,25 +3,28 @@
 
 <div class="container mt-5">
     <button type="button" class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openAddCategoryModal()">Create Category</button>
-    <table class="table table-bordered table-striped table-responsive">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Slug</th>
-                <th>Actions</th>
+    <table class="text-center table" style="border: 2px solid black;">
+        <thead style="border: 2px solid black;">
+            <tr style="border: 2px solid black;">
+                <th style="border: 2px solid black;">ID</th>
+                <th style="border: 2px solid black;">Name</th>
+                <th style="border: 2px solid black;">Description</th>
+                <th style="border: 2px solid black;">Slug</th>
+                <th style="border: 2px solid black;">Image</th>
+                <th style="border: 2px solid black;">Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="border: 2px solid black;">
             @foreach ($categories as $category)
-            <tr>
-                <td>{{ $category->id }}</td>
-                <td>{{ $category->name }}</td>
-                <td>{{ $category->description }}</td>
-                <td>{{ $category->slug }}</td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openEditCategoryModal({{ json_encode($category->id) }})">Edit</button>
+            <tr style="border: 2px solid black;">
+                <td style="border: 2px solid black;">{{ $category->id }}</td>
+                <td style="border: 2px solid black;">{{ $category->name }}</td>
+                <td style="border: 2px solid black;">{{ $category->description }}</td>
+                <td style="border: 2px solid black;">{{ $category->slug }}</td>
+                <td><img src="{{ asset('storage/' . $category->image) }}" width="100"></td>
+                <td style="border: 2px solid black;">
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#categoryModal" 
+                    onclick="openEditCategoryModal({{ json_encode($category->id) }})">Edit</button>
                     <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
@@ -47,11 +50,11 @@
                 <input type="hidden" id="categoryId" name="id">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label class="form-label">Name</label>
                         <input type="text" class="form-control" id="name" name="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
+                        <label class="form-label">Description</label>
                         <textarea class="form-control" id="description" name="description"></textarea>
                     </div>
                     <div class="mb-3">
@@ -61,6 +64,7 @@
                     <div class="mb-3">
                         <label class="form-label">Image</label>
                         <input type="file" class="form-control" id="image" name="image">
+                        <img id="previewImage" src="" width="50" style="display: none;">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -68,6 +72,7 @@
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
@@ -81,8 +86,8 @@
         $("#description").val("");
         $("#slug").val("");
         $("#image").val("");
-        $("#categoryForm").attr("action", "{{ route('admin.category.store') }}");
-        $("#categoryForm").attr("method", "POST");
+        $("#previewImage").hide();
+        $("#categoryForm").attr("action", "{{ route('admin.category.store') }}").attr("method", "POST");
     }
 
     function openEditCategoryModal(categoryId) {
@@ -95,11 +100,17 @@
                 $("#name").val(response.name);
                 $("#description").val(response.description);
                 $("#slug").val(response.slug);
-                $("#categoryForm").attr("action", "{{ url('admin/category') }}/" + categoryId + "/update");
-                $("#categoryForm").attr("method", "PUT");
+
+                if (response.image) {
+                    $("#previewImage").attr("src", "{{ asset('storage/') }}/" + response.image).show();
+                } else {
+                    $("#previewImage").hide();
+                }
+
+                $("#categoryForm").attr("action", "{{ url('admin/category') }}/" + categoryId + "/update").attr("method", "POST");
             },
             error: function() {
-                alert("Failed to fetch category details.");
+                alert("Failed to fetch category details");
             }
         });
     }
@@ -108,11 +119,10 @@
         e.preventDefault();
         let formData = new FormData(this);
         let action = $("#categoryForm").attr("action");
-        let method = $("#categoryForm").attr("method");
 
         $.ajax({
             url: action,
-            method: method,
+            method: "POST",
             data: formData,
             contentType: false,
             processData: false,
