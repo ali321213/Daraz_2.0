@@ -21,10 +21,17 @@
                 <td style="border: 2px solid black;">{{ $category->name }}</td>
                 <td style="border: 2px solid black;">{{ $category->description }}</td>
                 <td style="border: 2px solid black;">{{ $category->slug }}</td>
-                <td><img src="{{ asset('storage/' . $category->image) }}" width="100"></td>
+                <!-- <td><img src="{{ asset('/storage/' . $category->image) }}" width="100"></td> -->
+                <td>
+                    @if($category->image)
+                    <img src="{{ asset('storage/' . $category->image) }}" width="100">
+                    @else
+                    <span>No Image</span>
+                    @endif
+                </td>
                 <td style="border: 2px solid black;">
-                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#categoryModal" 
-                    onclick="openEditCategoryModal({{ json_encode($category->id) }})">Edit</button>
+                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#categoryModal"
+                        onclick="openEditCategoryModal({{ json_encode($category->id) }})">Edit</button>
                     <form action="{{ route('admin.category.destroy', $category->id) }}" method="POST" style="display:inline;">
                         @csrf
                         @method('DELETE')
@@ -72,7 +79,6 @@
                     <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -100,13 +106,11 @@
                 $("#name").val(response.name);
                 $("#description").val(response.description);
                 $("#slug").val(response.slug);
-
                 if (response.image) {
                     $("#previewImage").attr("src", "{{ asset('storage/') }}/" + response.image).show();
                 } else {
                     $("#previewImage").hide();
                 }
-
                 $("#categoryForm").attr("action", "{{ url('admin/category') }}/" + categoryId + "/update").attr("method", "POST");
             },
             error: function() {
@@ -130,12 +134,16 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                alert(response.success);
-                location.reload();
+                if (response.success) {
+                    alert(response.message);
+                    location.reload();
+                } else {
+                    alert("Something went wrong!");
+                }
             },
             error: function(xhr) {
-                let errors = xhr.responseJSON.errors;
-                let errorMessage = "";
+                let errors = xhr.responseJSON?.errors || {};
+                let errorMessage = "An error occurred:\n";
                 $.each(errors, function(key, value) {
                     errorMessage += value[0] + "\n";
                 });

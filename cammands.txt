@@ -42,9 +42,9 @@ git status
 git merge
 git stash
 git add README.md
-git commit -m "13-03-2K25"
+git commit -m "Initial Commit"
 git branch -M main
-git remote add origin https://github.com/ali321213/lrvl_crud.git
+git remote add origin https://github.com/ali321213/Oredoo_Blog.git
 git push -u origin main
 git add .
 
@@ -238,8 +238,6 @@ Additional Features
 
 This structure covers the essential components of an e-commerce platform, including user management, product catalog, orders, payments, attributes, shopping cart, reviews, and additional features like coupons and wishlists. You can further customize and expand this structure based on your specific requirements.
 
-
-=============================================================================================================================================================
 =============================================================================================================================================================
 To implement cart functionality in a Laravel e-commerce store, you can follow these steps based on the search results:
 
@@ -420,14 +418,11 @@ $ hydra -l <username> -p <password> <server> <service>
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.227.174 ssh
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.3.174 ssh
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 2a03:2880:f267:e5:face:b00c:0:4420 ssh
-
-
+$ hydra -l jose.fairforest@gmail.com -p /usr/share/wordlists/rockyou.txt 57.144.148.1 ssh
 
 2a03:2880:f267:e5:face:b00c:0:4420
-          157.240.227.174
+157.240.227.174
 ping 157.240.227.174
-
-
 
 https://github.com/ultrasecurity/Storm-Breaker
 
@@ -451,4 +446,6 @@ php artisan make:factory CategoryFactory
 php artisan route:list
 
 php artisan serve
+php artisan serve --port=8001
+php artisan serve --port=8002
 npm run dev
