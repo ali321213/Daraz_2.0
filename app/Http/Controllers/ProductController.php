@@ -8,6 +8,7 @@ use App\Models\Brand;
 use App\Models\Unit;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -30,13 +31,39 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
-    public function index()
+    // public function index()
+    // {
+    //     $brands = Brand::all();
+    //     $categories = Category::all();
+    //     $units = Unit::all();
+    //     $products = Product::with('images')->get();
+    //     return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
+    // }
+
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+            $products = Product::with(['unit', 'brand', 'category', 'images'])->select('products.*');
+
+            return DataTables::of($products)
+                ->addColumn('image', function ($product) {
+                    if ($product->images->isNotEmpty()) {
+                        return '<img src="' . asset('storage/' . $product->images->first()->image_path) . '" width="50" class="productImg" alt="Product Image">';
+                    }
+                    return '<span class="text-muted">No Image</span>';
+                })
+                ->addColumn('actions', function ($product) {
+                    return '<button class="btn btn-sm btn-info editBtn" data-id="' . $product->id . '" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                        <button class="btn btn-sm btn-danger deleteBtn" data-id="' . $product->id . '">Delete</button>';
+                })
+                ->rawColumns(['image', 'actions'])
+                ->make(true);
+        }
+
         $brands = Brand::all();
         $categories = Category::all();
         $units = Unit::all();
-        $products = Product::with('images')->get();
-        return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
+        return view('admin.products.index', compact('brands', 'categories', 'units'));
     }
 
     public function create(Request $request)
@@ -52,7 +79,13 @@ class ProductController extends Controller
             'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
         $product = Product::create($request->only([
-            'name', 'description', 'price', 'unit_id', 'brand_id', 'category_id', 'stock'
+            'name',
+            'description',
+            'price',
+            'unit_id',
+            'brand_id',
+            'category_id',
+            'stock'
         ]));
         if ($request->hasFile('image_path')) {
             foreach ($request->file('image_path') as $image) {
@@ -127,20 +160,20 @@ class ProductController extends Controller
     // }
 
     public function destroy($id)
-{
-    $product = Product::findOrFail($id);
-    
-    foreach ($product->images as $image) {
-        // Ensure correct path (remove "public/" prefix)
-        if (Storage::disk('public')->exists($image->image_path)) {
-            Storage::disk('public')->delete($image->image_path);
-        }
-        $image->delete();
-    }
-    $product->delete();
+    {
+        $product = Product::findOrFail($id);
 
-    return response()->json(['success' => 'Product deleted successfully']);
-}
+        foreach ($product->images as $image) {
+            // Ensure correct path (remove "public/" prefix)
+            if (Storage::disk('public')->exists($image->image_path)) {
+                Storage::disk('public')->delete($image->image_path);
+            }
+            $image->delete();
+        }
+        $product->delete();
+
+        return response()->json(['success' => 'Product deleted successfully']);
+    }
 
     public function search(Request $request)
     {

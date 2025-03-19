@@ -25,7 +25,6 @@ class BannerController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'link' => 'nullable|url',
             'position' => 'nullable|integer',
-            'status' => 'required|boolean',
         ]);
 
         $imagePath = $request->file('image')->store('banners', 'public');
@@ -35,9 +34,65 @@ class BannerController extends Controller
             'image' => $imagePath,
             'link' => $request->link,
             'position' => $request->position ?? 1,
-            'status' => $request->status,
         ]);
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner added successfully!');
+    }
+
+    public function edit($id)
+    {
+        $category = Banner::findOrFail($id);
+        return response()->json($category);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'slug' => 'required|string|unique:categories,slug,' . $id,
+            'image' => 'nullable|image|max:2048',
+        ]);
+        $category = Banner::findOrFail($id);
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image && \Storage::exists('public/' . $category->image)) {
+                \Storage::delete('public/' . $category->image);
+            }
+
+            // Store new image
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $category->image = $imagePath;
+        }
+        // Update category details
+        $category->fill([
+            'name' => $request->name,
+            'description' => $request->description,
+            'slug' => \Str::slug($request->slug), // Convert slug to proper format
+        ]);
+        $category->save(); // Save changes to DB
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated successfully!',
+            'category' => $category
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $category = Banner::findOrFail($id);
+        if ($category->image) {
+            \Storage::delete('public/' . $category->image);
+        }
+        $category->delete();
+        return redirect()->route('admin.banners.index')->with('success', 'Category deleted successfully!');
+    }
+
+    public function toggleStatus(Request $request)
+    {
+        $banner = Banner::findOrFail($request->id);
+        $banner->status = $request->status;
+        $banner->save();
+        return response()->json(['success' => true, 'message' => 'Banner status updated successfully!']);
     }
 }

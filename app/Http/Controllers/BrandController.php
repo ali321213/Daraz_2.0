@@ -13,12 +13,11 @@ class BrandController extends Controller
         $this->middleware('auth');
     }
 
-    /* Display a listing of the resource */
-    // In your BrandController.php
     public function index()
     {
-        $brands = Brand::all();
-        return view('admin.brands.index', compact('brands'));
+        // $brands = Brand::all();
+        return view('admin.brands.index');
+        // , compact('brands')
     }
 
     public function show()
@@ -31,7 +30,6 @@ class BrandController extends Controller
         });
         return response()->json($brands);
     }
-
 
     /* Show the form for creating a new resource */
     public function create(Request $request)

@@ -1,0 +1,31 @@
+/* Banners Index Start */
+.bannerImg {
+  height: 80px;
+  width: 80px;
+  border-radius: 100px;
+}
+
+.brandsTable thead tr td th tbody {
+  border: 1px solid black;
+}
+
+.brandsTable {
+  width: 100%;
+  text-transform: capitalize;
+  text-align: center;
+  border: 1px solid black;
+}
+
+
+.brandsTable tr {
+  border: 1px solid black;
+}
+
+.brandsTable tr th {
+  border: 1px solid black;
+}
+
+.brandsTable tr td {
+  border: 1px solid black;
+}
+/* Banners Index End */

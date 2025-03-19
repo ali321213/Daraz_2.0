@@ -1,9 +1,10 @@
 @extends('layouts.admin')
 @section('content')
+@section('title', 'Category - Admin Panel')
 
 <div class="container mt-5">
     <button type="button" class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="openAddCategoryModal()">Create Category</button>
-    <table class="text-center table" style="border: 2px solid black;">
+    <table class="text-center table text-capitalize" style="border: 2px solid black;">
         <thead style="border: 2px solid black;">
             <tr style="border: 2px solid black;">
                 <th style="border: 2px solid black;">ID</th>

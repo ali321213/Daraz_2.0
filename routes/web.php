@@ -60,9 +60,6 @@ Route::prefix('admin/banners')->name('admin.banners.')->group(function () {
     Route::get('/create', [BannerController::class, 'create'])->name('create');
     Route::post('/store', [BannerController::class, 'store'])->name('store');
 });
-
-
-
 /*
 |--------------------------------------------------------------------------
 | Public Routes (Accessible to Everyone)
@@ -144,4 +141,15 @@ Route::prefix('admin/category')->name('admin.category.')->group(function () {
     Route::post('/{categoryId}/update', [CategoryController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [CategoryController::class, 'destroy'])->name('destroy');
     Route::get('/search', [CategoryController::class, 'search'])->name('search');
+});
+
+
+Route::prefix('admin/banners')->name('admin.banners.')->group(function () {
+    Route::get('/', [BannerController::class, 'index'])->name('index');
+    Route::get('/create', [BannerController::class, 'create'])->name('create');
+    Route::post('/store', [BannerController::class, 'store'])->name('store');
+    Route::get('/{bannerId}/edit', [BannerController::class, 'edit'])->name('edit');
+    Route::post('/{bannerId}/update', [BannerController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [BannerController::class, 'destroy'])->name('destroy');
+    Route::post('/toggleStatus', [BannerController::class, 'toggleStatus'])->name('toggleStatus');
 });

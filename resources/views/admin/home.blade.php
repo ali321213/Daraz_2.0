@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('content')
-@section('title', 'Products - Admin Panel')
+
+<h1>Users Page</h1>
+
 <div class="container">
     <div class="row align-items-center my-5">
         <div class="col-lg-4 text-center">
@@ -12,27 +14,8 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table id="productsTable" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Image</th>
-                        <th>Price</th>
-                        <th>Description</th>
-                        <th>Unit</th>
-                        <th>Brand</th>
-                        <th>Category</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-            </table>
-
-
-
-            <!-- table table-striped -->
-            <!-- <table class=" table-bordered text-capitalize text-center">
+        <!-- table table-striped -->
+            <table class=" table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -48,7 +31,7 @@
                     </tr>
                 </thead>
                 <tbody id="productTableBody"></tbody>
-            </table> -->
+            </table>
         </div>
     </div>
 </div>
@@ -184,59 +167,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#productsTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('admin.products.index') }}",
-            columns: [{
-                    data: "id",
-                    name: "id"
-                },
-                {
-                    data: "name",
-                    name: "name"
-                },
-                {
-                    data: "image",
-                    name: "image",
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: "price",
-                    name: "price"
-                },
-                {
-                    data: "description",
-                    name: "description"
-                },
-                {
-                    data: "unit.name",
-                    name: "unit.name"
-                },
-                {
-                    data: "brand.name",
-                    name: "brand.name"
-                },
-                {
-                    data: "category.name",
-                    name: "category.name"
-                },
-                {
-                    data: "stock",
-                    name: "stock"
-                },
-                {
-                    data: "actions",
-                    name: "actions",
-                    orderable: false,
-                    searchable: false
-                }
-            ],
-            pageLength: 10 // Show 10 records per page
-        });
-        
-        // loadProducts();
+        loadProducts();
+
         // Show Records
         // function loadProducts() {
         //     $.ajax({
@@ -244,51 +176,83 @@
         //         method: "GET",
         //         dataType: "json",
         //         success: function(response) {
-        //             console.log(response);
         //             let tableRows = "";
-        //             if (response.length === 0) {
-        //                 tableRows = `
-        //             <tr>
-        //                 <td colspan="10" class="text-center">No Records Found</td>
-        //             </tr>`;
-        //             } else {
-        //                 $.each(response, function(index, product) {
-        //                     let imagesHtml = "";
-        //                     if (product.images && product.images.length > 0) {
-        //                         $.each(product.images, function(i, image) {
-        //                             imagesHtml += `<img src="{{ asset('storage') }}/${image.image_path}" width="50" class="productImg" alt="Product Image">`;
-        //                         });
-        //                     } else {
-        //                         imagesHtml = `<span class="text-muted">No Image</span>`;
-        //                     }
-        //                     tableRows += `<tr>
-        //                 <th>${index + 1}</th>
-        //                 <td>${product.name}</td>
-        //                 <td>${imagesHtml}</td>
-        //                 <td>${product.price}</td>
-        //                 <td>${product.description}</td>
-        //                 <td>${product.unit ? product.unit.name : 'N/A'}</td>
-        //                 <td>${product.brand ? product.brand.name : 'N/A'}</td>
-        //                 <td>${product.category ? product.category.name : 'N/A'}</td>
-        //                 <td>${product.stock}</td>
-        //                 <td>
-        //                     <button class="btn btn-sm btn-info editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-        //                     <button class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
-        //                 </td>
-        //             </tr>`;
-        //                 });
-        //             }
+        //             $.each(response, function(index, product) {
+        //                 tableRows += `
+        //                 <tr>
+        //                     <th>${index + 1}</th>
+        //                     <td>${product.name}</td>
+        //                     <td><img class="productImg" src="${product.img}"></td>
+        //                     <td>${product.price}</td>
+        //                     <td>${product.brand}</td>
+        //                     <td>${product.unit}</td>
+        //                     <td>${product.category}</td>
+        //                     <td class="text-center">
+        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+        //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+        //                     </td>
+        //                 </tr>
+        //             `;
+        //             });
         //             $("#productTableBody").html(tableRows);
         //         },
         //         error: function() {
-        //             $("#productTableBody").html(`
-        //         <tr>
-        //             <td colspan="10" class="text-center text-danger">Error fetching data</td>
-        //         </tr>`);
+        //             alert("Failed to load products. Please try again.");
         //         }
         //     });
         // }
 
+
+        function loadProducts() {
+            $.ajax({
+                url: "/admin/products/show",
+                method: "GET",
+                dataType: "json",
+                success: function(response) {
+                    console.log(response);
+                    let tableRows = "";
+                    if (response.length === 0) {
+                        tableRows = `
+                    <tr>
+                        <td colspan="10" class="text-center">No Records Found</td>
+                    </tr>`;
+                    } else {
+                        $.each(response, function(index, product) {
+                            let imagesHtml = "";
+                            if (product.images && product.images.length > 0) {
+                                $.each(product.images, function(i, image) {
+                                    imagesHtml += `<img src="/storage/${image.image_path}" width="50" class="productImg" alt="ProductImage">`;
+                                });
+                            } else {
+                                imagesHtml = `<span class="text-muted">No Image</span>`;
+                            }
+                            tableRows += `<tr>
+                            <th>${index + 1}</th>
+                            <td>${product.name}</td>
+                            <td>${imagesHtml}</td>
+                            <td>${product.price}</td>
+                            <td>${product.description}</td>
+                            <td>${product.unit ? product.unit.name : 'N/A'}</td>
+                            <td>${product.brand ? product.brand.name : 'N/A'}</td>
+                            <td>${product.category ? product.category.name : 'N/A'}</td>
+                            <td>${product.stock}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                <button class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
+                            </td>
+                        </tr>`;
+                        });
+                    }
+                    $("#productTableBody").html(tableRows);
+                },
+                error: function() {
+                    $("#productTableBody").html(`<tr>
+                    <td colspan="10" class="text-center text-danger">Error fetching data</td>
+                </tr>
+            `);
+                }
+            });
+        }
 
         // Add Records
         $("#addProductForm").on('submit', function(e) {
@@ -351,6 +315,7 @@
                 }
             });
         });
+
 
         // Prefill Values
         $(document).on("click", ".editBtn", function() {
