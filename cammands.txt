@@ -9,6 +9,7 @@ php artisan make:controller CartController
 
 php artisan make:controller BannerController
 php artisan make:controller HomeController
+ProductController
 
 php artisan migrate
 php artisan db:seed
@@ -472,25 +473,3 @@ php artisan route:list
 
 php artisan serve
 npm run dev
-
-
-hello sir how are you doing today? I'm doing pretty good as well thanks for asking my name is matthew and i'm calling from fair forest logistics sir i just wanted to ask you do you have any semi or box truck or hotshot with your company I'm looking for carriers to move the loads do you have a trailer with your power only or just a power only ok let me tell you our company signup process is totally free if you start working with my company we will provide you a trailer and i'm not gonna charger you anything for that you can keep that trailer with you for 7 days and after the 7 days done you have to drop it on a certain location which i'll make sure near you so that you don't have to drive much and also I'm gonna provide you load on top of that and after 7 days you return this trailer you would get some extra money out of it
-
-and sir its your complete authority to check our service first how we deal with u if u r satisfactory we continue for sure and if you don't find them satisfactory you can leave me anyday im not gonna ask u any Q's
-alright so let me tell you like im gonna provide you trailer with your poweronly and you have to take the loads from my side as well in that scenario and if you try to book the loads on your own in that case you have to pay me 300$ but we don't want that I'm giving you for free I'm not charging you any 
-and you know there is nothing for sure in the market we try to get the best possible prices for our carriers Bcoz at the end of the day we want to make them happy so they can keeo working with us we make some bussiness and they do the same So this is what I look for I'm not gonna make any promises Bcoz I believe that actions speaks louder than words, so If you can send me your Doc's over I'll ask my dispatcher to call you right way and share the load options with you fot your power only and we will do everything with your permission with your consent it's not a forced dispatch don't worry about it. So, can you do me a favor If you could like provid me with your email address and I'm gonna send you my company profile and You send me your MC Authrotity Letter, Certificate Of Insurance(COI) with a Trailer Interchange Insurance, W-9 From, Notice of Assignment and your factory
-and can you tell me your full name too
-
-carrier and sales agent conversation 
-convert it into good nice pitch
-
-
-Hi [Client’s Name], this is Matthew from Fair Forest Logistics. How are you doing today?
-I’m reaching out because I wanted to know if you currently have any semi trucks, box trucks, or hotshots available with your company? We’re looking for carriers to help move some loads and thought you might be a good fit.
-Signing up with us is completely free. If you decide to work together, we’ll provide you with a trailer at no cost for 7 days. After that, you can drop it off at a location near you—I'll make sure it's convenient. Plus, you’ll earn extra money when you return the trailer!
-You can test out our service without any pressure. If you’re happy with how things are going, we can keep working together. But if it’s not for you, you’re free to walk away anytime—no questions asked.
-We’ll also provide loads for your truck while you have the trailer. And here's the best part: we’re not going to charge you anything for this. However, if you decide to book loads on your own, there’s a $300 fee, but we’d prefer to handle everything for you.
-At Fair Forest Logistics, we always strive to get the best prices for our carriers because we want long-term relationships with people we trust. We're all about taking action and showing you what we can do, rather than just making promises.
-If you're interested, all I need is your company info—your MC Authority Letter, Certificate of Insurance, Trailer Interchange Insurance, W-9, and Notice of Assignment—and I’ll have our dispatcher give you a call with load options right away.
-And if you could also send me your email, I’ll send you our company profile for you to review.
-What do you think?

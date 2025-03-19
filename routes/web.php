@@ -29,7 +29,6 @@ Route::prefix('admin/products')->name('admin.products.')->group(function () {
     Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
     Route::get('/search', [ProductController::class, 'search'])->name('search');
-    Route::get('/{id}', [ProductController::class, 'show'])->name('show');
 });
 
 // ADMIN BRANDS ROUTES
@@ -72,9 +71,9 @@ Route::prefix('admin/banners')->name('admin.banners.')->group(function () {
 | Public Routes (Accessible to Everyone)
 |--------------------------------------------------------------------------
 */
-// Route::get('/', [ProductController::class, 'index'])->name('home');
-// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-// Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/', [ProductController::class, 'index'])->name('home');
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 /*
 |--------------------------------------------------------------------------

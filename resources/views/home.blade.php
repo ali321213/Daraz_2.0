@@ -92,7 +92,7 @@
                             <strong>Unit:</strong> {{ $product->unit }} <br>
                             <strong>Price:</strong> ${{ number_format($product->price, 2) }}
                         </p>
-                        <a href="{{ route('detail', $product->id) }}" class="btn btn-primary">View Details</a><a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">View Details</a>
+                        <!-- <a href="{{ route('detail', $product->id) }}" class="btn btn-primary">View Details</a><a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">View Details</a> -->
                         <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
