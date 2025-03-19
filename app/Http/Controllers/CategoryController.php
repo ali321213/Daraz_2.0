@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -10,59 +10,86 @@ class CategoryController extends Controller
     {
         $this->middleware('auth');
     }
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
-        //
+        $categories = Category::all();
+        return view('admin.categories.index', compact('categories'));
+        // $categories = Category::latest()->paginate(5);
+        // return view('admin.categories.index',compact('categories'))->with('i', (request()->input('page', 1) - 1) * 5);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'slug' => 'required|string|unique:categories,slug',
+            'image' => 'nullable|image|max:10240',
+        ]);
+        $category = new Category();
+        $category->name = $request->name;
+        $category->description = $request->description;
+        $category->slug = \Str::slug($request->slug);
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $category->image = $imagePath;
+        }
+        $category->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Category created successfully!',
+            'category' => $category
+        ]);
+    }
+    
+
+    public function edit($id)
+    {
+        $category = Category::findOrFail($id);
+        return response()->json($category);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'slug' => 'required|string|unique:categories,slug,' . $id,
+            'image' => 'nullable|image|max:2048',
+        ]);
+        $category = Category::findOrFail($id);
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($category->image && \Storage::exists('public/' . $category->image)) {
+                \Storage::delete('public/' . $category->image);
+            }
+
+            // Store new image
+            $imagePath = $request->file('image')->store('categories', 'public');
+            $category->image = $imagePath;
+        }
+        // Update category details
+        $category->fill([
+            'name' => $request->name,
+            'description' => $request->description,
+            'slug' => \Str::slug($request->slug), // Convert slug to proper format
+        ]);
+        $category->save(); // Save changes to DB
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated successfully!',
+            'category' => $category
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $category = Category::findOrFail($id);
+        if ($category->image) {
+            \Storage::delete('public/' . $category->image);
+        }
+        $category->delete();
+        return redirect()->route('admin.category.index')->with('success', 'Category deleted successfully!');
     }
 }

