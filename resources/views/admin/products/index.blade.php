@@ -184,58 +184,136 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
+        // $('#productsTable').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     ajax: "{{ route('admin.products.index') }}",
+        //     columns: [{
+        //             data: "id",
+        //             name: "id"
+        //         },
+        //         {
+        //             data: "name",
+        //             name: "name"
+        //         },
+        //         {
+        //             data: "image",
+        //             name: "image",
+        //             orderable: false,
+        //             searchable: false
+        //         },
+        //         {
+        //             data: "price",
+        //             name: "price"
+        //         },
+        //         {
+        //             data: "description",
+        //             name: "description"
+        //         },
+        //         {
+        //             data: "unit.name",
+        //             name: "unit.name"
+        //         },
+        //         {
+        //             data: "brand.name",
+        //             name: "brand.name"
+        //         },
+        //         {
+        //             data: "category.name",
+        //             name: "category.name"
+        //         },
+        //         {
+        //             data: "stock",
+        //             name: "stock"
+        //         },
+        //         {
+        //             data: "actions",
+        //             name: "actions",
+        //             orderable: true,
+        //             searchable: true
+        //         }
+        //     ],
+        //     pageLength: 10 // Show 10 records per page
+        // });
+        // $('#productsTable').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     ajax: "{{ route('admin.products.index') }}",
+        //     columns: [{
+        //             data: "id",
+        //             name: "id"
+        //         },
+        //         {
+        //             data: "name",
+        //             name: "name"
+        //         },
+        //         {
+        //             data: "image",
+        //             name: "image",
+        //             orderable: false,
+        //             searchable: false,
+        //             render: function(data, type, row) {
+        //                 return data ? data : '<span class="text-muted">No Image</span>';
+        //             }
+        //         },
+        //         {
+        //             data: "price",
+        //             name: "price"
+        //         },
+        //         {
+        //             data: "description",
+        //             name: "description"
+        //         },
+        //         {
+        //             data: "unit.name",
+        //             name: "unit.name",
+        //             defaultContent: "N/A"
+        //         },
+        //         {
+        //             data: "brand.name",
+        //             name: "brand.name",
+        //             defaultContent: "N/A"
+        //         },
+        //         {
+        //             data: "category.name",
+        //             name: "category.name",
+        //             defaultContent: "N/A"
+        //         },
+        //         {
+        //             data: "stock",
+        //             name: "stock"
+        //         },
+        //         {
+        //             data: "actions",
+        //             name: "actions",
+        //             orderable: false,
+        //             searchable: false,
+        //             render: function(data, type, row) {
+        //                 return data ? data : '<span class="text-muted">No Actions</span>';
+        //             }
+        //         }
+        //     ],
+        //     pageLength: 10,
+        //     responsive: true
+        // });
         $('#productsTable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route('admin.products.index') }}",
-            columns: [{
-                    data: "id",
-                    name: "id"
-                },
-                {
-                    data: "name",
-                    name: "name"
-                },
-                {
-                    data: "image",
-                    name: "image",
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: "price",
-                    name: "price"
-                },
-                {
-                    data: "description",
-                    name: "description"
-                },
-                {
-                    data: "unit.name",
-                    name: "unit.name"
-                },
-                {
-                    data: "brand.name",
-                    name: "brand.name"
-                },
-                {
-                    data: "category.name",
-                    name: "category.name"
-                },
-                {
-                    data: "stock",
-                    name: "stock"
-                },
-                {
-                    data: "actions",
-                    name: "actions",
-                    orderable: false,
-                    searchable: false
-                }
-            ],
-            pageLength: 10 // Show 10 records per page
-        });
-        
+    processing: true,
+    serverSide: true,
+    ajax: "/admin/products/index",  // Ensure this matches your API endpoint
+    columns: [
+        { data: "id" },
+        { data: "name" },
+        { data: "image", orderable: false, searchable: false },
+        { data: "price" },
+        { data: "description" },
+        { data: "unit.name" },
+        { data: "brand.name" },
+        { data: "category.name" },
+        { data: "stock" },
+        { data: "actions", orderable: false, searchable: false }
+    ]
+});
+
         // loadProducts();
         // Show Records
         // function loadProducts() {

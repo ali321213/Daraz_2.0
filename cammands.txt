@@ -22,6 +22,8 @@ php artisan storage:link
 php artisan make:controller ProductController --resource --model=Product
 composer require darryldecode/cart
 composer require livewire/livewire
+composer require yajra/laravel-datatables-oracle
+php artisan vendor:publish --tag=datatables
 
 Easy AdminLTE integration with Laravel:-
 composer require jeroennoten/laravel-adminlte

@@ -69,7 +69,7 @@
             <h2 class="my-3 fw-bold">Our Products:-</h2>
         </div>
         <div class="col-lg-6">
-            <a href="{{ route('products.index') }}" class="btn btn-primary float-end">Shop Now</a>
+            <a href="{{ route('admin.products.index') }}" class="btn btn-primary float-end">Shop Now</a>
         </div>
     </div>
 </div>

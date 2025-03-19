@@ -44,7 +44,6 @@ class ProductController extends Controller
     {
         if ($request->ajax()) {
             $products = Product::with(['unit', 'brand', 'category', 'images'])->select('products.*');
-
             return DataTables::of($products)
                 ->addColumn('image', function ($product) {
                     if ($product->images->isNotEmpty()) {
@@ -56,10 +55,8 @@ class ProductController extends Controller
                     return '<button class="btn btn-sm btn-info editBtn" data-id="' . $product->id . '" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
                         <button class="btn btn-sm btn-danger deleteBtn" data-id="' . $product->id . '">Delete</button>';
                 })
-                ->rawColumns(['image', 'actions'])
-                ->make(true);
+                ->rawColumns(['image', 'actions'])->make(true);
         }
-
         $brands = Brand::all();
         $categories = Category::all();
         $units = Unit::all();
