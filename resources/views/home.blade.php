@@ -79,21 +79,23 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-12 col-md-12 col-12">
-
             @foreach ($products as $product)
             <div class="col-md-4 mb-4">
                 <div class="card">
-                    <img src="{{ $product->img }}" class="card-img-top" alt="{{ $product->name }}">
+                    @if($product->images->isNotEmpty())
+                    <img src="{{ asset($product->images->first()->image_path) }}" class="card-img-top" alt="{{ $product->name }}">
+                    @else
+                    <img src="{{ asset('images/default.png') }}" class="card-img-top" alt="No Image">
+                    @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $product->name }}</h5>
                         <p class="card-text">
-                            <strong>Brand:</strong> {{ $product->brand }} <br>
-                            <strong>Category:</strong> {{ $product->category }} <br>
-                            <strong>Unit:</strong> {{ $product->unit }} <br>
+                            <strong>Brand:</strong> {{ $product->brand->name ?? 'N/A' }} <br>
+                            <strong>Category:</strong> {{ $product->category->name ?? 'N/A' }} <br>
+                            <strong>Unit:</strong> {{ $product->unit->name ?? 'N/A' }} <br>
                             <strong>Price:</strong> ${{ number_format($product->price, 2) }}
                         </p>
-                        <!-- <a href="{{ route('detail', $product->id) }}" class="btn btn-primary">View Details</a><a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">View Details</a> -->
-                        <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary">View Details</a>
+                        <a href="{{ route('products.detail', $product->id) }}" class="btn btn-primary">View Details</a>
                     </div>
                 </div>
             </div>

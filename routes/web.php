@@ -22,27 +22,6 @@ Auth::routes();
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // ADMIN PRODUCTS ROUTES
-Route::prefix('admin/products')->name('admin.products.')->group(function () {
-    Route::get('/index', [ProductController::class, 'index'])->name('index');
-    Route::post('/create', [ProductController::class, 'create'])->name('create');
-    Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
-    Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
-    Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
-    Route::get('/search', [ProductController::class, 'search'])->name('search');
-    Route::get('/{id}', [ProductController::class, 'show'])->name('show');
-});
-
-// ADMIN BRANDS ROUTES
-Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
-    Route::get('/', [BrandController::class, 'index'])->name('index');
-    Route::get('/show', [BrandController::class, 'show'])->name('show');
-    Route::post('/create', [BrandController::class, 'create'])->name('create');
-    Route::post('/store', [BrandController::class, 'store'])->name('store');
-    Route::get('/edit/{id}', [BrandController::class, 'edit'])->name('edit');
-    Route::put('/{brand}', [BrandController::class, 'update'])->name('update');
-    Route::delete('/destroy/{id}', [BrandController::class, 'destroy'])->name('destroy');
-});
-
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('orders', OrderController::class);
@@ -52,19 +31,11 @@ Route::middleware(['customer'])->group(function () {
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
 
-// =============================================================================================================================
 // Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::prefix('admin/banners')->name('admin.banners.')->group(function () {
-    Route::get('/', [BannerController::class, 'index'])->name('index');
-    Route::get('/create', [BannerController::class, 'create'])->name('create');
-    Route::post('/store', [BannerController::class, 'store'])->name('store');
-});
-/*
-|--------------------------------------------------------------------------
-| Public Routes (Accessible to Everyone)
-|--------------------------------------------------------------------------
-*/
+
+// Public Routes (Accessible to Everyone)
+
 // Route::get('/', [ProductController::class, 'index'])->name('home');
 // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 // Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
@@ -109,8 +80,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 });
 
 
+
+Route::prefix('products')->name('products.')->group(function () {
+    Route::get('/detail', [ProductController::class, 'detail'])->name('detail');
+    Route::get('/show', [ProductController::class, 'show'])->name('show');
+    Route::post('/create', [ProductController::class, 'create'])->name('create');
+    Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
+    Route::get('/search', [ProductController::class, 'search'])->name('search');
+    Route::get('/{id}', [ProductController::class, 'show'])->name('show');
+});
+
 // ========================== ADMIN Routes ==========================
-// PRODUCTS
 Route::prefix('admin/products')->name('admin.products.')->group(function () {
     Route::get('/index', [ProductController::class, 'index'])->name('index');
     Route::post('/create', [ProductController::class, 'create'])->name('create');
@@ -130,6 +112,7 @@ Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
     Route::put('update/{id}', [BrandController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [BrandController::class, 'destroy'])->name('destroy');
     Route::get('/search', [ProductController::class, 'search'])->name('search');
+    // Route::get('/show', [BrandController::class, 'show'])->name('show');
 });
 
 

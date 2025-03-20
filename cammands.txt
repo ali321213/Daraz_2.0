@@ -37,6 +37,11 @@ php artisan adminlte:plugins list
 php artisan adminlte:plugins install --plugin=datatables --plugin=datatablesPlugins --plugin=fullcalendar --plugin=sweetalert2
 Install all the available plugins:
 php artisan adminlte:plugins install
+php artisan make:factory ProductImageFactory
+php artisan make:factory UnitFactory
+php artisan make:factory BrandFactory
+php artisan make:factory CategoryFactory
+php artisan route:list
 
 
 git init
@@ -441,12 +446,11 @@ apt install python3-requests python3-colorama python3-psutil
 <link rel="stylesheet" href="{{ asset('') }}">
 <script src="{{asset('')}}"></script>
 
-php artisan make:factory ProductImageFactory
-php artisan make:factory UnitFactory
-php artisan make:factory BrandFactory
-php artisan make:factory CategoryFactory
+ssh,master shell, scripting, bash automation,cron jobs, system hardening
+use htop, iotop, log analysis
 
-php artisan route:list
++923170817548
+
 
 php artisan serve
 php artisan serve --port=8001
