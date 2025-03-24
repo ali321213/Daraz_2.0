@@ -83,7 +83,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
 Route::prefix('products')->name('products.')->group(function () {
     Route::get('/detail', [ProductController::class, 'detail'])->name('detail');
-    Route::get('/show', [ProductController::class, 'show'])->name('show');
+    Route::get('/getProducts', [ProductController::class, 'getProducts'])->name('getProducts');
     Route::post('/create', [ProductController::class, 'create'])->name('create');
     Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
     Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');

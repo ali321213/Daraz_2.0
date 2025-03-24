@@ -40,7 +40,15 @@ class ProductController extends Controller
     //     return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
     // }
 
-    public function index(Request $request)
+    public function index()
+    {
+        $brands = Brand::all();
+        $categories = Category::all();
+        $units = Unit::all();
+        return view('admin.products.index', compact('brands', 'categories', 'units'));
+    }
+    
+    public function getProducts(Request $request)
     {
         if ($request->ajax()) {
             $products = Product::with(['unit', 'brand', 'category', 'images'])->select('products.*');
@@ -50,17 +58,11 @@ class ProductController extends Controller
                         return '<img src="' . asset('storage/' . $product->images->first()->image_path) . '" width="50" class="productImg" alt="Product Image">';
                     }
                     return '<span class="text-muted">No Image</span>';
-                })
-                ->addColumn('actions', function ($product) {
+                })->addColumn('actions', function ($product) {
                     return '<button class="btn btn-sm btn-info editBtn" data-id="' . $product->id . '" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                        <button class="btn btn-sm btn-danger deleteBtn" data-id="' . $product->id . '">Delete</button>';
-                })
-                ->rawColumns(['image', 'actions'])->make(true);
+                    <button class="btn btn-sm btn-danger deleteBtn" data-id="' . $product->id . '">Delete</button>';
+                })->rawColumns(['image', 'actions'])->make(true);
         }
-        $brands = Brand::all();
-        $categories = Category::all();
-        $units = Unit::all();
-        return view('admin.products.index', compact('brands', 'categories', 'units'));
     }
 
     public function create(Request $request)

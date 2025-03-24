@@ -15,11 +15,10 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('set null'); // References units table
+            $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('set null');
             $table->integer('stock')->default(0);
             $table->timestamps();
         });
-        
     }
 
     public function down(): void

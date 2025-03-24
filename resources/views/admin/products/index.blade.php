@@ -181,7 +181,7 @@
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> -->
 <script>
     $(document).ready(function() {
         // $('#productsTable').DataTable({
@@ -297,22 +297,45 @@
         //     responsive: true
         // });
         $('#productsTable').DataTable({
-    processing: true,
-    serverSide: true,
-    ajax: "/admin/products/index",  // Ensure this matches your API endpoint
-    columns: [
-        { data: "id" },
-        { data: "name" },
-        { data: "image", orderable: false, searchable: false },
-        { data: "price" },
-        { data: "description" },
-        { data: "unit.name" },
-        { data: "brand.name" },
-        { data: "category.name" },
-        { data: "stock" },
-        { data: "actions", orderable: false, searchable: false }
-    ]
-});
+            processing: true,
+            serverSide: true,
+            ajax: "/admin/products/getProducts", // Ensure this matches your API endpoint
+            columns: [{
+                    data: "id"
+                },
+                {
+                    data: "name"
+                },
+                {
+                    data: "image",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: "price"
+                },
+                {
+                    data: "description"
+                },
+                {
+                    data: "units.name"
+                },
+                {
+                    data: "brands.name"
+                },
+                {
+                    data: "categories.name"
+                },
+                {
+                    data: "stock"
+                },
+                {
+                    data: "actions",
+                    orderable: false,
+                    searchable: false
+                }
+            ]
+        });
 
         // loadProducts();
         // Show Records
