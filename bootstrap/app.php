@@ -10,12 +10,9 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
-    )
-
-    ->withMiddleware(function (Middleware $middleware) {
+    )->withMiddleware(function (Middleware $middleware) {
         // Register global middlewares here
         // $middleware->append(\App\Http\Middleware\AdminMiddleware::class);
         // $middleware->append(\App\Http\Middleware\CustomerMiddleware::class);
         // $middleware->append(\App\Http\Middleware\AuthMiddleware::class);
-    })
-    ->withExceptions(function (Exceptions $exceptions) {})->create();
+    })->withExceptions(function (Exceptions $exceptions) {})->create();

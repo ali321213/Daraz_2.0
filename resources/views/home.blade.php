@@ -107,6 +107,25 @@
 <!-- Product Listing -->
 <div class="container mt-4">
     <div class="row">
+        @foreach ($products as $product)
+        <div class="col-md-3 col-lg-3 col-12">
+            <div class="product-card">
+                <img src="{{ asset('storage/' . $product->images->first()->path ?? 'default.jpg') }}" class="product-img" alt="{{ $product->name }}">
+                <p class="fw-bold mt-2 h5">{{ $product->name }}</p>
+                <strong>Brand:</strong><p class="fw-bold mt-2 h5">{{ $product->brand->name }}</p>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                <p class="fw-bold h6 text-danger m-0">Rs. {{ number_format($product->price) }}</p>
+                </div>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</div>
+
+
+
+<div class="container mt-4">
+    <div class="row">
         <div class="col-md-3 col-lg-3 col-12">
             <div class="product-card">
                 <img src="{{ asset('assets/images/one.jpg') }}" class="product-img" alt="Product">
@@ -152,6 +171,8 @@
 
 
 </div>
+
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3 col-lg-3 col-12">

@@ -23,7 +23,6 @@ class HomeController extends Controller
         $brands = Brand::all();
         $categories = Category::all();
         $units = Unit::all();
-
         return view('home', compact('products', 'brands', 'categories', 'units', 'banners'));
     }
 }

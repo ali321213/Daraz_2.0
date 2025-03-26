@@ -50,7 +50,7 @@ git status
 git merge
 git stash
 git add README.md
-git commit -m "Initial Commit"
+git commit -m "24-04-2025"
 git branch -M main
 git remote add origin https://github.com/ali321213/Oredoo_Blog.git
 git push -u origin main
@@ -446,8 +446,7 @@ apt install python3-requests python3-colorama python3-psutil
 <link rel="stylesheet" href="{{ asset('') }}">
 <script src="{{asset('')}}"></script>
 
-ssh,master shell, scripting, bash automation,cron jobs, system hardening
-use htop, iotop, log analysis
+SSH, Master Shell, Scripting, Bash Automation, Cron Jobs, System Hardening use htop, iotop, log analysis
 
 +923170817548
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Banner;
+use App\Models\Brand;
 use Illuminate\Http\Request;
 
 class BannerController extends Controller
@@ -59,7 +60,6 @@ class BannerController extends Controller
             if ($category->image && \Storage::exists('public/' . $category->image)) {
                 \Storage::delete('public/' . $category->image);
             }
-
             // Store new image
             $imagePath = $request->file('image')->store('categories', 'public');
             $category->image = $imagePath;
@@ -94,5 +94,18 @@ class BannerController extends Controller
         $banner->status = $request->status;
         $banner->save();
         return response()->json(['success' => true, 'message' => 'Banner status updated successfully!']);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        $products = Brand::with(['brand', 'category', 'unit'])->where('name', 'LIKE', "%{$query}%")->orWhereHas('brand', function ($q) use ($query) {
+            $q->where('name', 'LIKE', "%{$query}%");
+        })->orWhereHas('unit', function ($q) use ($query) {
+            $q->where('name', 'LIKE', "%{$query}%");
+        })->orWhereHas('category', function ($q) use ($query) {
+            $q->where('name', 'LIKE', "%{$query}%");
+        })->get();
+        return response()->json($products);
     }
 }

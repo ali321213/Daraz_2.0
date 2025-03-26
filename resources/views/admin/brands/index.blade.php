@@ -17,7 +17,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table table-striped table-bordered text-capitalize text-center">
+            <table class="table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -110,38 +110,6 @@
         loadBrands();
 
         // Show Records
-        // function loadBrands() {
-        //     $.ajax({
-        //         url: "/admin/brands/show",
-        //         method: "GET",
-        //         dataType: "json",
-        //         success: function(response) {
-        //             let tableRows = "";
-        //             $.each(response, function(index, brand) {
-        //                 tableRows += `
-        //                 <tr>
-        //                     <th>${index + 1}</th>
-        //                     <td>${brand.name}</td>
-        //                     <td><img class="productImg" src="${brand.logo}"></td>
-        //                     <td>${brand.slug}</td>
-        //                     <td>${brand.description}</td>
-        //                     <td>${brand.created_at}</td>
-        //                     <td>${brand.updated_at}</td>
-        //                     <td class="text-center">
-        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-        //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
-        //                     </td>
-        //                 </tr>
-        //             `;
-        //             });
-        //             $("#brandTableBody").html(tableRows);
-        //         },
-        //         error: function() {
-        //             alert("Failed to load brands. Please try again.");
-        //         }
-        //     });
-        // }
-
         function loadBrands() {
             $.ajax({
                 url: "/admin/brands/show",
@@ -151,20 +119,20 @@
                     let tableRows = "";
                     $.each(response, function(index, brand) {
                         tableRows += `
-                    <tr>
-                        <th>${index + 1}</th>
-                        <td>${brand.name}</td>
-                        <td><img class="productImg" src="${brand.logo}"></td>
-                        <td>${brand.slug}</td>
-                        <td>${brand.description}</td>
-                        <td>${brand.created_at_formatted}</td>
-                        <td>${brand.updated_at_formatted}</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                            <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
-                        </td>
-                    </tr>
-                `;
+                        <tr>
+                            <th>${index + 1}</th>
+                            <td>${brand.name}</td>
+                            <td><img class="productImg" src="${brand.logo}"></td>
+                            <td>${brand.slug}</td>
+                            <td>${brand.description}</td>
+                            <td>${brand.created_at}</td>
+                            <td>${brand.updated_at}</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
+                            </td>
+                        </tr>
+                    `;
                     });
                     $("#brandTableBody").html(tableRows);
                 },
@@ -173,6 +141,39 @@
                 }
             });
         }
+        
+
+        // function loadBrands() {
+        //     $.ajax({
+        //         url: "/admin/brands/show",
+        //         method: "GET",
+        //         dataType: "json",
+        //         success: function(response) {
+        //             let tableRows = "";
+        //             $.each(response, function(index, brand) {
+        //                 tableRows += `
+        //             <tr>
+        //                 <th>${index + 1}</th>
+        //                 <td>${brand.name}</td>
+        //                 <td><img class="productImg" src="${brand.logo}"></td>
+        //                 <td>${brand.slug}</td>
+        //                 <td>${brand.description}</td>
+        //                 <td>${brand.created_at_formatted}</td>
+        //                 <td>${brand.updated_at_formatted}</td>
+        //                 <td class="text-center">
+        //                     <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+        //                     <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
+        //                 </td>
+        //             </tr>
+        //         `;
+        //             });
+        //             $("#brandTableBody").html(tableRows);
+        //         },
+        //         error: function() {
+        //             alert("Failed to load brands. Please try again.");
+        //         }
+        //     });
+        // }
 
         // Add Records
         $("#addBrandForm").on('submit', function(e) {
@@ -211,7 +212,7 @@
             let formData = new FormData(this);
             let productId = $("input[name='id']").val();
             $.ajax({
-                url: `/brands/update/${productId}`,
+                url: `/admin/brands/update/${productId}`,
                 method: "POST",
                 data: formData,
                 contentType: false,

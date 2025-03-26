@@ -109,10 +109,10 @@ Route::prefix('admin/brands')->name('admin.brands.')->group(function () {
     Route::post('/create', [BrandController::class, 'create'])->name('create');
     Route::post('/store', [BrandController::class, 'store'])->name('store');
     Route::get('/edit/{id}', [BrandController::class, 'edit'])->name('edit');
-    Route::put('update/{id}', [BrandController::class, 'update'])->name('update');
+    Route::post('update/{id}', [BrandController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [BrandController::class, 'destroy'])->name('destroy');
     Route::get('/search', [ProductController::class, 'search'])->name('search');
-    // Route::get('/show', [BrandController::class, 'show'])->name('show');
+    Route::get('/show', [BrandController::class, 'show'])->name('show');
 });
 
 
