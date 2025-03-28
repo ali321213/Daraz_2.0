@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Brand;
@@ -108,7 +107,7 @@ class ProductController extends Controller
             'brand_id' => 'required',
             'unit_id' => 'required',
             'category_id' => 'required',
-            'image_path.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image_path.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048'
         ]);
         $product = Product::findOrFail($id);
         // Delete Old Images
@@ -191,7 +190,6 @@ class ProductController extends Controller
             ->get();
         return response()->json($products);
     }
-
 
     // public function store(Request $request)
     // {

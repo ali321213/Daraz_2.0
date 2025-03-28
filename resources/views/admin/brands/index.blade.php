@@ -1,9 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-
-
-
-
+@section('title', 'Brands - Admin Panel')
 <div class="container">
     <div class="row align-items-center my-5">
         <div class="col-lg-4 text-center">
@@ -20,13 +17,10 @@
             <table class="table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
-                        <th>#</th>
                         <th>Name</th>
                         <th>Logo</th>
                         <th>Slug</th>
                         <th>Description</th>
-                        <th>Created At</th>
-                        <th>Updated At</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -120,13 +114,10 @@
                     $.each(response, function(index, brand) {
                         tableRows += `
                         <tr>
-                            <th>${index + 1}</th>
                             <td>${brand.name}</td>
                             <td><img class="productImg" src="${brand.logo}"></td>
                             <td>${brand.slug}</td>
                             <td>${brand.description}</td>
-                            <td>${brand.created_at}</td>
-                            <td>${brand.updated_at}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
                                 <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>

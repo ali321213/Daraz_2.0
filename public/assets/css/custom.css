@@ -28,4 +28,10 @@
 .brandsTable tr td {
   border: 1px solid black;
 }
+
+.productImg {
+  height: 100px;
+  width: 100px;border-radius: 20px;
+}
+
 /* Banners Index End */

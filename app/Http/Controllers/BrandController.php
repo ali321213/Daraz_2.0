@@ -72,20 +72,17 @@ class BrandController extends Controller
         if (!$brand) {
             return response()->json(['error' => 'Brand not found'], 404);
         }
-
         $request->validate([
             'name' => 'required',
             'slug' => 'required',
             'description' => 'required',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
-
         // Handle logo upload if a new file is provided
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('brands', 'public');
             $brand->logo = $logoPath;
         }
-
         $brand->name = $request->name;
         $brand->slug = $request->slug;
         $brand->description = $request->description;

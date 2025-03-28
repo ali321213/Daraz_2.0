@@ -29,9 +29,6 @@
                 </thead>
             </table> -->
 
-
-
-            <!-- table  -->
             <table class="table-striped table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
@@ -135,6 +132,7 @@
                     </div>
                     <div class="mb-3">
                         <input type="file" name="image_path[]" class="form-control" multiple required>
+                        <img id="previewImage" src="" width="50" style="display: none;border-radius: 50%;border:2px solid black;">
                     </div>
                     <div class="mb-3">
                         <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
@@ -204,7 +202,7 @@
                             let imagesHtml = "";
                             if (product.images && product.images.length > 0) {
                                 $.each(product.images, function(i, image) {
-                                    imagesHtml += `<img src="{{ asset('storage') }}/${image.image_path}" width="50" class="productImg" alt="Product Image">`;
+                                    imagesHtml += `<img src="{{ asset('storage') }}/${image.image_path}" class="productImg" alt="Product Image">`;
                                 });
                             } else {
                                 imagesHtml = `<span class="text-muted">No Image</span>`;
@@ -315,6 +313,7 @@
                     form.find("input[name='brand_id']").val(response.brand_id);
                     form.find("input[name='unit_id']").val(response.unit_id);
                     form.find("input[name='category_id']").val(response.category_id);
+                    $("#previewImage").attr("src", "{{ asset('storage/') }}/" + response.image).show();
                     // $("#editPreviewImg").attr("src", response.img);
                 },
                 error: function() {
@@ -387,7 +386,6 @@
                         `;
                         });
                     }
-
                     $("#productTableBody").html(tableRows);
                 },
                 error: function() {

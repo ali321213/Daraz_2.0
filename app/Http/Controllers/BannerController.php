@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Banner;
 use App\Models\Brand;
 use Illuminate\Http\Request;
@@ -12,11 +11,6 @@ class BannerController extends Controller
     {
         $banners = Banner::where('status', 1)->orderBy('position')->get();
         return view('admin.banners.index', compact('banners'));
-    }
-
-    public function create()
-    {
-        return view('admin.banners.create');
     }
 
     public function store(Request $request)

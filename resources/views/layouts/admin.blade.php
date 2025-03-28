@@ -140,14 +140,14 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="mdi mdi-book-open-variant menu-icon"></i>
-              <span class="menu-title">Reviews</span>
+              <i class="mdi mdi-camera-timer menu-icon"></i>
+              <span class="menu-title">Units</span>
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <i class="mdi mdi-camera-timer menu-icon"></i>
-              <span class="menu-title">Units</span>
+              <i class="mdi mdi-book-open-variant menu-icon"></i>
+              <span class="menu-title">Reviews</span>
             </a>
           </li>
           <li class="nav-item">
