@@ -7,9 +7,9 @@ npm run build
 npm run dev
 php artisan make:controller CartController
 
-php artisan make:controller BannerController
+php artisan make:controller BannerController --resource
+php artisan make:controller UnitController --resource
 php artisan make:controller HomeController
-ProductController
 
 php artisan migrate
 php artisan db:seed
@@ -50,11 +50,11 @@ git status
 git merge
 git stash
 git add README.md
-git commit -m "26-03-2025"
 git branch -M main
 git remote add origin https://github.com/ali321213/Oredoo_Blog.git
-git push -u origin main
 git add .
+git commit -m "26-03-2025"
+git push -u origin main
 
 Option 3: Force Overwrite (Not Recommended)
 If you don’t need your local changes and want to discard them:
@@ -82,10 +82,15 @@ php artisan make:model Brand -m
 php artisan make:model Category -m
 php artisan make:model Product -m
 php artisan make:model ProductImages -m
+php artisan make:model Discounts -m
+php artisan make:model Colors -m
+php artisan make:model ProductColors -m
+php artisan make:model Ratings -m
+php artisan make:model Reviews -m
+
 php artisan make:model Units -m
 php artisan make:model Orders -m
 php artisan make:model Sales -m
-php artisan make:model Reviews -m
 
 
 php artisan make:controller AuthController
@@ -451,7 +456,7 @@ SSH, Master Shell, Scripting, Bash Automation, Cron Jobs, System Hardening use h
 +923170817548
 
 
-php artisan serve
 php artisan serve --port=8001
 php artisan serve --port=8002
+php artisan serve
 npm run dev

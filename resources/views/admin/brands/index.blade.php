@@ -14,7 +14,48 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table-bordered text-capitalize text-center">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Logo</th>
+                        <th>Slug</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($brands as $brand)
+                    <tr>
+                        <td>{{ $brand->name }}</td>
+                        <td>
+                            <img src="{{ asset('storage/' . $brand->logo) }}" width="50" alt="Brand Logo">
+                        </td>
+                        <td>{{ $brand->slug }}</td>
+                        <td>{{ $brand->description }}</td>
+                        <td>
+                            <a href="{{ route('admin.brands.edit', $brand->id) }}" data-bs-toggle="modal" data-bs-target="#updateModal" class="btn btn-primary btn-sm">Edit</a>
+                            <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                    @empty
+                    <tr>
+                        <td>No data found</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Pagination Links -->
+            <div class="d-flex justify-content-center mt-3">
+                {{ $brands->links() }}
+            </div>
+
+            <!-- <table class="table-bordered text-capitalize text-center">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -25,7 +66,7 @@
                     </tr>
                 </thead>
                 <tbody id="brandTableBody"></tbody>
-            </table>
+            </table> -->
         </div>
     </div>
 </div>
@@ -132,7 +173,7 @@
                 }
             });
         }
-        
+
 
         // function loadBrands() {
         //     $.ajax({

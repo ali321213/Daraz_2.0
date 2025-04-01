@@ -3,14 +3,14 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Product;
+use App\Models\Products;
 
 class ProductImageFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'product_id' => Product::inRandomOrder()->first()?->id ?? Product::factory(),
+            'product_id' => Products::inRandomOrder()->first()?->id ?? Products::factory(),
             'image_path' => fake()->imageUrl(200, 200, 'products', true),
         ];
     }

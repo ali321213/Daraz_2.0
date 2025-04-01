@@ -13,13 +13,14 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UnitController;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
 Auth::routes();
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ADMIN PRODUCTS ROUTES
 
@@ -135,4 +136,14 @@ Route::prefix('admin/banners')->name('admin.banners.')->group(function () {
     Route::post('/{bannerId}/update', [BannerController::class, 'update'])->name('update');
     Route::delete('/destroy/{id}', [BannerController::class, 'destroy'])->name('destroy');
     Route::post('/toggleStatus', [BannerController::class, 'toggleStatus'])->name('toggleStatus');
+});
+
+Route::prefix('admin/units')->name('admin.units.')->group(function () {
+    Route::get('/', [UnitController::class, 'index'])->name('index');
+    Route::get('/create', [UnitController::class, 'create'])->name('create');
+    Route::post('/', [UnitController::class, 'store'])->name('store');
+    Route::get('edit/{id}', [UnitController::class, 'edit'])->name('edit');
+    Route::put('update/{id}', [UnitController::class, 'update'])->name('update');
+    Route::delete('/{id}', [UnitController::class, 'destroy'])->name('destroy');
+    Route::get('/search', [UnitController::class, 'search'])->name('search');
 });

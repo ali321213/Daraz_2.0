@@ -78,12 +78,11 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-12 col-md-12 col-12">
             @foreach ($products as $product)
             <div class="col-md-4 mb-4">
                 <div class="card">
                     @if($product->images->isNotEmpty())
-                    <img src="{{ asset($product->images->first()->image_path) }}" class="card-img-top" alt="{{ $product->name }}">
+                    <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" class="card-img-top" alt="{{ $product->name }}">
                     @else
                     <img src="{{ asset('images/default.png') }}" class="card-img-top" alt="No Image">
                     @endif
@@ -100,30 +99,10 @@
                 </div>
             </div>
             @endforeach
-        </div>
     </div>
 </div>
 
 <!-- Product Listing -->
-<div class="container mt-4">
-    <div class="row">
-        @foreach ($products as $product)
-        <div class="col-md-3 col-lg-3 col-12">
-            <div class="product-card">
-                <img src="{{ asset('storage/' . $product->images->first()->path ?? 'default.jpg') }}" class="product-img" alt="{{ $product->name }}">
-                <p class="fw-bold mt-2 h5">{{ $product->name }}</p>
-                <strong>Brand:</strong><p class="fw-bold mt-2 h5">{{ $product->brand->name }}</p>
-                <div class="d-flex justify-content-center align-items-center mt-3">
-                <p class="fw-bold h6 text-danger m-0">Rs. {{ number_format($product->price) }}</p>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    </div>
-</div>
-
-
-
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3 col-lg-3 col-12">

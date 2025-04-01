@@ -23,8 +23,10 @@
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-
+  <!-- MDB CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet">
+  <!-- MDB JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
 </head>
 
 <body>
@@ -139,7 +141,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ route('admin.units.index') }}">
               <i class="mdi mdi-camera-timer menu-icon"></i>
               <span class="menu-title">Units</span>
             </a>
@@ -182,7 +184,9 @@
         @yield('content')
         <footer class="footer" style="margin-top: 55vh;">
           <div class="d-sm-flex justify-content-center justify-content-sm-between">
-            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2023.<a href="#" target="_blank">Daraz 2.0</a></span>
+            <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2023.
+              <a href="/" target="_blank">Daraz 2.0</a>
+            </span>
             <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i class="ti-heart text-danger ms-1"></i></span>
           </div>
         </footer>

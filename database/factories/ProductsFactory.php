@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Brand;
+use App\Models\Brands;
 use App\Models\Category;
 use App\Models\Unit;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProductFactory extends Factory
+class ProductsFactory extends Factory
 {
     public function definition(): array
     {
@@ -16,7 +16,7 @@ class ProductFactory extends Factory
             'description' => fake()->sentence(),
             'price' => fake()->randomFloat(2, 10, 500),
             'unit_id' => Unit::query()->inRandomOrder()->first()?->id ?? Unit::factory(),
-            'brand_id' => Brand::query()->inRandomOrder()->first()?->id ?? Brand::factory(),
+            'brand_id' => Brands::query()->inRandomOrder()->first()?->id ?? Brands::factory(),
             'category_id' => Category::query()->inRandomOrder()->first()?->id ?? Category::factory(),
             'stock' => fake()->numberBetween(0, 100),
         ];

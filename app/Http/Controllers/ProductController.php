@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Category;
-use App\Models\Product;
+use App\Models\Products;
 use App\Models\Brand;
 use App\Models\Unit;
 use App\Models\ProductImage;
@@ -19,14 +19,14 @@ class ProductController extends Controller
 
     public function show()
     {
-        $products = Product::with(['brand', 'category', 'unit', 'images'])->get();
+        $products = Products::with(['brand', 'category', 'unit', 'images'])->get();
         // dd($products);
         return response()->json($products);
     }
 
     public function ProductDetails($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Products::findOrFail($id);
         return view('products.show', compact('product'));
     }
 
@@ -35,7 +35,7 @@ class ProductController extends Controller
     //     $brands = Brand::all();
     //     $categories = Category::all();
     //     $units = Unit::all();
-    //     $products = Product::with('images')->get();
+    //     $products = Products::with('images')->get();
     //     return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
     // }
 
@@ -50,7 +50,7 @@ class ProductController extends Controller
     public function getProducts(Request $request)
     {
         if ($request->ajax()) {
-            $products = Product::with(['unit', 'brand', 'category', 'images'])->select('products.*');
+            $products = Products::with(['unit', 'brand', 'category', 'images'])->select('products.*');
             return DataTables::of($products)
                 ->addColumn('image', function ($product) {
                     if ($product->images->isNotEmpty()) {
@@ -76,7 +76,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
         ]);
-        $product = Product::create($request->only([
+        $product = Products::create($request->only([
             'name',
             'description',
             'price',
@@ -109,7 +109,7 @@ class ProductController extends Controller
             'category_id' => 'required',
             'image_path.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048'
         ]);
-        $product = Product::findOrFail($id);
+        $product = Products::findOrFail($id);
         // Delete Old Images
         if ($request->hasFile('image_path')) {
             foreach ($product->images as $image) {
@@ -139,7 +139,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = Product::find($id);
+        $product = Products::find($id);
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
@@ -148,7 +148,7 @@ class ProductController extends Controller
 
     // public function destroy($id)
     // {
-    //     $product = Product::findOrFail($id);
+    //     $product = Products::findOrFail($id);
     //     foreach ($product->images as $image) {
     //         Storage::delete('public/' . $image->image_path);
     //         $image->delete();
@@ -159,7 +159,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Products::findOrFail($id);
 
         foreach ($product->images as $image) {
             // Ensure correct path (remove "public/" prefix)
@@ -176,7 +176,7 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $query = $request->query('query');
-        $products = Product::with(['brand', 'category', 'unit'])
+        $products = Products::with(['brand', 'category', 'unit'])
             ->where('name', 'LIKE', "%{$query}%")
             ->orWhereHas('brand', function ($q) use ($query) {
                 $q->where('name', 'LIKE', "%{$query}%");
@@ -204,7 +204,7 @@ class ProductController extends Controller
     //     // Store image in public storage
     //     $imgPath = $request->file('img')->store('products', 'public');
     //     // Create new product
-    //     $product = Product::create([
+    //     $product = Products::create([
     //         'name' => $request->name,
     //         'price' => $request->price,
     //         'brand' => $request->brand,

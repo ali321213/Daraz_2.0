@@ -15,21 +15,28 @@ class BrandController extends Controller
 
     public function index()
     {
-        // $brands = Brand::all();
-        return view('admin.brands.index');
-        // , compact('brands')
+        $brands = Brand::paginate(5); // Paginate with 10 records per page
+            // $brands = Brand::all();
+        // Uncomment and use this if you want to format the dates
+        // $brands = $brands->map(function ($brand) {
+        //     $brand->created_at_formatted = $brand->created_at->format('F j, Y, g:i a');
+        //     $brand->updated_at_formatted = $brand->updated_at->format('F j, Y, g:i a');
+        //     return $brand;
+        // });
+        return view('admin.brands.index', compact('brands'));
     }
 
-    public function show()
-    {
-        $brands = Brand::all();
-        $brands = $brands->map(function ($brand) {
-            $brand->created_at_formatted = $brand->created_at->format('F j, Y, g:i a');
-            $brand->updated_at_formatted = $brand->updated_at->format('F j, Y, g:i a');
-            return $brand;
-        });
-        return response()->json($brands);
-    }
+
+    // public function show()
+    // {
+    //     $brands = Brand::all();
+    //     $brands = $brands->map(function ($brand) {
+    //         $brand->created_at_formatted = $brand->created_at->format('F j, Y, g:i a');
+    //         $brand->updated_at_formatted = $brand->updated_at->format('F j, Y, g:i a');
+    //         return $brand;
+    //     });
+    //     return response()->json($brands);
+    // }
 
     /* Show the form for creating a new resource */
     public function create(Request $request)
@@ -53,7 +60,6 @@ class BrandController extends Controller
         return response()->json(['success' => 'Brand added successfully', 'Brand' => $brand]);
     }
 
-
     public function store(Request $request) {}
 
     public function edit($id)
@@ -70,7 +76,7 @@ class BrandController extends Controller
     {
         $brand = Brand::find($id);
         if (!$brand) {
-            return response()->json(['error' => 'Brand not found'], 404);
+            return redirect()->back()->with('error', 'Brand not found');
         }
         $request->validate([
             'name' => 'required',
@@ -80,6 +86,11 @@ class BrandController extends Controller
         ]);
         // Handle logo upload if a new file is provided
         if ($request->hasFile('logo')) {
+            // Delete the old logo
+            if ($brand->logo && file_exists(public_path('storage/' . $brand->logo))) {
+                unlink(public_path('storage/' . $brand->logo));
+            }
+            // Store the new logo
             $logoPath = $request->file('logo')->store('brands', 'public');
             $brand->logo = $logoPath;
         }
@@ -87,18 +98,19 @@ class BrandController extends Controller
         $brand->slug = $request->slug;
         $brand->description = $request->description;
         $brand->save();
-
-        return response()->json(['success' => 'Brand updated successfully', 'brand' => $brand]);
+        return redirect()->route('brands.index')->with('success', 'Brand updated successfully');
     }
-
 
     public function destroy($id)
     {
         $brand = Brand::find($id);
         if ($brand) {
+            if ($brand->logo && file_exists(public_path('storage/' . $brand->logo))) {
+                unlink(public_path('storage/' . $brand->logo));
+            }
             $brand->delete();
-            return response()->json(['success' => 'Brand deleted successfully']);
+            return redirect()->route('brands.index')->with('success', 'Brand deleted successfully');
         }
-        return response()->json(['error' => 'Brand not found'], 404);
+        return redirect()->route('brands.index')->with('error', 'Brand not found');
     }
 }
