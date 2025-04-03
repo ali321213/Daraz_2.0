@@ -65,6 +65,10 @@ git add .
 git status
 git commit -m "26-03-2025"
 git push -u origin main
+How to resolve git stash conflict without commit?
+git stash
+git pull --rebase
+git stash pop
 
 
 Option 3: Force Overwrite (Not Recommended)

@@ -1,8 +1,6 @@
 @extends('layouts.app')
-
-@section('title', $product->name . ' - Product Details')
-
 @section('content')
+@section('title', $product->name . ' - Product Details')
 <div class="container mt-5">
     <div class="row d-flex align-items-center">
         <div class="col-lg-12 mb-4">
@@ -10,7 +8,6 @@
             <p class="text-muted">Explore the details of our product.</p>
         </div>
     </div>
-
     <div class="row d-flex align-items-center">
         <!-- Product Image -->
         <div class="col-md-3">
@@ -106,29 +103,50 @@
         </div>
     </div>
 </div>
-
-@endsection
-
-@section('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // $("#addToCartForm").on("submit", function(e) {
+    //     e.preventDefault();
+    //     var formData = $(this).serialize();
+    //     // let id = $("input[name='id']").val();
+    //     var id = "{{ $product->id }}";
+    //     // let id = $("input[name='product_id']").val();
+    //     alert(id);
+    //     $.ajax({
+    //         url: `products.detail.${id}.cart.add`,
+    //         method: "POST",
+    //         data: formData,
+    //         headers: {
+    //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") // Ensure CSRF token is sent
+    //         },
+    //         success: function(response) {
+    //             if (response.success) {
+    //                 // Show success modal
+    //                 $('#cartModal').modal('show');
+    //                 // Update the cart count
+    //                 $('.cart-count').text(response.cartCount);
+    //             }
+    //         },
+    //         error: function(xhr) {
+    //             alert('Error: Could not add to cart');
+    //         }
+    //     });
+    // });
+
     $("#addToCartForm").on("submit", function(e) {
         e.preventDefault();
         var formData = $(this).serialize();
-
+        let id = $("input[name='product_id']").val(); // FIXED ID
         $.ajax({
-            // url: "{{ route('cart.add') }}", // Corrected route
-            url: `cart.add`,
+            url: "/products/detail/cart/add", // FIXED ROUTE
             method: "POST",
             data: formData,
             headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") // Ensure CSRF token is sent
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
             success: function(response) {
                 if (response.success) {
-                    // Show success modal
                     $('#cartModal').modal('show');
-                    // Update the cart count
                     $('.cart-count').text(response.cartCount);
                 }
             },

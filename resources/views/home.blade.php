@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+@section('title', 'Daraz_2.O')
 <div class="container">
     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner"></div>
@@ -12,49 +13,19 @@
     </div>
 </div>
 
-
 <div class="container">
-    <div class="row">
-        <div class="col-lg-12 text-center">
-            <h1 class="fw-bold">Welcome to Daraz 2.0</h1>
-            <p>Browse our latest products!</p>
-        </div>
-    </div>
-
     <!-- Categories -->
     <div class="container mt-5">
         <h2 class="mt-5 pb-3 fw-bold">Shop by Category:</h2>
         <div class="row justify-content-center">
+            @foreach($categories as $category)
             <div class="col-lg-2 col-md-3 col-6 text-center">
-                <a href="{{ url('/category/men') }}" class="category-box text-decoration-none text-dark">
-                    <img src="{{ asset('assets/images/category.jpg') }}" class="category-img" alt="Men's Fashion">
-                    <p class="mt-3 fw-bold h4">Men's Fashion</p>
+                <a href="{{ url('/category/' . $category->slug) }}" class="category-box text-decoration-none text-dark text-capitalize">
+                    <img src="{{ asset('storage/' . $category->image) }}" class="category-img" alt="{{ $category->name }}">
+                    <p class="mt-3 h4">{{ $category->name }}</p>
                 </a>
             </div>
-            <div class="col-lg-2 col-md-3 col-6 text-center">
-                <a href="{{ url('/category/women') }}" class="category-box text-decoration-none text-dark">
-                    <img src="{{ asset('assets/images/category0.jpg') }}" class="category-img" alt="Women's Fashion">
-                    <p class="mt-3 fw-bold h4">Women's Fashion</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-3 col-6 text-center">
-                <a href="{{ url('/category/electronics') }}" class="category-box text-decoration-none text-dark">
-                    <img src="{{ asset('assets/images/category4.jpg') }}" class="category-img" alt="Electronics">
-                    <p class="mt-3 fw-bold h4">Electronics</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-3 col-6 text-center">
-                <a href="{{ url('/category/shoes') }}" class="category-box text-decoration-none text-dark">
-                    <img src="{{ asset('assets/images/category2.jpg') }}" class="category-img" alt="Shoes">
-                    <p class="mt-3 fw-bold h4">Shoes</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-3 col-6 text-center">
-                <a href="{{ url('/category/watches') }}" class="category-box text-decoration-none text-dark">
-                    <img src="{{ asset('assets/images/category3.webp') }}" class="category-img" alt="Watches">
-                    <p class="mt-3 fw-bold h4">Watches</p>
-                </a>
-            </div>
+            @endforeach
         </div>
     </div>
 
@@ -78,17 +49,17 @@
                     @else
                     <img src="{{ asset('assets/images/one.jpg') }}" class="card-img-top" alt="No Image">
                     @endif
-                    <p class="fw-bold mt-3 h3">{{ $product->name }}</p>
+                    <p class="mt-3 h3">{{ $product->name }}</p>
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div>
-                            <p class="fw-bold text-danger h2">Rs. {{ number_format($product->price) }}</p>
+                            <p class="text-danger h2">Rs. {{ number_format($product->price) }}</p>
                             <span class="discount-badge mt-5">-40% Discount</span>
                         </div>
                         <div>
                             <form action="{{ route('cart.add') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $product->id }}">
-                                <div  type="submit"><i class="bi bi-cart-plus headerIcons" style="font-size: 37px;font-weight:800;"></i></div>
+                                <div type="submit"><i class="bi bi-cart-plus headerIcons" style="font-size: 37px;font-weight:800;"></i></div>
                             </form>
                         </div>
                     </div>

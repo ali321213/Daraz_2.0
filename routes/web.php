@@ -103,14 +103,20 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/{id}', [ProductController::class, 'show'])->name('show');
 });
 
-Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::post('add', [CartController::class, 'add'])->name('add');
+Route::prefix('products/detail/cart')->name('products.detail.cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::post('/add', [CartController::class, 'add'])->name('add'); // Matches AJAX request
     Route::post('/update', [CartController::class, 'updateCart'])->name('update');
     Route::post('/remove', [CartController::class, 'removeFromCart'])->name('remove');
-    // Route::post('/add/{product_id}', [CartController::class, 'add'])->name('add');
-    // Route::post('/update/{cart_id}', [CartController::class, 'update'])->name('update');
-    // Route::post('/remove/{cart_id}', [CartController::class, 'remove'])->name('remove');
+});
+
+// Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index'); // Show cart page
+    Route::post('/add', [CartController::class, 'add'])->name('add'); // Add item to cart
+    Route::post('/update', [CartController::class, 'update'])->name('update'); // Update item quantity
+    Route::post('/remove', [CartController::class, 'remove'])->name('remove'); // Remove an item from cart
+    Route::post('/clear', [CartController::class, 'clear'])->name('clear'); // Clear the entire cart
 });
 
 // ========================== ADMIN Routes ==========================

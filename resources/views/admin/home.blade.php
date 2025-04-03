@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('content')
+@section('title', 'DARAZ_2.O - Admin Panel')
 <div class="content-wrapper">
     <div class="row">
         <div class="col-md-12 grid-margin">

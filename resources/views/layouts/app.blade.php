@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title')</title>
     <!-- Fonts -->
+    <link rel="shortcut icon" href="{{asset('favicon.png')}}" type="image/x-icon">
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}">
@@ -17,8 +18,8 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
         body {
-            background-color:rgb(43, 41, 41);
-            color: white;
+            /* background-color:rgb(43, 41, 41);
+            color: white; */
             font-family: 'Roboto', sans-serif;
         }
 
@@ -31,7 +32,7 @@
         .headerIcons {
             font-size: 35px;
             cursor: pointer;
-            color: white;
+            /* color: white; */
             transition: color 0.3s ease-in-out;
         }
 
@@ -105,7 +106,7 @@
 
 <body>
     <div id="app" class="d-flex flex-column min-vh-100">
-        <nav class="navbar navbar-expand-md navbar-dark shadow-sm" style="border-bottom: 2px solid white;">
+        <nav class="navbar navbar-expand-md shadow-sm" style="border-bottom: 2px solid white;">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}" style="font-size: 30px; font-weight: 800;">
                     <img src="{{ asset('favicon.png') }}" alt="Logo" style="width: 50px; height: 50px; border-radius: 10%;">
@@ -116,8 +117,8 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto bg-dark"></ul>
-                    <input type="search" id="searchProducts" class="form-control form-control-lg bg-dark" placeholder="Search Products" aria-label="Search" style="width: 500px;color: white;">
+                    <ul class="navbar-nav me-auto "></ul>
+                    <input type="search" id="searchProducts" class="form-control form-control-lg " placeholder="Search Products" aria-label="Search" style="width: 500px;color: white;">
                     <div class="d-flex">
                         <button class="btn btn-lg btn-info" type="submit">Search</button>
                     </div>
@@ -141,17 +142,17 @@
                         @guest
                         @if (Route::has('login'))
                         <li class="nav-item mt-2">
-                            <a class="nav-link text-light" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>
                         @endif
                         @if (Route::has('register'))
                         <li class="nav-item mt-2">
-                            <a class="nav-link text-light" href="{{ route('register') }}">{{ __('Register') }}</a>
+                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                         </li>
                         @endif
                         @else
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle text-light mt-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle mt-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -175,7 +176,7 @@
 
 
         <!-- Footer -->
-        <footer class="bg-dark text-white">
+        <footer>
             <div class="container mt-5">
                 <div class="row">
                     <!-- Follow Us Section -->
