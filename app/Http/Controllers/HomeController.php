@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Banners;
 use App\Models\Products;
 use App\Models\Unit;
+use App\Models\Carts;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -21,9 +22,10 @@ class HomeController extends Controller
         $banners = Banners::where('status', 1)->orderBy('position')->get();
         $products = Products::with(['images', 'brand', 'category', 'unit'])->get();
         $brands = Brands::all();
+        $carts = Carts::all();
         $categories = Category::all();
         $units = Unit::all();
-        return view('home', compact('products', 'brands', 'categories', 'units'));
+        return view('home', compact('products', 'brands', 'categories', 'units', 'carts'));
     }
 
     public function adminDashboard()

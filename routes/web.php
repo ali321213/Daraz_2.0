@@ -70,11 +70,16 @@ Route::middleware(['auth'])->group(function () {
     // Route::post('/cart/update/{cart_id}', [CartController::class, 'update'])->name('cart.update');
     // Route::post('/cart/remove/{cart_id}', [CartController::class, 'remove'])->name('cart.remove');
     // Checkout & Orders
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order_id}', [OrderController::class, 'show'])->name('orders.show');
 });
+
+
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+
+
 
 // Admin Routes (Requires Admin Middleware)
 Route::get('admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');

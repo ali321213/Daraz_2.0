@@ -53,6 +53,17 @@ class CartController extends Controller
         ]);
     }
 
+    public function update(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:carts,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
+        $cart = Carts::findOrFail($request->id);
+        $cart->update(['quantity' => $request->quantity]);
+        return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
+    }
+
     // public function add(Request $request)
     // {
     //     $request->validate([

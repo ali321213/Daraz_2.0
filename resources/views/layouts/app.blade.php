@@ -128,10 +128,13 @@
                             <a href="{{ url('/') }}" class="text-decoration-none text-dark">
                                 <i class="bi bi-house-door headerIcons mx-2"></i>
                             </a>
-                            <a href="{{ url('/cart') }}" class="text-decoration-none text-dark d-flex">
+                            @php
+                            $cartCount = Auth::check() && Auth::user()->carts ? Auth::user()->carts->sum('quantity') : 0;
+                            @endphp
+                            <a href="{{ route('cart.index') }}" class="text-decoration-none text-dark d-flex">
                                 <i class="bi bi-cart headerIcons"></i>
                                 <span class="cart-count text-center fw-bold" style="background-color: #ff6600; color: white; border-radius: 50%; width: 20px; height: 20px; line-height: 20px;">
-                                    {{ optional(Auth::user())->carts ? Auth::user()->carts->sum('quantity') : 0 }}
+                                    {{ $cartCount }}
                                 </span>
                             </a>
                         </div>
