@@ -155,5 +155,16 @@
             }
         });
     });
+
+
+    $("#reviewForm").on("submit", function(e) {
+        e.preventDefault();
+        let formData = $(this).serialize();
+
+        $.post("{{ route('reviews.store') }}", formData, function(response) {
+            alert(response.message);
+            location.reload();
+        });
+    });
 </script>
 @endsection

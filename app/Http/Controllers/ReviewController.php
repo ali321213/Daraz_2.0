@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Reviews;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
@@ -27,8 +28,29 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Reviews::create([
+            'user_id' => auth()->id(),
+            'product_id' => $request->product_id,
+            'review' => $request->review,
+            'rating' => $request->rating,
+            'parent_id' => $request->parent_id,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Review added successfully']);
     }
+
+    public function upvote(Reviews $review)
+    {
+        $review->increment('upvotes');
+        return response()->json(['success' => true, 'upvotes' => $review->upvotes]);
+    }
+
+    public function downvote(Reviews $review)
+    {
+        $review->increment('downvotes');
+        return response()->json(['success' => true, 'downvotes' => $review->downvotes]);
+    }
+
 
     /**
      * Display the specified resource.

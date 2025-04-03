@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Product;
+
+use App\Models\Products;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -11,24 +12,24 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::orderBy('created_at', 'DESC')->paginate(3);
+        $products = Products::orderBy('created_at', 'DESC')->paginate(3);
         return view('products.list', [
             'products' => $products
         ]);
     }
-    
+
     public function search(Request $request)
     {
         $search = $request->input('search', '');
         if (!empty($search)) {
-            $products = Product::where('name', 'like', "$search%")
+            $products = Products::where('name', 'like', "$search%")
                 ->orWhere('sku', 'like', "$search%")
                 ->paginate(2);
 
             return view('products.list', compact('products'));
         }
 
-        $products = Product::orderBy('id', 'DESC')->paginate(5);
+        $products = Products::orderBy('id', 'DESC')->paginate(5);
         return view('products.list', compact('products'));
     }
 
@@ -49,7 +50,7 @@ class ProductController extends Controller
         if ($validator->fails()) {
             return redirect()->route('products.create')->withInput()->withErrors($validator);
         }
-        $product = new Product();
+        $product = new Products();
         $product->name = $request->name;
         $product->sku = $request->sku;
         $product->price = $request->price;
@@ -67,7 +68,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Products::findOrFail($id);
         return view('products.edit', [
             'product' => $product
         ]);
@@ -75,7 +76,7 @@ class ProductController extends Controller
 
     public function update($id, Request $request)
     {
-        $product = Product::findOrFail($id);
+        $product = Products::findOrFail($id);
         $rules = [
             'name' => 'required|min:5',
             'sku' => 'required|min:3',
@@ -106,7 +107,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Products::findOrFail($id);
         if ($product->image) {
             File::delete(public_path('uploads/products/' . $product->image));
         }

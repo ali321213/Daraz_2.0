@@ -16,6 +16,14 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 
+// routes/web.php
+
+use App\Http\Controllers\PaymentController;
+
+Route::get('/payment/initiate/{gateway}', [PaymentController::class, 'initiatePayment'])->name('payment.initiate');
+Route::post('/payment/callback/{gateway}', [PaymentController::class, 'handleCallback'])->name('payment.callback');
+
+
 Route::get('/', function () {
     return view('auth.login');
 });

@@ -15,6 +15,9 @@ npm install
 npm run build
 npm run dev
 
+
+composer require akcybex/laravel-jazzcash
+
 php artisan migrate
 php artisan db:seed
 php artisan migrate:refresh
@@ -104,6 +107,7 @@ php artisan make:model Sales -m
 php artisan make:model delivery_options -m
 php artisan make:model return_warranties -m
 php artisan make:model product_variants -m
+php artisan make:model reviews -m
 
 
 php artisan make:controller AuthController
@@ -111,6 +115,7 @@ php artisan make:controller UserController
 php artisan make:controller AdminController
 php artisan make:controller ProfileController
 php artisan make:controller CheckoutController
+php artisan make:controller PaymentController
 php artisan make:controller HomeController
 php artisan make:controller BrandController --resource --model=Brands
 php artisan make:controller CategoryController --resource --model=Category

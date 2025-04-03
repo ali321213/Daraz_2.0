@@ -65,4 +65,17 @@
         </div>
     @endif
 </div>
+
+
+<!-- resources/views/payment/jazzcash.blade.php -->
+
+<form name="redirect-to-payment-gateway" method="POST" action="{{ config('jazzcash.' . config('jazzcash.environment') . '.endpoint') }}">
+    @foreach($data as $key => $value)
+        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+    @endforeach
+</form>
+<script>
+    document.forms['redirect-to-payment-gateway'].submit();
+</script>
+
 @endsection

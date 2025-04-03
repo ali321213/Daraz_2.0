@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Discounts;
 use App\Models\Products;
 
-class DiscountFactory extends Factory
+class DiscountsFactory extends Factory
 {
     protected $model = Discounts::class;
 

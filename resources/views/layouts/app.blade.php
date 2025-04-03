@@ -207,6 +207,35 @@
             </div>
         </footer>
     </div>
+    <script>
+        $(document).ready(function() {
+            function updateCartTotal() {
+                $.get("{{ route('cart.total') }}", function(response) {
+                    $("#subtotal").text(response.subtotal);
+                    $("#tax").text(response.tax);
+                    $("#shipping").text(response.shipping);
+                    $("#total").text(response.total);
+                });
+            }
+            updateCartTotal(); // Call when page loads
+        });
+
+        $(document).on("change", ".update-cart", function() {
+    let cartId = $(this).data("id");
+    let quantity = $(this).val();
+
+    $.ajax({
+        url: "{{ route('cart.update') }}",
+        method: "POST",
+        data: {id: cartId, quantity: quantity, _token: "{{ csrf_token() }}"},
+        success: function(response) {
+            $(".cart-count").text(response.cartCount);
+            updateCartTotal();
+        }
+    });
+});
+
+    </script>
 </body>
 
 </html>

@@ -53,16 +53,57 @@ class CartController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    // public function update(Request $request)
+    // {
+    //     $request->validate([
+    //         'id' => 'required|exists:carts,id',
+    //         'quantity' => 'required|integer|min:1'
+    //     ]);
+    //     $cart = Carts::findOrFail($request->id);
+    //     $cart->update(['quantity' => $request->quantity]);
+    //     return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
+    // }
+
+    public function updateCart(Request $request)
     {
-        $request->validate([
-            'id' => 'required|exists:carts,id',
-            'quantity' => 'required|integer|min:1'
-        ]);
-        $cart = Carts::findOrFail($request->id);
-        $cart->update(['quantity' => $request->quantity]);
-        return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
+        $cartItem = Carts::where('id', $request->id)->where('user_id', auth()->id())->first();
+        if ($cartItem) {
+            $cartItem->update(['quantity' => $request->quantity]);
+        }
+
+        return response()->json(['success' => true, 'cartCount' => auth()->user()->carts()->sum('quantity')]);
     }
+
+
+    public function calculateCartTotal()
+    {
+        $cart = auth()->user()->carts()->with('product')->get();
+
+        $subtotal = $cart->sum(fn ($item) => $item->product->price * $item->quantity);
+        $tax = $subtotal * 0.1; // Example: 10% tax
+        $shipping = 200; // Example: Flat rate shipping
+        $total = $subtotal + $tax + $shipping;
+
+        return response()->json([
+            'subtotal' => number_format($subtotal, 2),
+            'tax' => number_format($tax, 2),
+            'shipping' => number_format($shipping, 2),
+            'total' => number_format($total, 2)
+        ]);
+    }
+
+    // Remove item from cart
+    public function remove($id)
+    {
+        $cart = Carts::where('id', $id)->where('user_id', Auth::id())->first();
+        if ($cart) {
+            $cart->delete();
+            return redirect()->back()->with('success', 'Product removed from cart.');
+        }
+        return redirect()->back()->with('error', 'Item not found.');
+    }
+
+
 
     // public function add(Request $request)
     // {
@@ -79,16 +120,4 @@ class CartController extends Controller
     //     );
     //     return redirect()->back()->with('success', 'Product added to cart!');
     // }
-
-
-    // Remove item from cart
-    public function remove($id)
-    {
-        $cart = Carts::where('id', $id)->where('user_id', Auth::id())->first();
-        if ($cart) {
-            $cart->delete();
-            return redirect()->back()->with('success', 'Product removed from cart.');
-        }
-        return redirect()->back()->with('error', 'Item not found.');
-    }
 }
