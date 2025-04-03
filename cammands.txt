@@ -1,3 +1,12 @@
+Our ancestors shed their blood to give us this nation—we cannot sell it, nor can we afford to lose it. Now, we stand at a crossroads: will our nation drown in the darkness of despair, or will it rise as a beacon of hope? The choice is ours—will we change the fate of this nation, or will we allow it to remain bound in shackles?
+
+King Birnda once said,
+"Even if I die, my country shall live on"
+
+Youth of this nation, carry these words in your hearts. Let them fuel your spirit, and together, let us carve a monument of change in the course of history. Pakistan is ours, and its future lies in our hands.
+Pakistan Zindabad, Pakistan Paindabad!
+
+
 composer require laracel/ui
 php artisan ui bootstrap
 composer require laravel/ui
@@ -5,21 +14,16 @@ php artisan ui bootstrap --auth
 npm install
 npm run build
 npm run dev
-php artisan make:controller CartController
-
-php artisan make:controller BannerController --resource
-php artisan make:controller UnitController --resource
-php artisan make:controller HomeController
 
 php artisan migrate
 php artisan db:seed
 php artisan migrate:refresh
 php artisan migrate:fresh --seed
 php artisan --version
+php artisan make:migration create_followups_table
 php artisan make:migration create_banners_table
 php artisan make:model Banner
 php artisan storage:link
-php artisan make:controller ProductController --resource --model=Product
 composer require darryldecode/cart
 composer require livewire/livewire
 composer require yajra/laravel-datatables-oracle
@@ -41,27 +45,31 @@ php artisan make:factory ProductImageFactory
 php artisan make:factory UnitFactory
 php artisan make:factory BrandFactory
 php artisan make:factory CategoryFactory
+php artisan make:factory ColorFactory
+php artisan make:factory ProductColorFactory
+php artisan make:factory DeliveryOptionFactory
+php artisan make:factory ReturnWarrantySeeder
 php artisan route:list
 
 
 git init
 git pull
-git status
 git merge
 git stash
 git add README.md
 git branch -M main
 git remote add origin https://github.com/ali321213/Oredoo_Blog.git
+git config --global user.email "ra3860841@gmail.com"
+git config --global user.name "M Ali Sagheer"
 git add .
+git status
 git commit -m "26-03-2025"
 git push -u origin main
+
 
 Option 3: Force Overwrite (Not Recommended)
 If you don’t need your local changes and want to discard them:
 
-bash
-Copy
-Edit
 git reset --hard HEAD
 git pull origin main
 Warning: This will permanently delete your local changes.
@@ -84,13 +92,14 @@ php artisan make:model Product -m
 php artisan make:model ProductImages -m
 php artisan make:model Discounts -m
 php artisan make:model Colors -m
-php artisan make:model ProductColors -m
 php artisan make:model Ratings -m
 php artisan make:model Reviews -m
-
 php artisan make:model Units -m
 php artisan make:model Orders -m
 php artisan make:model Sales -m
+php artisan make:model delivery_options -m
+php artisan make:model return_warranties -m
+php artisan make:model product_variants -m
 
 
 php artisan make:controller AuthController
@@ -98,13 +107,18 @@ php artisan make:controller UserController
 php artisan make:controller AdminController
 php artisan make:controller ProfileController
 php artisan make:controller CheckoutController
-php artisan make:controller BrandController --resource
-php artisan make:controller CategoryController --resource
-php artisan make:controller ProductController --resource
+php artisan make:controller HomeController
+php artisan make:controller BrandController --resource --model=Brands
+php artisan make:controller CategoryController --resource --model=Category
+php artisan make:controller ProductController --resource --model=Product
+php artisan make:controller BannerController --resource --model=Banners
+php artisan make:controller OrderController --resource --model=Orders
+php artisan make:controller SaleController --resource --model=Sales
+php artisan make:controller UnitController --resource --model=Units
 php artisan make:controller ProductImageController --resource
-php artisan make:controller OrderController --resource
-php artisan make:controller SaleController --resource
+php artisan make:controller CartController --model=Cart
 php artisan make:controller ReviewController --resource
+
 
 php artisan make:middleware AuthMiddleware
 php artisan make:middleware AdminMiddleware
@@ -125,133 +139,7 @@ NDK(Side by Side)
 6 ) - Go to SDK Platforms Select the Latest Android Version And Click to Ok Then these tools and android version started getting download and they will take your 3 to 4GB of space
 7 ) - Go to Plugins Download Flutter and Dart
 8 ) - 
-========================================================== E-Commerce Store DataBase Structure ==========================================================
-Below is a comprehensive Laravel e-commerce database structure based on the search results:
-
-Users and Authentication
-- users
-  - id (Primary Key)
-  - name
-  - email
-  - password
-  - created_at
-  - updated_at
-
-Products and Inventory
-- categories
-  - id (Primary Key)
-  - name
-  - description
-  - created_at
-  - updated_at
-- products
-  - id (Primary Key)
-  - name
-  - description
-  - price
-  - category_id (Foreign Key to categories)
-  - created_at
-  - updated_at
-- product_variants
-  - id (Primary Key)
-  - product_id (Foreign Key to products)
-  - name
-  - price
-  - created_at
-  - updated_at
-- product_images
-  - id (Primary Key)
-  - product_id (Foreign Key to products)
-  - image_path
-  - created_at
-  - updated_at
-
-Orders and Transactions
-- orders
-  - id (Primary Key)
-  - user_id (Foreign Key to users)
-  - status
-  - total_amount
-  - created_at
-  - updated_at
-- order_items
-  - id (Primary Key)
-  - order_id (Foreign Key to orders)
-  - product_id (Foreign Key to products)
-  - quantity
-  - price
-  - created_at
-  - updated_at
-- payments
-  - id (Primary Key)
-  - order_id (Foreign Key to orders)
-  - payment_method
-  - amount
-  - status
-  - created_at
-  - updated_at
-
-Attributes and Options
-- attributes
-  - id (Primary Key)
-  - name
-  - created_at
-  - updated_at
-- attribute_options
-  - id (Primary Key)
-  - attribute_id (Foreign Key to attributes)
-  - value
-  - created_at
-  - updated_at
-- sku_attribute_options
-  - id (Primary Key)
-  - sku_id (Foreign Key to skus)
-  - attribute_option_id (Foreign Key to attribute_options)
-  - created_at
-  - updated_at
-
-Shopping Cart
-- carts
-  - id (Primary Key)
-  - user_id (Foreign Key to users)
-  - created_at
-  - updated_at
-- cart_items
-  - id (Primary Key)
-  - cart_id (Foreign Key to carts)
-  - product_id (Foreign Key to products)
-  - quantity
-  - created_at
-  - updated_at
-
-Reviews and Ratings
-- reviews
-  - id (Primary Key)
-  - user_id (Foreign Key to users)
-  - product_id (Foreign Key to products)
-  - rating
-  - comment
-  - created_at
-  - updated_at
-
-Additional Features
-- coupons
-  - id (Primary Key)
-  - code
-  - discount
-  - expiration_date
-  - created_at
-  - updated_at
-- wishlists
-  - id (Primary Key)
-  - user_id (Foreign Key to users)
-  - product_id (Foreign Key to products)
-  - created_at
-  - updated_at
-
-This structure covers the essential components of an e-commerce platform, including user management, product catalog, orders, payments, attributes, shopping cart, reviews, and additional features like coupons and wishlists. You can further customize and expand this structure based on your specific requirements.
-
-=============================================================================================================================================================
+=========================================================================================================================================================
 To implement cart functionality in a Laravel e-commerce store, you can follow these steps based on the search results:
 
 1. Database Setup
@@ -260,7 +148,6 @@ First, create the necessary models and migrations. You will need at least a `Pro
 Bash:
 php artisan make:model Product -m
 php artisan make:model CartItem -m
-```
 
 Define the migrations for the `products` and `cart_items` tables:
 
@@ -281,14 +168,9 @@ Schema::create('cart_items', function (Blueprint $table) {
     $table->integer('quantity');
     $table->timestamps();
 });
-```
 
 2. Cart Logic
 Create a `CartController` to handle cart operations:
-
-Bash:
-php artisan make:controller CartController
-```
 
 In your `CartController`, add methods for adding, updating, and removing items from the cart. Use Laravel's session to store the cart data:
 
@@ -305,7 +187,6 @@ class CartController extends Controller
     {
         $product = Product::findOrFail($request->id);
         $cart = session()->get('cart', []);
-
         if(isset($cart[$request->id])) {
             $cart[$request->id]['quantity']++;
         } else {
@@ -410,7 +291,6 @@ PHP:
         </li>
     @endforeach
 </ul>
-```
 
 Conclusion:-
 This setup provides a basic shopping cart functionality using Laravel's session to store cart data. You can further enhance this by integrating user authentication to persist the cart across sessions and adding more features like applying discounts or handling multiple currencies.
@@ -447,16 +327,19 @@ apt install python3-requests python3-colorama python3-psutil
 </div>
 @endforeach -->
 
-
 <link rel="stylesheet" href="{{ asset('') }}">
 <script src="{{asset('')}}"></script>
 
 SSH, Master Shell, Scripting, Bash Automation, Cron Jobs, System Hardening use htop, iotop, log analysis
-
 +923170817548
-
-
 php artisan serve --port=8001
 php artisan serve --port=8002
+
+
+git add .
+git status
+git commit -m "26-03-2025"
+git push -u origin main
+
 php artisan serve
 npm run dev

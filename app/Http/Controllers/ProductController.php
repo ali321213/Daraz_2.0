@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Category;
 use App\Models\Products;
-use App\Models\Brand;
+use App\Models\Brands;
 use App\Models\Unit;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
@@ -26,9 +27,10 @@ class ProductController extends Controller
 
     public function ProductDetails($id)
     {
-        $product = Products::findOrFail($id);
+        $product = Products::with(['images', 'category', 'deliveryOptions', 'returnWarranty', 'variants'])->findOrFail($id);
         return view('products.show', compact('product'));
     }
+
 
     // public function index()
     // {
@@ -41,12 +43,12 @@ class ProductController extends Controller
 
     public function index()
     {
-        $brands = Brand::all();
+        $brands = Brands::all();
         $categories = Category::all();
         $units = Unit::all();
         return view('admin.products.index', compact('brands', 'categories', 'units'));
     }
-    
+
     public function getProducts(Request $request)
     {
         if ($request->ajax()) {
@@ -72,9 +74,10 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'unit_id' => 'nullable|string|max:50',
+            'color_id' => 'required|exists:brands,id',
             'brand_id' => 'required|exists:brands,id',
             'category_id' => 'required|exists:categories,id',
-            'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:10240',
+            'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,ts|max:25600',
         ]);
         $product = Products::create($request->only([
             'name',
@@ -110,18 +113,16 @@ class ProductController extends Controller
             'image_path.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048'
         ]);
         $product = Products::findOrFail($id);
-        // Delete Old Images
         if ($request->hasFile('image_path')) {
             foreach ($product->images as $image) {
-                Storage::disk('public')->delete($image->image_path); // Delete from storage
-                $image->delete(); // Delete from database
+                Storage::disk('public')->delete($image->image_path);
+                $image->delete();
             }
-            // Save New Images
             foreach ($request->file('image_path') as $image) {
-                $imgPath = $image->store('product_images', 'public'); // Save to storage
+                $imgPath = $image->store('product_images', 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image_path' => $imgPath // Ensure correct column name
+                    'image_path' => $imgPath
                 ]);
             }
         }

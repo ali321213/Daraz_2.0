@@ -11,14 +11,17 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('assets/css/custom.css')}}">
-    <!-- Include Bootstrap Icons -->
     <link rel="stylesheet" href="{{ asset('bootstrap-icons/bootstrap-icons.css') }}">
-    <!-- Include Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Scripts -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
+        body {
+            background-color:rgb(43, 41, 41);
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+
         .products .col-lg-2 img {
             width: 100%;
             height: 300px;
@@ -26,13 +29,14 @@
         }
 
         .headerIcons {
-            font-size: 25px;
+            font-size: 35px;
+            cursor: pointer;
+            color: white;
+            transition: color 0.3s ease-in-out;
         }
 
-        .headerIcons {
-            font-size: 24px;
-            cursor: pointer;
-            transition: color 0.3s ease-in-out;
+        .card-img-top {
+            border-radius: 20px;
         }
 
         .headerIcons:hover {
@@ -70,10 +74,16 @@
         /* Product Card */
         .product-card {
             border: 1px solid #ddd;
+            text-transform: capitalize;
             border-radius: 10px;
             padding: 15px;
-            text-align: center;
             transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .img-fluid {
+            width: 100%;
+            height: 500px;
+            border-radius: 20px;
         }
 
         .product-card:hover {
@@ -82,26 +92,23 @@
 
         .social-icon {
             font-size: 1.5rem;
-            /* Bigger icons */
             color: #333;
-            /* Default icon color */
             transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
 
         .social-icon:hover {
-            color: #007bff;
-            /* Change to primary blue on hover */
-            transform: scale(1.2);
-            /* Slight zoom effect */
+            color: #ff6600;
+            transform: scale(1.5);
         }
     </style>
 </head>
 
 <body>
     <div id="app" class="d-flex flex-column min-vh-100">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-md navbar-dark shadow-sm" style="border-bottom: 2px solid white;">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/') }}" style="font-size: 30px; font-weight: 800;">
+                    <img src="{{ asset('favicon.png') }}" alt="Logo" style="width: 50px; height: 50px; border-radius: 10%;">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -109,34 +116,42 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto"></ul>
-                    <input type="search" id="searchProducts" class="form-control form-control-lg" placeholder="Search Products">
+                    <ul class="navbar-nav me-auto bg-dark"></ul>
+                    <input type="search" id="searchProducts" class="form-control form-control-lg bg-dark" placeholder="Search Products" aria-label="Search" style="width: 500px;color: white;">
+                    <div class="d-flex">
+                        <button class="btn btn-lg btn-info" type="submit">Search</button>
+                    </div>
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <div class="d-flex">
                             <a href="{{ url('/') }}" class="text-decoration-none text-dark">
                                 <i class="bi bi-house-door headerIcons mx-2"></i>
                             </a>
-                            <a href="{{ url('/cart') }}" class="text-decoration-none text-dark">
+                            <a href="{{ url('/cart') }}" class="text-decoration-none text-dark d-flex">
                                 <i class="bi bi-cart headerIcons"></i>
+                                <span class="cart-count text-center fw-bold" style="background-color: #ff6600; color: white; border-radius: 50%; width: 20px; height: 20px; line-height: 20px;">
+                                    {{ optional(Auth::user())->carts ? Auth::user()->carts->sum('quantity') : 0 }}
+                                </span>
                             </a>
                         </div>
-
+                        <!-- <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/products') }}">{{ __('Products') }}</a>
+                        </li> -->
                         <!-- Authentication Links -->
                         @guest
                         @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                        <li class="nav-item mt-2">
+                            <a class="nav-link text-light" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>
                         @endif
                         @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                        <li class="nav-item mt-2">
+                            <a class="nav-link text-light" href="{{ route('register') }}">{{ __('Register') }}</a>
                         </li>
                         @endif
                         @else
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle text-light mt-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Auth::user()->name }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -160,7 +175,7 @@
 
 
         <!-- Footer -->
-        <footer class="bg-light">
+        <footer class="bg-dark text-white">
             <div class="container mt-5">
                 <div class="row">
                     <!-- Follow Us Section -->
@@ -169,18 +184,18 @@
                             <h4 class="m-0 fw-bold">Follow Us: </h4>
                         </div>
                         <div class="d-flex gap-3">
-                            <a href="https://facebook.com" target="_blank" class="social-icon"><i class="bi bi-facebook"></i></a>
-                            <a href="https://instagram.com" target="_blank" class="social-icon"><i class="bi bi-instagram"></i></a>
-                            <a href="https://twitter.com" target="_blank" class="social-icon"><i class="bi bi-twitter-x"></i></a>
-                            <a href="https://tiktok.com" target="_blank" class="social-icon"><i class="bi bi-tiktok"></i></a>
-                            <a href="https://youtube.com" target="_blank" class="social-icon"><i class="bi bi-youtube"></i></a>
+                            <a href="https://facebook.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-facebook"></i></a>
+                            <a href="https://instagram.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-instagram"></i></a>
+                            <a href="https://twitter.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-twitter-x"></i></a>
+                            <a href="https://tiktok.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-tiktok"></i></a>
+                            <a href="https://youtube.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-youtube"></i></a>
                         </div>
                     </div>
                     <!-- Empty Column (For Alignment) -->
                     <div class="col-lg-4 col-md-4 col-12"></div>
                     <!-- Copyright Section -->
                     <div class="col-lg-4 col-md-4 col-12 text-lg-end text-md-end text-center mt-3 mt-md-0">
-                        <p class="m-0 text-muted">
+                        <p class="m-0">
                             Copyright &copy; {{ config('app.name', 'Laravel') }} {{ date('Y') }}
                         </p>
                     </div>

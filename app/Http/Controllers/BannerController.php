@@ -1,15 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Banner;
-use App\Models\Brand;
+use App\Models\Banners;
+use App\Models\Brands;
 use Illuminate\Http\Request;
 
 class BannerController extends Controller
 {
     public function index()
     {
-        $banners = Banner::where('status', 1)->orderBy('position')->get();
+        $banners = Banners::where('status', 1)->orderBy('position')->get();
         return view('admin.banners.index', compact('banners'));
     }
 
@@ -21,22 +21,19 @@ class BannerController extends Controller
             'link' => 'nullable|url',
             'position' => 'nullable|integer',
         ]);
-
         $imagePath = $request->file('image')->store('banners', 'public');
-
-        Banner::create([
+        Banners::create([
             'title' => $request->title,
             'image' => $imagePath,
             'link' => $request->link,
             'position' => $request->position ?? 1,
         ]);
-
         return redirect()->route('admin.banners.index')->with('success', 'Banner added successfully!');
     }
 
     public function edit($id)
     {
-        $category = Banner::findOrFail($id);
+        $category = Banners::findOrFail($id);
         return response()->json($category);
     }
 
@@ -48,7 +45,7 @@ class BannerController extends Controller
             'slug' => 'required|string|unique:categories,slug,' . $id,
             'image' => 'nullable|image|max:2048',
         ]);
-        $category = Banner::findOrFail($id);
+        $category = Banners::findOrFail($id);
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($category->image && \Storage::exists('public/' . $category->image)) {
@@ -74,7 +71,7 @@ class BannerController extends Controller
 
     public function destroy($id)
     {
-        $category = Banner::findOrFail($id);
+        $category = Banners::findOrFail($id);
         if ($category->image) {
             \Storage::delete('public/' . $category->image);
         }
@@ -84,7 +81,7 @@ class BannerController extends Controller
 
     public function toggleStatus(Request $request)
     {
-        $banner = Banner::findOrFail($request->id);
+        $banner = Banners::findOrFail($request->id);
         $banner->status = $request->status;
         $banner->save();
         return response()->json(['success' => true, 'message' => 'Banner status updated successfully!']);

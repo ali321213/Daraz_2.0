@@ -14,12 +14,13 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('auth.login');
 });
 
-Auth::routes();
+// Auth::routes();
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // ADMIN PRODUCTS ROUTES
@@ -31,22 +32,32 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['customer'])->group(function () {
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
 });
+// 🔹 Guest Middleware - Only for Unauthenticated Users
+// Route::middleware(['guest'])->group(function () {
+//     Route::get('/login', [UserController::class, 'showLogin'])->name('login');
+//     Route::get('/register', [UserController::class, 'showRegister'])->name('register');
+// });
+
+// // 🔹 Auth Middleware - Only for Logged-in Users
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard');
+//     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+//     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+// });
+
 
 // Route::get('/', [HomeController::class, 'index'])->name('home');
-
-
 // Public Routes (Accessible to Everyone)
-
 // Route::get('/', [ProductController::class, 'index'])->name('home');
 // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 // Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
 
 // Authentication Routes (Login, Register, Logout)
-// Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
-// Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('/login_submit', [AuthController::class, 'login_submit'])->name('login_submit')->middleware('guest');
 
-// Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
-// Route::post('/register', [AuthController::class, 'register']);
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
+Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 // User Dashboard & Profile (Requires Authentication)
@@ -54,10 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
     // Cart Routes
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{product_id}', [CartController::class, 'add'])->name('cart.add');
-    Route::post('/cart/update/{cart_id}', [CartController::class, 'update'])->name('cart.update');
-    Route::post('/cart/remove/{cart_id}', [CartController::class, 'remove'])->name('cart.remove');
+    // Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    // Route::post('/cart/add/{product_id}', [CartController::class, 'add'])->name('cart.add');
+    // Route::post('/cart/update/{cart_id}', [CartController::class, 'update'])->name('cart.update');
+    // Route::post('/cart/remove/{cart_id}', [CartController::class, 'remove'])->name('cart.remove');
     // Checkout & Orders
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
@@ -66,8 +77,8 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Admin Routes (Requires Admin Middleware)
+Route::get('admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     //  Manage Orders
     Route::get('/orders', [OrderController::class, 'adminIndex'])->name('admin.orders');
@@ -75,15 +86,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/orders/update-status/{order_id}', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
     //  Manage Users
+    Route::get('buy.now', [AuthController::class, 'buyNow'])->name('buy.now');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::post('/users/update/{user_id}', [AdminController::class, 'updateUser'])->name('admin.users.update');
     Route::post('/users/delete/{user_id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
 });
 
-
-
 Route::prefix('products')->name('products.')->group(function () {
-    Route::get('/detail', [ProductController::class, 'detail'])->name('detail');
+    Route::get('/detail/{id}', [ProductController::class, 'ProductDetails'])->name('detail');
     Route::get('/getProducts', [ProductController::class, 'getProducts'])->name('getProducts');
     Route::post('/create', [ProductController::class, 'create'])->name('create');
     Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
@@ -91,6 +101,16 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::delete('/destroy/{id}', [ProductController::class, 'destroy'])->name('destroy');
     Route::get('/search', [ProductController::class, 'search'])->name('search');
     Route::get('/{id}', [ProductController::class, 'show'])->name('show');
+});
+
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::post('add', [CartController::class, 'add'])->name('add');
+    Route::post('/update', [CartController::class, 'updateCart'])->name('update');
+    Route::post('/remove', [CartController::class, 'removeFromCart'])->name('remove');
+    // Route::post('/add/{product_id}', [CartController::class, 'add'])->name('add');
+    // Route::post('/update/{cart_id}', [CartController::class, 'update'])->name('update');
+    // Route::post('/remove/{cart_id}', [CartController::class, 'remove'])->name('remove');
 });
 
 // ========================== ADMIN Routes ==========================

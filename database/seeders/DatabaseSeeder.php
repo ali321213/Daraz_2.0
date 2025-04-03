@@ -1,14 +1,16 @@
 <?php
 
 namespace Database\Seeders;
-
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Unit;
 use App\Models\Products;
 use App\Models\Brands;
 use App\Models\Category;
+use App\Models\Colors;
+use App\Models\DeliveryOption;
 use App\Models\ProductImage;
+use App\Models\ReturnWarranty;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,15 +18,13 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(10)->create();
         Unit::factory(5)->create();
-        // First, create brands and categories
+        Colors::factory(10)->create();
         Brands::factory(10)->create();
         Category::factory(10)->create();
-        // Now create products, ensuring they have valid brands & categories
         Products::factory(10)->create()->each(function ($product) {
-            // Generate 2-5 images per product
-            ProductImage::factory(rand(2, 5))->create([
-                'product_id' => $product->id,
-            ]);
+            ProductImage::factory(rand(2, 3))->create(['product_id' => $product->id]);
         });
+        DeliveryOption::factory(10)->create();
+        ReturnWarranty::factory(10)->create();
     }
 }

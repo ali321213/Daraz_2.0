@@ -14,8 +14,8 @@ class UnitFactory extends Factory
         $name = fake()->unique()->word();
         return [
             'name' => $name,
-            'symbol' => $this->faker->randomElement(['kg', 'L', 'pcs', 'm', 'g']), // Random symbol
-            'description' => $this->faker->sentence(), // Random description
+            'symbol' => $this->faker->randomElement(['kg', 'L', 'pcs', 'm', 'g']),
+            'description' => $this->faker->sentence(),
         ];
     }
 }

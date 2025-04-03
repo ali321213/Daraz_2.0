@@ -9,9 +9,9 @@ class Products extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'slug',
         'description',
         'price',
+        'slug',
         'stock',
         'unit_id',
         'brand_id',
@@ -32,5 +32,20 @@ class Products extends Model
     public function brand()
     {
         return $this->belongsTo(Brands::class);
+    }
+
+    public function deliveryOptions()
+    {
+        return $this->hasMany(DeliveryOption::class, 'product_id'); // Fixed relationship
+    }
+
+    public function returnWarranty()
+    {
+        return $this->hasOne(ReturnWarranty::class, 'product_id'); // Fixed relationship
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class, 'product_id'); // Fixed relationship
     }
 }

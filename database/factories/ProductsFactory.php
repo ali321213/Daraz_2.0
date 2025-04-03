@@ -6,18 +6,23 @@ use App\Models\Brands;
 use App\Models\Category;
 use App\Models\Unit;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class ProductsFactory extends Factory
 {
     public function definition(): array
     {
+        $name = fake()->unique()->word();
+        $slug = Str::slug($name);
+
         return [
-            'name' => fake()->word(),
+            'name' => $name,
+            'slug' => $slug,
             'description' => fake()->sentence(),
-            'price' => fake()->randomFloat(2, 10, 500),
-            'unit_id' => Unit::query()->inRandomOrder()->first()?->id ?? Unit::factory(),
-            'brand_id' => Brands::query()->inRandomOrder()->first()?->id ?? Brands::factory(),
-            'category_id' => Category::query()->inRandomOrder()->first()?->id ?? Category::factory(),
+            'price' => fake()->randomFloat(2, 49.99, 999.99),
+            'unit_id' => Unit::query()->inRandomOrder()->value('id') ?? Unit::factory()->create()->id,
+            'brand_id' => Brands::query()->inRandomOrder()->value('id') ?? Brands::factory()->create()->id,
+            'category_id' => Category::query()->inRandomOrder()->value('id') ?? Category::factory()->create()->id,
             'stock' => fake()->numberBetween(0, 100),
         ];
     }

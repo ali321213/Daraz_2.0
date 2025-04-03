@@ -14,7 +14,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <table class="table table-bordered">
+            <table class="table table-bordered text-center">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -29,12 +29,12 @@
                     <tr>
                         <td>{{ $brand->name }}</td>
                         <td>
-                            <img src="{{ asset('storage/' . $brand->logo) }}" width="50" alt="Brand Logo">
+                            <img src="{{ asset('storage/' . $brand->logo) }}" alt="Brand Logo" style="border-radius: 10%;height: 70px;width: 70px;">
                         </td>
                         <td>{{ $brand->slug }}</td>
                         <td>{{ $brand->description }}</td>
                         <td>
-                            <a href="{{ route('admin.brands.edit', $brand->id) }}" data-bs-toggle="modal" data-bs-target="#updateModal" class="btn btn-primary btn-sm">Edit</a>
+                        <a href="{{ route('admin.brands.edit', $brand->id) }}" data-id="{{ $brand->id }}" data-bs-toggle="modal" data-bs-target="#updateModal" class="btn btn-primary btn-sm editBtn">Edit</a>
                             <form action="{{ route('admin.brands.destroy', $brand->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
@@ -43,34 +43,21 @@
                         </td>
                     </tr>
                     @endforeach
-                    @empty
+                    @if($brands->isEmpty())
                     <tr>
-                        <td>No data found</td>
+                        <td colspan="5">No data found</td>
                     </tr>
+                    @endif
                 </tbody>
             </table>
 
             <!-- Pagination Links -->
-            <div class="d-flex justify-content-center mt-3">
-                {{ $brands->links() }}
+            <div class="d-flex justify-content-center mt-3">                
+                {!! $brands->withQueryString()->links('pagination::bootstrap-5') !!}
             </div>
-
-            <!-- <table class="table-bordered text-capitalize text-center">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Logo</th>
-                        <th>Slug</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="brandTableBody"></tbody>
-            </table> -->
         </div>
     </div>
 </div>
-
 
 <!-- Modal -->
 <div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -105,7 +92,6 @@
     </div>
 </div>
 
-
 <!-- Edit Product Modal -->
 <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -139,42 +125,13 @@
         </div>
     </div>
 </div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <script>
     $(document).ready(function() {
-        loadBrands();
-
         // Show Records
-        function loadBrands() {
-            $.ajax({
-                url: "/admin/brands/show",
-                method: "GET",
-                dataType: "json",
-                success: function(response) {
-                    let tableRows = "";
-                    $.each(response, function(index, brand) {
-                        tableRows += `
-                        <tr>
-                            <td>${brand.name}</td>
-                            <td><img class="productImg" src="${brand.logo}"></td>
-                            <td>${brand.slug}</td>
-                            <td>${brand.description}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                    });
-                    $("#brandTableBody").html(tableRows);
-                },
-                error: function() {
-                    alert("Failed to load brands. Please try again.");
-                }
-            });
-        }
-
-
+        // loadBrands();
         // function loadBrands() {
         //     $.ajax({
         //         url: "/admin/brands/show",
@@ -184,20 +141,17 @@
         //             let tableRows = "";
         //             $.each(response, function(index, brand) {
         //                 tableRows += `
-        //             <tr>
-        //                 <th>${index + 1}</th>
-        //                 <td>${brand.name}</td>
-        //                 <td><img class="productImg" src="${brand.logo}"></td>
-        //                 <td>${brand.slug}</td>
-        //                 <td>${brand.description}</td>
-        //                 <td>${brand.created_at_formatted}</td>
-        //                 <td>${brand.updated_at_formatted}</td>
-        //                 <td class="text-center">
-        //                     <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-        //                     <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
-        //                 </td>
-        //             </tr>
-        //         `;
+        //                 <tr>
+        //                     <td>${brand.name}</td>
+        //                     <td><img class="productImg" src="${brand.logo}" width="50"></td>
+        //                     <td>${brand.slug}</td>
+        //                     <td>${brand.description}</td>
+        //                     <td class="text-center">
+        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+        //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
+        //                     </td>
+        //                 </tr>
+        //             `;
         //             });
         //             $("#brandTableBody").html(tableRows);
         //         },
@@ -222,10 +176,9 @@
                 },
                 success: function(response) {
                     alert(response.success);
-                    loadBrands();
+                    // loadBrands();
                     $("#addBrandForm")[0].reset();
-                    $("#exampleModal").modal('hide');
-                    loadBrands();
+                    $("#addBrandModal").modal('hide');
                 },
                 error: function(xhr) {
                     let errors = xhr.responseJSON.errors;
@@ -242,9 +195,9 @@
         $("#editBrandForm").on("submit", function(e) {
             e.preventDefault();
             let formData = new FormData(this);
-            let productId = $("input[name='id']").val();
+            let id = $("input[name='id']").val();
             $.ajax({
-                url: `/admin/brands/update/${productId}`,
+                url: `/admin/brands/update/${id}`,
                 method: "POST",
                 data: formData,
                 contentType: false,
@@ -255,7 +208,6 @@
                 success: function(response) {
                     alert(response.success);
                     $("#updateModal").modal("hide");
-                    loadBrands(); // Refresh Product List
                 },
                 error: function(xhr) {
                     let errors = xhr.responseJSON.errors;
@@ -301,7 +253,7 @@
                     },
                     success: function(response) {
                         alert(response.success);
-                        loadBrands();
+                        // loadBrands();
                     },
                     error: function() {
                         alert("Failed to delete brand.");
@@ -309,41 +261,38 @@
                 });
             }
         });
-    });
 
-    // Search Records
-    $("#searchBrand").on("keyup", function() {
-        let query = $(this).val();
-        $.ajax({
-            url: "/admin/brands/search/",
-            method: "GET",
-            data: {
-                query: query
-            },
-            success: function(response) {
-                let tableRows = "";
-                $.each(response, function(index, brand) {
-                    tableRows += `
-                        <tr>
-                            <th>${index + 1}</th>
-                            <td>${brand.name}</td>
-                            <td><img src="${brand.img}" width="50"></td>
-                            <td>${brand.price}</td>
-                            <td>${brand.brand}</td>
-                            <td>${brand.unit}</td>
-                            <td>${brand.category}</td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-                $("#brandTableBody").html(tableRows);
-            },
-            error: function() {
-                alert("Search failed. Try again.");
-            }
+        // Search Records
+        $("#searchBrand").on("keyup", function() {
+            let query = $(this).val();
+            $.ajax({
+                url: "/admin/brands/search/",
+                method: "GET",
+                data: {
+                    query: query
+                },
+                success: function(response) {
+                    let tableRows = "";
+                    $.each(response, function(index, brand) {
+                        tableRows += `
+                            <tr>
+                                <td>${brand.name}</td>
+                                <td><img src="${brand.logo}" width="50"></td>
+                                <td>${brand.slug}</td>
+                                <td>${brand.description}</td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${brand.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
+                                    <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${brand.id}">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    $("#brandTableBody").html(tableRows);
+                },
+                error: function() {
+                    alert("Search failed. Try again.");
+                }
+            });
         });
     });
 </script>

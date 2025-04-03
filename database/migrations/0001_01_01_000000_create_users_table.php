@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phone')->nullable()->unique();
             $table->string('address')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('utype')->default('USR')->comment('ADM for Admin and USR for User or Customer');
+            $table->string('role')->default('USER')->comment('ADM for Admin and USR for User or Customer');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Brand;
+use App\Models\Brands;
 use Illuminate\Container\Attributes\Storage;
 use Illuminate\Http\Request;
 
@@ -15,8 +15,9 @@ class BrandController extends Controller
 
     public function index()
     {
-        $brands = Brand::paginate(5); // Paginate with 10 records per page
-            // $brands = Brand::all();
+        // $brands = Brands::paginate(3);
+        $brands  = Brands::orderBy('created_at', 'DESC')->paginate(3);
+            // $brands = Brands::all();
         // Uncomment and use this if you want to format the dates
         // $brands = $brands->map(function ($brand) {
         //     $brand->created_at_formatted = $brand->created_at->format('F j, Y, g:i a');
@@ -29,7 +30,7 @@ class BrandController extends Controller
 
     // public function show()
     // {
-    //     $brands = Brand::all();
+    //     $brands = Brands::all();
     //     $brands = $brands->map(function ($brand) {
     //         $brand->created_at_formatted = $brand->created_at->format('F j, Y, g:i a');
     //         $brand->updated_at_formatted = $brand->updated_at->format('F j, Y, g:i a');
@@ -51,7 +52,7 @@ class BrandController extends Controller
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('brands', 'public');
         }
-        $brand = Brand::create([
+        $brand = Brands::create([
             'name' => $request->name,
             'slug' => $request->slug,
             'description' => $request->description,
@@ -64,7 +65,7 @@ class BrandController extends Controller
 
     public function edit($id)
     {
-        $brand = Brand::find($id);
+        $brand = Brands::find($id);
         if (!$brand) {
             return response()->json(['error' => 'brand not found'], 404);
         }
@@ -74,7 +75,7 @@ class BrandController extends Controller
     /* Update the specified resource in storage */
     public function update(Request $request, string $id)
     {
-        $brand = Brand::find($id);
+        $brand = Brands::find($id);
         if (!$brand) {
             return redirect()->back()->with('error', 'Brand not found');
         }
@@ -98,19 +99,19 @@ class BrandController extends Controller
         $brand->slug = $request->slug;
         $brand->description = $request->description;
         $brand->save();
-        return redirect()->route('brands.index')->with('success', 'Brand updated successfully');
+        return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully');
     }
 
     public function destroy($id)
     {
-        $brand = Brand::find($id);
+        $brand = Brands::find($id);
         if ($brand) {
             if ($brand->logo && file_exists(public_path('storage/' . $brand->logo))) {
                 unlink(public_path('storage/' . $brand->logo));
             }
             $brand->delete();
-            return redirect()->route('brands.index')->with('success', 'Brand deleted successfully');
+            return redirect()->route('admin.brands.index')->with('success', 'Brand deleted successfully');
         }
-        return redirect()->route('brands.index')->with('error', 'Brand not found');
+        return redirect()->route('admin.brands.index')->with('error', 'Brand not found');
     }
 }

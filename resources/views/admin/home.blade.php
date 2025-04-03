@@ -1,418 +1,692 @@
 @extends('layouts.admin')
 @section('content')
-
-<h1>Users Page</h1>
-
-<div class="container">
-    <div class="row align-items-center my-5">
-        <div class="col-lg-4 text-center">
-            <input type="search" id="searchProduct" class="form-control form-control-lg" placeholder="Search Products">
-        </div>
-        <div class="col-lg-8 text-center">
-            <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Products</button>
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-md-12 grid-margin">
+            <div class="row">
+                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
+                    <h3 class="font-weight-bold">Welcome John</h3>
+                    <h6 class="font-weight-normal mb-0">All systems are running smoothly! You have <span class="text-primary">3 unread alerts!</span></h6>
+                </div>
+                <div class="col-12 col-xl-4">
+                    <div class="justify-content-end d-flex">
+                        <div class="dropdown flex-md-grow-1 flex-xl-grow-0">
+                            <button class="btn btn-sm btn-light bg-white dropdown-toggle" type="button" id="dropdownMenuDate2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <i class="mdi mdi-calendar"></i> Today (10 Jan 2021) </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuDate2">
+                                <a class="dropdown-item" href="#">January - March</a>
+                                <a class="dropdown-item" href="#">March - June</a>
+                                <a class="dropdown-item" href="#">June - August</a>
+                                <a class="dropdown-item" href="#">August - November</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-12">
-        <!-- table table-striped -->
-            <table class=" table-bordered text-capitalize text-center">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Image</th>
-                        <th>Price</th>
-                        <th>Description</th>
-                        <th>Unit</th>
-                        <th>Brand</th>
-                        <th>Category</th>
-                        <th>Stock</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="productTableBody"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Products</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card tale-bg">
+                <div class="card-people mt-auto">
+                    <img src="{{asset('assets/images/dashboard/people.svg')}}" alt="people">
+                    <div class="weather-info">
+                        <div class="d-flex">
+                            <div>
+                                <h2 class="mb-0 font-weight-normal"><i class="icon-sun me-2"></i>31<sup>C</sup></h2>
+                            </div>
+                            <div class="ms-2">
+                                <h4 class="location font-weight-normal">Chicago</h4>
+                                <h6 class="font-weight-normal">Illinois</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <form id="addProductForm" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <input type="text" name="name" class="form-control" placeholder="Product Name" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="file" name="image_path[]" class="form-control" multiple required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" name="description" class="form-control" placeholder="Description" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="number" name="stock" class="form-control" placeholder="Stock" required>
-                    </div>
-                    <!-- Brand Selection -->
-                    <div class="mb-3">
-                        <select class="form-select" name="brand_id" required>
-                            <option value="" disabled selected>Select Brand</option>
-                            @foreach($brands as $brand)
-                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <!-- Unit Selection -->
-                    <div class="mb-3">
-                        <select class="form-select" name="unit_id" required>
-                            <option value="" disabled selected>Select Unit</option>
-                            @foreach($units as $unit)
-                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <!-- Category Selection -->
-                    <div class="mb-3">
-                        <select class="form-select" name="category_id" required>
-                            <option value="" disabled selected>Select Category</option>
-                            @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
         </div>
-    </div>
-</div>
-
-
-<!-- Edit Product Modal -->
-<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Products</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="col-md-6 grid-margin transparent">
+            <div class="row">
+                <div class="col-md-6 mb-4 stretch-card transparent">
+                    <div class="card card-tale">
+                        <div class="card-body">
+                            <p class="mb-4">Today’s Bookings</p>
+                            <p class="fs-30 mb-2">4006</p>
+                            <p>10.00% (30 days)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4 stretch-card transparent">
+                    <div class="card card-dark-blue">
+                        <div class="card-body">
+                            <p class="mb-4">Total Bookings</p>
+                            <p class="fs-30 mb-2">61344</p>
+                            <p>22.00% (30 days)</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <form id="editProductForm" enctype="multipart/form-data">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <input type="hidden" name="id">
-                        <input type="text" name="name" class="form-control" placeholder="Name" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="file" name="image_path[]" class="form-control" multiple required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="number" name="price" step="0.01" class="form-control" placeholder="Price" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" name="description" class="form-control" placeholder="Description" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="number" name="stock" class="form-control" placeholder="Stock" required>
-                    </div>
-                    <!-- Brand Selection -->
-                    <div class="mb-3">
-                        <select class="form-select" name="brand_id" required>
-                            <option value="" disabled selected>Select Brand</option>
-                            @foreach($brands as $brand)
-                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <!-- Unit Selection -->
-                    <div class="mb-3">
-                        <select class="form-select" name="unit_id" required>
-                            <option value="" disabled selected>Select Unit</option>
-                            @foreach($units as $unit)
-                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <!-- Category Selection -->
-                    <div class="mb-3">
-                        <select class="form-select" name="category_id" required>
-                            <option value="" disabled selected>Select Category</option>
-                            @foreach($categories as $category)
-                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-lg-0 stretch-card transparent">
+                    <div class="card card-light-blue">
+                        <div class="card-body">
+                            <p class="mb-4">Number of Meetings</p>
+                            <p class="fs-30 mb-2">34040</p>
+                            <p>2.00% (30 days)</p>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
+                <div class="col-md-6 stretch-card transparent">
+                    <div class="card card-light-danger">
+                        <div class="card-body">
+                            <p class="mb-4">Number of Clients</p>
+                            <p class="fs-30 mb-2">47033</p>
+                            <p>0.22% (30 days)</p>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Order Details</p>
+                    <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                    <div class="d-flex flex-wrap mb-5">
+                        <div class="me-5 mt-3">
+                            <p class="text-muted">Order value</p>
+                            <h3 class="text-primary fs-30 font-weight-medium">12.3k</h3>
+                        </div>
+                        <div class="me-5 mt-3">
+                            <p class="text-muted">Orders</p>
+                            <h3 class="text-primary fs-30 font-weight-medium">14k</h3>
+                        </div>
+                        <div class="me-5 mt-3">
+                            <p class="text-muted">Users</p>
+                            <h3 class="text-primary fs-30 font-weight-medium">71.56%</h3>
+                        </div>
+                        <div class="mt-3">
+                            <p class="text-muted">Downloads</p>
+                            <h3 class="text-primary fs-30 font-weight-medium">34040</h3>
+                        </div>
+                    </div>
+                    <canvas id="order-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <p class="card-title">Sales Report</p>
+                        <a href="#" class="text-info">View all</a>
+                    </div>
+                    <p class="font-weight-500">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                    <div id="sales-chart-legend" class="chartjs-legend mt-4 mb-2"></div>
+                    <canvas id="sales-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card position-relative">
+                <div class="card-body">
+                    <div id="detailedReports" class="carousel slide detailed-report-carousel position-static pt-2" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="row">
+                                    <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
+                                        <div class="ml-xl-4 mt-3">
+                                            <p class="card-title">Detailed Reports</p>
+                                            <h1 class="text-primary">$34040</h1>
+                                            <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
+                                            <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-9">
+                                        <div class="row">
+                                            <div class="col-md-6 border-right">
+                                                <div class="table-responsive mb-3 mb-md-0 mt-3">
+                                                    <table class="table table-borderless report-table">
+                                                        <tr>
+                                                            <td class="text-muted">Illinois</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">713</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Washington</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">583</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Mississippi</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">924</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">California</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">664</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Maryland</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">560</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Alaska</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">793</h5>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mt-3">
+                                                <div class="daoughnutchart-wrapper">
+                                                    <canvas id="north-america-chart"></canvas>
+                                                </div>
+                                                <div id="north-america-chart-legend">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="row">
+                                    <div class="col-md-12 col-xl-3 d-flex flex-column justify-content-start">
+                                        <div class="ml-xl-4 mt-3">
+                                            <p class="card-title">Detailed Reports</p>
+                                            <h1 class="text-primary">$34040</h1>
+                                            <h3 class="font-weight-500 mb-xl-4 text-primary">North America</h3>
+                                            <p class="mb-2 mb-xl-0">The total number of sessions within the date range. It is the period time a user is actively engaged with your website, page or app, etc</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-xl-9">
+                                        <div class="row">
+                                            <div class="col-md-6 border-right">
+                                                <div class="table-responsive mb-3 mb-md-0 mt-3">
+                                                    <table class="table table-borderless report-table">
+                                                        <tr>
+                                                            <td class="text-muted">Illinois</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">713</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Washington</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">583</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Mississippi</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">924</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">California</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-info" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">664</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Maryland</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">560</h5>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-muted">Alaska</td>
+                                                            <td class="w-100 px-0">
+                                                                <div class="progress progress-md mx-4">
+                                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <h5 class="font-weight-bold mb-0">793</h5>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mt-3">
+                                                <div class="daoughnutchart-wrapper">
+                                                    <canvas id="south-america-chart"></canvas>
+                                                </div>
+                                                <div id="south-america-chart-legend"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#detailedReports" role="button" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#detailedReports" role="button" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-7 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title mb-0">Top Products</p>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-borderless">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Search Engine Marketing</td>
+                                    <td class="font-weight-bold">$362</td>
+                                    <td>21 Sep 2018</td>
+                                    <td class="font-weight-medium">
+                                        <div class="badge badge-success">Completed</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Search Engine Optimization</td>
+                                    <td class="font-weight-bold">$116</td>
+                                    <td>13 Jun 2018</td>
+                                    <td class="font-weight-medium">
+                                        <div class="badge badge-success">Completed</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Display Advertising</td>
+                                    <td class="font-weight-bold">$551</td>
+                                    <td>28 Sep 2018</td>
+                                    <td class="font-weight-medium">
+                                        <div class="badge badge-warning">Pending</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Pay Per Click Advertising</td>
+                                    <td class="font-weight-bold">$523</td>
+                                    <td>30 Jun 2018</td>
+                                    <td class="font-weight-medium">
+                                        <div class="badge badge-warning">Pending</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>E-Mail Marketing</td>
+                                    <td class="font-weight-bold">$781</td>
+                                    <td>01 Nov 2018</td>
+                                    <td class="font-weight-medium">
+                                        <div class="badge badge-danger">Cancelled</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Referral Marketing</td>
+                                    <td class="font-weight-bold">$283</td>
+                                    <td>20 Mar 2018</td>
+                                    <td class="font-weight-medium">
+                                        <div class="badge badge-warning">Pending</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Social media marketing</td>
+                                    <td class="font-weight-bold">$897</td>
+                                    <td>26 Oct 2018</td>
+                                    <td class="font-weight-medium">
+                                        <div class="badge badge-success">Completed</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">To Do Lists</h4>
+                    <div class="list-wrapper pt-2">
+                        <ul class="d-flex flex-column-reverse todo-list todo-list-custom">
+                            <li>
+                                <div class="form-check form-check-flat">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox"> Meeting with Urban Team </label>
+                                </div>
+                                <i class="remove ti-close"></i>
+                            </li>
+                            <li class="completed">
+                                <div class="form-check form-check-flat">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox" checked> Duplicate a project for new customer </label>
+                                </div>
+                                <i class="remove ti-close"></i>
+                            </li>
+                            <li>
+                                <div class="form-check form-check-flat">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox"> Project meeting with CEO </label>
+                                </div>
+                                <i class="remove ti-close"></i>
+                            </li>
+                            <li class="completed">
+                                <div class="form-check form-check-flat">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox" checked> Follow up of team zilla </label>
+                                </div>
+                                <i class="remove ti-close"></i>
+                            </li>
+                            <li>
+                                <div class="form-check form-check-flat">
+                                    <label class="form-check-label">
+                                        <input class="checkbox" type="checkbox"> Level up for Antony </label>
+                                </div>
+                                <i class="remove ti-close"></i>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="add-items d-flex mb-0 mt-2">
+                        <input type="text" class="form-control todo-list-input" placeholder="Add new task">
+                        <button class="add btn btn-icon text-primary todo-list-add-btn bg-transparent"><i class="icon-circle-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 stretch-card grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title mb-0">Projects</p>
+                    <div class="table-responsive">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="ps-0  pb-2 border-bottom">Places</th>
+                                    <th class="border-bottom pb-2">Orders</th>
+                                    <th class="border-bottom pb-2">Users</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ps-0">Kentucky</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold me-2">65</span>(2.15%)</p>
+                                    </td>
+                                    <td class="text-muted">65</td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-0">Ohio</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold me-2">54</span>(3.25%)</p>
+                                    </td>
+                                    <td class="text-muted">51</td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-0">Nevada</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold me-2">22</span>(2.22%)</p>
+                                    </td>
+                                    <td class="text-muted">32</td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-0">North Carolina</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold me-2">46</span>(3.27%)</p>
+                                    </td>
+                                    <td class="text-muted">15</td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-0">Montana</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold me-2">17</span>(1.25%)</p>
+                                    </td>
+                                    <td class="text-muted">25</td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-0">Nevada</td>
+                                    <td>
+                                        <p class="mb-0"><span class="font-weight-bold me-2">52</span>(3.11%)</p>
+                                    </td>
+                                    <td class="text-muted">71</td>
+                                </tr>
+                                <tr>
+                                    <td class="ps-0 pb-0">Louisiana</td>
+                                    <td class="pb-0">
+                                        <p class="mb-0"><span class="font-weight-bold me-2">25</span>(1.32%)</p>
+                                    </td>
+                                    <td class="pb-0">14</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 stretch-card grid-margin">
+            <div class="row">
+                <div class="col-md-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title">Charts</p>
+                            <div class="charts-data">
+                                <div class="mt-3">
+                                    <p class="mb-0">Data 1</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="progress progress-md flex-grow-1 me-4">
+                                            <div class="progress-bar bg-inf0" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <p class="mb-0">5k</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <p class="mb-0">Data 2</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="progress progress-md flex-grow-1 me-4">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <p class="mb-0">1k</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <p class="mb-0">Data 3</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="progress progress-md flex-grow-1 me-4">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 48%" aria-valuenow="48" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <p class="mb-0">992</p>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <p class="mb-0">Data 4</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="progress progress-md flex-grow-1 me-4">
+                                            <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <p class="mb-0">687</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 stretch-card grid-margin grid-margin-md-0">
+                    <div class="card data-icon-card-primary">
+                        <div class="card-body">
+                            <p class="card-title text-white">Number of Meetings</p>
+                            <div class="row">
+                                <div class="col-8 text-white">
+                                    <h3>34040</h3>
+                                    <p class="text-white font-weight-500 mb-0">The total number of sessions within the date range.It is calculated as the sum . </p>
+                                </div>
+                                <div class="col-4 background-icon">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 stretch-card grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Notifications</p>
+                    <ul class="icon-data-list">
+                        <li>
+                            <div class="d-flex">
+                            <img src="{{asset('assets/images/faces/face1.jpg')}}" alt="people">
+                                <div>
+                                    <p class="text-info mb-1">Isabella Becker</p>
+                                    <p class="mb-0">Sales dashboard have been created</p>
+                                    <small>9:30 am</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex">
+                                <img src="{{asset('assets/images/faces/face2.jpg')}}" alt="user">
+                                <div>
+                                    <p class="text-info mb-1">Adam Warren</p>
+                                    <p class="mb-0">You have done a great job #TW111</p>
+                                    <small>10:30 am</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex">
+                                <img src="{{asset('assets/images/faces/face3.jpg')}}" alt="user">
+                                <div>
+                                    <p class="text-info mb-1">Leonard Thornton</p>
+                                    <p class="mb-0">Sales dashboard have been created</p>
+                                    <small>11:30 am</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex">
+                                <img src="{{asset('assets/images/faces/face4.jpg')}}" alt="user">
+                                <div>
+                                    <p class="text-info mb-1">George Morrison</p>
+                                    <p class="mb-0">Sales dashboard have been created</p>
+                                    <small>8:50 am</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex">
+                                <img src="{{asset('assets/images/faces/face5.jpg')}}" alt="user">
+                                <div>
+                                    <p class="text-info mb-1">Ryan Cortez</p>
+                                    <p class="mb-0">Herbs are fun and easy to grow.</p>
+                                    <small>9:00 am</small>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-title">Advanced Table</p>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table id="example" class="display expandable-table" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Quote#</th>
+                                            <th>Product</th>
+                                            <th>Business type</th>
+                                            <th>Policy holder</th>
+                                            <th>Premium</th>
+                                            <th>Status</th>
+                                            <th>Updated at</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function() {
-        loadProducts();
-
-        // Show Records
-        // function loadProducts() {
-        //     $.ajax({
-        //         url: "/admin/products/show",
-        //         method: "GET",
-        //         dataType: "json",
-        //         success: function(response) {
-        //             let tableRows = "";
-        //             $.each(response, function(index, product) {
-        //                 tableRows += `
-        //                 <tr>
-        //                     <th>${index + 1}</th>
-        //                     <td>${product.name}</td>
-        //                     <td><img class="productImg" src="${product.img}"></td>
-        //                     <td>${product.price}</td>
-        //                     <td>${product.brand}</td>
-        //                     <td>${product.unit}</td>
-        //                     <td>${product.category}</td>
-        //                     <td class="text-center">
-        //                         <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-        //                         <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
-        //                     </td>
-        //                 </tr>
-        //             `;
-        //             });
-        //             $("#productTableBody").html(tableRows);
-        //         },
-        //         error: function() {
-        //             alert("Failed to load products. Please try again.");
-        //         }
-        //     });
-        // }
-
-
-        function loadProducts() {
-            $.ajax({
-                url: "/admin/products/show",
-                method: "GET",
-                dataType: "json",
-                success: function(response) {
-                    console.log(response);
-                    let tableRows = "";
-                    if (response.length === 0) {
-                        tableRows = `
-                    <tr>
-                        <td colspan="10" class="text-center">No Records Found</td>
-                    </tr>`;
-                    } else {
-                        $.each(response, function(index, product) {
-                            let imagesHtml = "";
-                            if (product.images && product.images.length > 0) {
-                                $.each(product.images, function(i, image) {
-                                    imagesHtml += `<img src="/storage/${image.image_path}" width="50" class="productImg" alt="ProductImage">`;
-                                });
-                            } else {
-                                imagesHtml = `<span class="text-muted">No Image</span>`;
-                            }
-                            tableRows += `<tr>
-                            <th>${index + 1}</th>
-                            <td>${product.name}</td>
-                            <td>${imagesHtml}</td>
-                            <td>${product.price}</td>
-                            <td>${product.description}</td>
-                            <td>${product.unit ? product.unit.name : 'N/A'}</td>
-                            <td>${product.brand ? product.brand.name : 'N/A'}</td>
-                            <td>${product.category ? product.category.name : 'N/A'}</td>
-                            <td>${product.stock}</td>
-                            <td>
-                                <button class="btn btn-sm btn-info editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                <button class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
-                            </td>
-                        </tr>`;
-                        });
-                    }
-                    $("#productTableBody").html(tableRows);
-                },
-                error: function() {
-                    $("#productTableBody").html(`<tr>
-                    <td colspan="10" class="text-center text-danger">Error fetching data</td>
-                </tr>
-            `);
-                }
-            });
-        }
-
-        // Add Records
-        $("#addProductForm").on('submit', function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            $.ajax({
-                url: "/admin/products/create",
-                method: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    alert(response.success);
-                    loadProducts();
-                    $("#addProductForm")[0].reset();
-                    $("#exampleModal").modal('hide');
-                    loadProducts();
-                },
-                error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
-                    $.each(errors, function(key, value) {
-                        errorMessage += value[0] + "\n";
-                    });
-                    alert(errorMessage);
-                }
-            });
-        });
-
-        // Update Record
-        $("#editProductForm").on("submit", function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-            let productId = $("input[name='id']").val();
-
-            $.ajax({
-                url: `/admin/products/update/${productId}`,
-                method: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                },
-                success: function(response) {
-                    alert(response.success);
-                    $("#updateModal").modal("hide");
-                    loadProducts(); // Refresh Product List
-                },
-                error: function(xhr) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessage = "";
-                    $.each(errors, function(key, value) {
-                        errorMessage += value[0] + "\n";
-                    });
-                    alert(errorMessage);
-                }
-            });
-        });
-
-
-        // Prefill Values
-        $(document).on("click", ".editBtn", function() {
-            let id = $(this).data("id");
-            $.ajax({
-                url: `/admin/products/edit/${id}`,
-                method: "GET",
-                success: function(response) {
-                    let form = $("#editProductForm");
-                    form.find("input[name='id']").val(response.id);
-                    form.find("input[name='name']").val(response.name);
-                    form.find("input[name='price']").val(response.price);
-                    form.find("input[name='description']").val(response.description);
-                    form.find("input[name='stock']").val(response.stock);
-                    form.find("input[name='brand_id']").val(response.brand_id);
-                    form.find("input[name='unit_id']").val(response.unit_id);
-                    form.find("input[name='category_id']").val(response.category_id);
-                    // $("#editPreviewImg").attr("src", response.img);
-                },
-                error: function() {
-                    alert("Failed to fetch product details.");
-                }
-            });
-        });
-
-        // Delete Record
-        $(document).on("click", ".deleteBtn", function() {
-            let id = $(this).data("id");
-            if (confirm("Are you sure you want to delete this product?")) {
-                $.ajax({
-                    url: "/admin/products/destroy/" + id,
-                    method: "DELETE",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        alert(response.success);
-                        loadProducts();
-                    },
-                    error: function() {
-                        alert("Failed to delete product.");
-                    }
-                });
-            }
-        });
-
-        // Search Records
-        $("#searchProduct").on("keyup", function() {
-            let query = $(this).val();
-            $.ajax({
-                url: "/admin/products/search/",
-                method: "GET",
-                data: {
-                    query: query
-                },
-                success: function(response) {
-                    let tableRows = "";
-                    if (response.length === 0) {
-                        tableRows = `
-                        <tr><td colspan="8" class="text-center">No Records Found</td></tr>`;
-                    } else {
-                        $.each(response, function(index, product) {
-                            let imagesHtml = "";
-                            if (product.images && product.images.length > 0) {
-                                $.each(product.images, function(i, image) {
-                                    imagesHtml += `<img src="/storage/${image.image_path}" width="50" class="productImg" alt="Product Image"> `;
-                                });
-                            } else {
-                                imagesHtml = `<span class="text-muted">No Image</span>`;
-                            }
-                            tableRows += `
-                            <tr>
-                                <th>${index + 1}</th>
-                                <td>${product.name}</td>
-                                <td>${imagesHtml}</td>
-                                <td>${product.price}</td>
-                                <td>${product.description}</td>
-                                <td>${product.unit ? product.unit.name : 'N/A'}</td>
-                                <td>${product.brand ? product.brand.name : 'N/A'}</td>
-                                <td>${product.category ? product.category.name : 'N/A'}</td>
-                                <td>${product.stock}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-sm btn-primary editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger deleteBtn" data-id="${product.id}">Delete</button>
-                                </td>
-                            </tr>
-                        `;
-                        });
-                    }
-
-                    $("#productTableBody").html(tableRows);
-                },
-                error: function() {
-                    alert("Search failed. Try again.");
-                }
-            });
-        });
-    });
-</script>
 @endsection

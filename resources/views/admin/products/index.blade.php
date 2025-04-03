@@ -40,6 +40,7 @@
                         <th>Unit</th>
                         <th>Brand</th>
                         <th>Category</th>
+                        <th>Slug</th>
                         <th>Stock</th>
                         <th>Actions</th>
                     </tr>
@@ -216,6 +217,7 @@
                         <td>${product.unit ? product.unit.name : 'N/A'}</td>
                         <td>${product.brand ? product.brand.name : 'N/A'}</td>
                         <td>${product.category ? product.category.name : 'N/A'}</td>
+                        <td>${product.slug}</td>
                         <td>${product.stock}</td>
                         <td>
                             <button class="btn btn-sm btn-info editBtn" data-id="${product.id}" data-bs-toggle="modal" data-bs-target="#updateModal">Edit</button>
