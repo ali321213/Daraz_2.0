@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name')->unique();;
             $table->text('description')->nullable();
-            $table->decimal('price', 10, 2);
+            $table->string('price');
             $table->foreignId('brand_id')->constrained('brands')->onDelete('cascade');
             $table->foreignId('unit_id')->nullable()->constrained('units')->onDelete('set null');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');

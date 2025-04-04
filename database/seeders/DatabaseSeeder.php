@@ -16,15 +16,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory(10)->create();
+        User::factory(5)->create();
         Unit::factory(5)->create();
-        Colors::factory(10)->create();
-        Brands::factory(10)->create();
-        Category::factory(10)->create();
-        Products::factory(10)->create()->each(function ($product) {
+        Colors::factory(7)->create();
+        Brands::factory(6)->create();
+        Category::factory(6)->create();
+        Products::factory(7)->create()->each(function ($product) {
             ProductImage::factory(rand(2, 3))->create(['product_id' => $product->id]);
         });
-        DeliveryOption::factory(10)->create();
-        ReturnWarranty::factory(10)->create();
+        DeliveryOption::factory(5)->create();
+        ReturnWarranty::factory(5)->create();
     }
 }

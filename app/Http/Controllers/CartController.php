@@ -42,7 +42,6 @@ class CartController extends Controller
                 'quantity' => $request->quantity,
             ]);
         }
-
         // Return cart count in the response
         $cartCount = Carts::where('user_id', Auth::id())->sum('quantity');
 
@@ -53,33 +52,19 @@ class CartController extends Controller
         ]);
     }
 
-    // public function update(Request $request)
-    // {
-    //     $request->validate([
-    //         'id' => 'required|exists:carts,id',
-    //         'quantity' => 'required|integer|min:1'
-    //     ]);
-    //     $cart = Carts::findOrFail($request->id);
-    //     $cart->update(['quantity' => $request->quantity]);
-    //     return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
-    // }
-
     public function updateCart(Request $request)
     {
         $cartItem = Carts::where('id', $request->id)->where('user_id', auth()->id())->first();
         if ($cartItem) {
             $cartItem->update(['quantity' => $request->quantity]);
         }
-
-        return response()->json(['success' => true, 'cartCount' => auth()->user()->carts()->sum('quantity')]);
+        return redirect()->back()->with('success', 'Product Updated in cart');
     }
-
 
     public function calculateCartTotal()
     {
         $cart = auth()->user()->carts()->with('product')->get();
-
-        $subtotal = $cart->sum(fn ($item) => $item->product->price * $item->quantity);
+        $subtotal = $cart->sum(fn($item) => $item->product->price * $item->quantity);
         $tax = $subtotal * 0.1; // Example: 10% tax
         $shipping = 200; // Example: Flat rate shipping
         $total = $subtotal + $tax + $shipping;
@@ -98,13 +83,22 @@ class CartController extends Controller
         $cart = Carts::where('id', $id)->where('user_id', Auth::id())->first();
         if ($cart) {
             $cart->delete();
-            return redirect()->back()->with('success', 'Product removed from cart.');
+            return redirect()->back()->with('success', 'Product removed from cart');
         }
         return redirect()->back()->with('error', 'Item not found.');
     }
 
+    public function clear()
+    {
+        $user = Auth::user();
 
+        if ($user) {
+            Carts::where('user_id', $user->id)->delete();
+            return redirect()->route('cart.index')->with('success', 'Cart has been cleared.');
+        }
 
+        return redirect()->route('cart.index')->with('error', 'Unauthorized action.');
+    }
     // public function add(Request $request)
     // {
     //     $request->validate([
@@ -119,5 +113,16 @@ class CartController extends Controller
     //         ['quantity' => $request->quantity]
     //     );
     //     return redirect()->back()->with('success', 'Product added to cart!');
+    // }
+
+    // public function update(Request $request)
+    // {
+    //     $request->validate([
+    //         'id' => 'required|exists:carts,id',
+    //         'quantity' => 'required|integer|min:1'
+    //     ]);
+    //     $cart = Carts::findOrFail($request->id);
+    //     $cart->update(['quantity' => $request->quantity]);
+    //     return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
     // }
 }

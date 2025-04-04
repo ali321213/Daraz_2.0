@@ -15,8 +15,22 @@
     <link rel="stylesheet" href="{{ asset('bootstrap-icons/bootstrap-icons.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
+        @font-face {
+            font-family: OptimusPrinceps;
+            src: url('{{ public_path(' fonts/OptimusPrinceps.tff') }}');
+        }
+
+        .Archivo {
+            font-family: 'Archivo';
+        }
+
         body {
             /* background-color:rgb(43, 41, 41);
             color: white; */
@@ -118,10 +132,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto "></ul>
-                    <input type="search" id="searchProducts" class="form-control form-control-lg " placeholder="Search Products" aria-label="Search" style="width: 500px;color: white;">
-                    <div class="d-flex">
-                        <button class="btn btn-lg btn-info" type="submit">Search</button>
-                    </div>
+                    <input type="search" id="searchProducts" class="form-control form-control-lg" placeholder="Search Products" aria-label="Search" style="width: 500px;">
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <div class="d-flex">
@@ -129,14 +140,17 @@
                                 <i class="bi bi-house-door headerIcons mx-2"></i>
                             </a>
                             @php
-                            $cartCount = Auth::check() && Auth::user()->carts ? Auth::user()->carts->sum('quantity') : 0;
+                            $cartCount = Auth::check() ? Auth::user()->carts->sum('quantity') : 0;
                             @endphp
+                            @if(Auth::check())
                             <a href="{{ route('cart.index') }}" class="text-decoration-none text-dark d-flex">
                                 <i class="bi bi-cart headerIcons"></i>
                                 <span class="cart-count text-center fw-bold" style="background-color: #ff6600; color: white; border-radius: 50%; width: 20px; height: 20px; line-height: 20px;">
                                     {{ $cartCount }}
                                 </span>
                             </a>
+                            @endif
+
                         </div>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ url('/products') }}">{{ __('Products') }}</a>
@@ -209,6 +223,8 @@
     </div>
     <script>
         $(document).ready(function() {
+            updateCartTotal();
+
             function updateCartTotal() {
                 $.get("{{ route('cart.total') }}", function(response) {
                     $("#subtotal").text(response.subtotal);
@@ -221,20 +237,53 @@
         });
 
         $(document).on("change", ".update-cart", function() {
-    let cartId = $(this).data("id");
-    let quantity = $(this).val();
+            let cartId = $(this).data("id");
+            let quantity = $(this).val();
 
-    $.ajax({
-        url: "{{ route('cart.update') }}",
-        method: "POST",
-        data: {id: cartId, quantity: quantity, _token: "{{ csrf_token() }}"},
-        success: function(response) {
-            $(".cart-count").text(response.cartCount);
-            updateCartTotal();
-        }
-    });
-});
+            $.ajax({
+                url: "{{ route('cart.update') }}",
+                method: "POST",
+                data: {
+                    id: cartId,
+                    quantity: quantity,
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    $(".cart-count").text(response.cartCount);
+                    updateCartTotal();
+                }
+            });
+        });
 
+
+        $("#searchProducts").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: "{{ route('search.suggestions') }}",
+                    method: "GET",
+                    data: {
+                        query: request.term
+                    },
+                    dataType: "json", // ✅ Ensures JSON response is expected
+                    success: function(data) {
+                        response($.map(data, function(item) {
+                            return {
+                                label: item.name,
+                                value: item.name,
+                                id: item.id
+                            };
+                        }));
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("AJAX Error:", error);
+                    }
+                });
+            },
+            minLength: 2,
+            select: function(event, ui) {
+                window.location.href = "/products/" + ui.item.id;
+            }
+        });
     </script>
 </body>
 

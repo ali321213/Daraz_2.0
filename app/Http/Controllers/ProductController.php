@@ -174,22 +174,37 @@ class ProductController extends Controller
         return response()->json(['success' => 'Product deleted successfully']);
     }
 
+    // public function search(Request $request)
+    // {
+    //     $query = $request->query('query');
+    //     $products = Products::with(['brand', 'category', 'unit'])
+    //         ->where('name', 'LIKE', "%{$query}%")
+    //         ->orWhereHas('brand', function ($q) use ($query) {
+    //             $q->where('name', 'LIKE', "%{$query}%");
+    //         })
+    //         ->orWhereHas('unit', function ($q) use ($query) {
+    //             $q->where('name', 'LIKE', "%{$query}%");
+    //         })
+    //         ->orWhereHas('category', function ($q) use ($query) {
+    //             $q->where('name', 'LIKE', "%{$query}%");
+    //         })
+    //         ->get();
+    //     return response()->json($products);
+    // }
+
     public function search(Request $request)
     {
-        $query = $request->query('query');
-        $products = Products::with(['brand', 'category', 'unit'])
-            ->where('name', 'LIKE', "%{$query}%")
-            ->orWhereHas('brand', function ($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%");
-            })
-            ->orWhereHas('unit', function ($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%");
-            })
-            ->orWhereHas('category', function ($q) use ($query) {
-                $q->where('name', 'LIKE', "%{$query}%");
-            })
+        // Ensure the request has 'query'
+        if (!$request->has('query')) {
+            return response()->json(['error' => 'Invalid request'], 400);
+        }
+        $query = $request->input('query');
+        // Fetch products based on search query
+        $products = Products::where('name', 'LIKE', "%{$query}%")
+            ->select('id', 'name') // Select only required fields
+            ->take(10) // Limit results
             ->get();
-        return response()->json($products);
+        return response()->json($products); // ✅ Ensure JSON response
     }
 
     // public function store(Request $request)

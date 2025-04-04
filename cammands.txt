@@ -350,5 +350,8 @@ git status
 git commit -m "26-03-2025"
 git push -u origin main
 
+admin@gmail.com
+user@gmail.com
+
 php artisan serve
 npm run dev

@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+@section('title', 'Login Page')
 <div class="conatiner">
     <div class="row">
         <div class="col-lg-4"></div>

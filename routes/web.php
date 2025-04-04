@@ -90,7 +90,10 @@ Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout
 
 
 // Admin Routes (Requires Admin Middleware)
-Route::get('admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');
+
+Route::middleware(['admin'])->group(function () {
+    Route::get('admin/dashboard', [AdminController::class, 'adminDashboard'])->name('admin.dashboard');
+});
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     //  Manage Orders
@@ -115,21 +118,26 @@ Route::prefix('products')->name('products.')->group(function () {
     Route::get('/search', [ProductController::class, 'search'])->name('search');
     Route::get('/{id}', [ProductController::class, 'show'])->name('show');
 });
+Route::get('/search-suggestions', [ProductController::class, 'search'])->name('search.suggestions');
 
-Route::prefix('products/detail/cart')->name('products.detail.cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('index');
-    Route::post('/add', [CartController::class, 'add'])->name('add'); // Matches AJAX request
-    Route::post('/update', [CartController::class, 'updateCart'])->name('update');
-    Route::post('/remove', [CartController::class, 'removeFromCart'])->name('remove');
-});
+Route::middleware(['auth'])->group(function () {
 
-// Route::get('/cart', [CartController::class, 'index'])->name('cart');
-Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'index'])->name('index'); // Show cart page
-    Route::post('/add', [CartController::class, 'add'])->name('add'); // Add item to cart
-    Route::post('/update', [CartController::class, 'update'])->name('update'); // Update item quantity
-    Route::post('/remove', [CartController::class, 'remove'])->name('remove'); // Remove an item from cart
-    Route::post('/clear', [CartController::class, 'clear'])->name('clear'); // Clear the entire cart
+    Route::prefix('products/detail/cart')->name('products.detail.cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::post('/add', [CartController::class, 'add'])->name('add'); // Matches AJAX request
+        Route::post('/update', [CartController::class, 'updateCart'])->name('update');
+        Route::post('/remove', [CartController::class, 'removeFromCart'])->name('remove');
+    });
+
+    // Route::get('/cart', [CartController::class, 'index'])->name('cart');
+    Route::prefix('cart')->name('cart.')->group(function () {
+        Route::get('/', [CartController::class, 'index'])->name('index'); // Show cart page
+        Route::post('/add', [CartController::class, 'add'])->name('add'); // Add item to cart
+        Route::post('/update', [CartController::class, 'updateCart'])->name('update'); // Update item quantity
+        Route::post('/remove/{id}', [CartController::class, 'remove'])->name('remove'); // Remove an item from cart
+        Route::post('/clear', [CartController::class, 'clear'])->name('clear'); // Clear the entire cart
+        Route::get('/total', [CartController::class, 'calculateCartTotal'])->name('total'); // Clear the entire cart
+    });
 });
 
 // ========================== ADMIN Routes ==========================

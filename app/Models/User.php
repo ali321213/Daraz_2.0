@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    public function carts()
+    {
+        return $this->hasMany(Carts::class); // Ensure Cart model is imported
+    }
 }
