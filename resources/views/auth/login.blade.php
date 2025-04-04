@@ -25,6 +25,9 @@
                     <input type="password" name="password" class="form-control form-control-lg" required>
                 </div>
                 <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                <!-- <a href="{{ route('social.login', 'google') }}" class="btn btn-danger btn-block mb-2">Login with Google</a>
+                <a href="{{ route('social.login', 'facebook') }}" class="btn btn-primary btn-block">Login with Facebook</a> -->
+
             </form>
         </div>
         <div class="col-lg-4"></div>

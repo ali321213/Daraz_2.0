@@ -73,10 +73,11 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
+            'slug' => 'required|string|max:100',
             'unit_id' => 'nullable|string|max:50',
-            'color_id' => 'required|exists:brands,id',
-            'brand_id' => 'required|exists:brands,id',
-            'category_id' => 'required|exists:categories,id',
+            // 'color_id' => 'nullable|required|exists:brands,id',
+            'brand_id' => 'nullable|required|exists:brands,id',
+            'category_id' => 'nullable|required|exists:categories,id',
             'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,ts|max:25600',
         ]);
         $product = Products::create($request->only([
@@ -86,7 +87,8 @@ class ProductController extends Controller
             'unit_id',
             'brand_id',
             'category_id',
-            'stock'
+            'stock',
+            'slug'
         ]));
         if ($request->hasFile('image_path')) {
             foreach ($request->file('image_path') as $image) {
@@ -106,6 +108,7 @@ class ProductController extends Controller
             'name' => 'required',
             'price' => 'required|numeric',
             'stock' => 'required|numeric',
+            'slug' => 'required',
             'description' => 'required',
             'brand_id' => 'required',
             'unit_id' => 'required',
@@ -128,6 +131,7 @@ class ProductController extends Controller
         }
         $product->update([
             'name' => $request->name,
+            'slug' => $request->slug,
             'price' => $request->price,
             'stock' => $request->stock,
             'description' => $request->description,
@@ -207,27 +211,40 @@ class ProductController extends Controller
         return response()->json($products); // ✅ Ensure JSON response
     }
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required',
-    //         'price' => 'required|numeric',
-    //         'brand' => 'required',
-    //         'unit' => 'required',
-    //         'category' => 'required',
-    //         'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-    //     ]);
-    //     // Store image in public storage
-    //     $imgPath = $request->file('img')->store('products', 'public');
-    //     // Create new product
-    //     $product = Products::create([
-    //         'name' => $request->name,
-    //         'price' => $request->price,
-    //         'brand' => $request->brand,
-    //         'unit' => $request->unit,
-    //         'category' => $request->category,
-    //         'img' => asset("storage/$imgPath")
-    //     ]);
-    //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
-    // }
+    public function relatedProductShow($id)
+    { {
+            $product = Products::with(['images', 'category', 'variants', 'deliveryOptions', 'returnWarranty', 'reviews.user'])->findOrFail($id);
+            $relatedProducts = Products::where('category_id', $product->category_id)
+                ->where('id', '!=', $product->id)
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+            return view('products.show', compact('product', 'relatedProducts'));
+        }
+
+
+        // public function store(Request $request)
+        // {
+        //     $request->validate([
+        //         'name' => 'required',
+        //         'price' => 'required|numeric',
+        //         'brand' => 'required',
+        //         'unit' => 'required',
+        //         'category' => 'required',
+        //         'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        //     ]);
+        //     // Store image in public storage
+        //     $imgPath = $request->file('img')->store('products', 'public');
+        //     // Create new product
+        //     $product = Products::create([
+        //         'name' => $request->name,
+        //         'price' => $request->price,
+        //         'brand' => $request->brand,
+        //         'unit' => $request->unit,
+        //         'category' => $request->category,
+        //         'img' => asset("storage/$imgPath")
+        //     ]);
+        //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
+        // }
+    }
 }

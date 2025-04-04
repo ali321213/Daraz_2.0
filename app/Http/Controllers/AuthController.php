@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Str;
 
 
 use Illuminate\Http\Request;
@@ -55,5 +58,37 @@ class AuthController extends Controller
     public function buyNow()
     {
         // return view('auth.buyNow');
+    }
+
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function handleProviderCallback($provider)
+    {
+        try {
+            $socialUser = Socialite::driver($provider)->stateless()->user();
+
+            $user = User::where('provider_id', $socialUser->getId())
+                ->where('provider', $provider)
+                ->first();
+
+            if (!$user) {
+                $user = User::create([
+                    'name' => $socialUser->getName() ?? $socialUser->getNickname(),
+                    'email' => $socialUser->getEmail(),
+                    'provider' => $provider,
+                    'provider_id' => $socialUser->getId(),
+                    'password' => bcrypt(Str::random(16)), // random since not used
+                ]);
+            }
+
+            Auth::login($user);
+
+            return redirect()->route('home');
+        } catch (\Exception $e) {
+            return redirect()->route('login')->withErrors(['msg' => 'Login failed. Please try again.']);
+        }
     }
 }

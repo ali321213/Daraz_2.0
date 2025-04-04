@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->integer('downvotes')->default(0);
             $table->timestamps();
         });
-        
     }
 
     public function down(): void

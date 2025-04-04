@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-@section('title', 'Shopping Cart')
+@section('title', 'Cart - Daraz 2.0')
 <div class="container mt-5">
     <h1 class="fw-bold mb-4">Your Shopping Cart</h1>
 

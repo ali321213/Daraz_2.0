@@ -10,23 +10,39 @@
     </div>
     <div class="row d-flex align-items-center">
         <!-- Product Image -->
-        <div class="col-md-3">
-            @if($product->images->isNotEmpty())
-            <!-- <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" class="img-fluid" alt="{{ $product->name }}"> -->
-            <img src="{{ asset('assets/images/category3.webp') }}" class="img-fluid" alt="No Image Available">
-            @else
-            <img src="{{ asset('assets/images/category1.webp') }}" class="img-fluid" alt="No Image Available">
-            @endif
+        <div class="col-md-6">
+            <!-- Product Image -->
+            <div id="productCarousel{{ $product->id }}" class="carousel slide ProductCarousel" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach($product->images as $key => $image)
+                    <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
+                        <img src="{{ asset('storage/' . $image->image_path) }}" class="d-block w-100 img-fluid" alt="{{ $product->name }}">
+                    </div>
+                    @endforeach
+                </div>
+                <!-- Carousel Controls -->
+                @if($product->images->count() > 1)
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel{{ $product->id }}" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel{{ $product->id }}" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                @endif
+            </div>
         </div>
 
         <!-- Product Details -->
-        <div class="col-md-6 text-capitalize">
+        <div class="col-md-4 text-capitalize">
             <div class="float-end">
                 <i class="bi bi-share" style="font-size: 32px;margin-right:20px;"></i>
                 <i class="bi bi-heart wishlist" style="font-size: 32px;"></i>
             </div>
             <h1 class="fw-bold">{{ $product->name }}</h1>
             <p class="text-muted">Category: {{ $product->category->name ?? 'Uncategorized' }}</p>
+            <p class="text-muted">Brand: {{ $product->brand->name ?? 'Uncategorized' }}</p>
             <h3 class="text-danger">Rs. {{ number_format($product->price) }}</h3>
             <p class="mt-3">{{ $product->description }}</p>
             <!-- Quantity & Color Variant Selection -->
@@ -50,7 +66,7 @@
         </div>
 
         <!-- Delivery Options & Return/Warranty -->
-        <div class="col-md-3 text-capitalize" style="border-left: 1px solid grey;">
+        <div class="col-md-2 text-capitalize" style="border-left: 1px solid grey;">
             <p class="h5 mt-5 fw-bold">Delivery options:</p>
 
             @forelse($product->deliveryOptions as $delivery)
@@ -85,6 +101,50 @@
             </div>
 
             <p class="mt-2 fw-bold">Follow us for exclusive discounts!</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="mt-5">
+                <h4 class="fw-bold">Customer Reviews</h4>
+                @foreach($product->reviews()->where('product_id', $product->id)->whereNull('parent_id')->latest()->get() as $review)
+                <div class="border p-3 mb-3 rounded">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ $review->user->name }}</strong>
+                        <span>{{ $review->created_at->diffForHumans() }}</span>
+                    </div>
+                    <div>
+                        @for($i = 1; $i <= 5; $i++) <i class="bi bi-star{{ $i <= $review->rating ? '-fill text-warning' : '' }}"></i>
+                            @endfor
+                    </div>
+                    <p>{{ $review->review }}</p>
+                </div>
+                @endforeach
+
+                @auth
+                <form id="reviewForm" class="mt-4">
+                    @csrf
+                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                    <div class="mb-2">
+                        <label for="rating" class="form-label">Rating:</label>
+                        <select name="rating" class="form-control w-25">
+                            @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}">{{ $i }} Star{{ $i > 1 ? 's' : '' }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label for="review" class="form-label">Your Review:</label>
+                        <textarea name="review" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+                @else
+                <p><a href="{{ route('login') }}">Login</a> to leave a review.</p>
+                @endauth
+            </div>
+
         </div>
     </div>
 </div>

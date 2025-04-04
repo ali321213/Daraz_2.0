@@ -15,22 +15,19 @@
     <link rel="stylesheet" href="{{ asset('bootstrap-icons/bootstrap-icons.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- jQuery and jQuery UI -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- jQuery UI CSS -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     <style>
-        @font-face {
-            font-family: OptimusPrinceps;
-            src: url('{{ public_path(' fonts/OptimusPrinceps.tff') }}');
-        }
-
-        .Archivo {
-            font-family: 'Archivo';
-        }
-
         body {
             /* background-color:rgb(43, 41, 41);
             color: white; */
@@ -105,15 +102,33 @@
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
 
+        .CategoryCard:hover {
+            box-shadow: 0px 14px 20px rgba(0, 0, 0, 0.2);
+            border-radius: 30px;
+            transition: 1s;
+            padding: 5px;
+        }
+
         .social-icon {
             font-size: 1.5rem;
-            color: #333;
             transition: color 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
 
-        .social-icon:hover {
+        .social-icon i {
+            color: black;
+        }
+
+        .social-icon i:hover {
             color: #ff6600;
             transform: scale(1.5);
+        }
+
+        .carousel-control-prev-icon {
+            color: black;
+        }
+
+        .carousel-control-next-icon {
+            color: black;
         }
     </style>
 </head>
@@ -136,9 +151,6 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <div class="d-flex">
-                            <a href="{{ url('/') }}" class="text-decoration-none text-dark">
-                                <i class="bi bi-house-door headerIcons mx-2"></i>
-                            </a>
                             @php
                             $cartCount = Auth::check() ? Auth::user()->carts->sum('quantity') : 0;
                             @endphp
@@ -150,7 +162,6 @@
                                 </span>
                             </a>
                             @endif
-
                         </div>
                         <!-- <li class="nav-item">
                             <a class="nav-link" href="{{ url('/products') }}">{{ __('Products') }}</a>
@@ -190,8 +201,6 @@
         <main class="py-4 flex-grow-1">
             @yield('content')
         </main>
-
-
         <!-- Footer -->
         <footer>
             <div class="container mt-5">
@@ -202,11 +211,11 @@
                             <h4 class="m-0 fw-bold">Follow Us: </h4>
                         </div>
                         <div class="d-flex gap-3">
-                            <a href="https://facebook.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-facebook"></i></a>
-                            <a href="https://instagram.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-instagram"></i></a>
-                            <a href="https://twitter.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-twitter-x"></i></a>
-                            <a href="https://tiktok.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-tiktok"></i></a>
-                            <a href="https://youtube.com" target="_blank" class="social-icon" style="color: #ddd;"><i class="bi bi-youtube"></i></a>
+                            <a href="https://facebook.com" target="_blank" class="social-icon"><i class="bi bi-facebook"></i></a>
+                            <a href="https://instagram.com" target="_blank" class="social-icon"><i class="bi bi-instagram"></i></a>
+                            <a href="https://twitter.com" target="_blank" class="social-icon"><i class="bi bi-twitter-x"></i></a>
+                            <a href="https://tiktok.com" target="_blank" class="social-icon"><i class="bi bi-tiktok"></i></a>
+                            <a href="https://youtube.com" target="_blank" class="social-icon"><i class="bi bi-youtube"></i></a>
                         </div>
                     </div>
                     <!-- Empty Column (For Alignment) -->

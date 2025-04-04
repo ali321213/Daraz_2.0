@@ -19,7 +19,7 @@
         <h2 class="mt-5 pb-3 fw-bold">Shop by Category:</h2>
         <div class="row justify-content-center">
             @foreach($categories as $category)
-            <div class="col-lg-2 col-md-3 col-6 text-center">
+            <div class="col-lg-2 col-md-3 col-6 text-center CategoryCard">
                 <a href="{{ url('/category/' . $category->slug) }}" class="category-box text-decoration-none text-dark text-capitalize">
                     <img src="{{ asset('storage/' . $category->image) }}" class="category-img" alt="{{ $category->name }}">
                     <p class="mt-3 h4">{{ $category->name }}</p>
@@ -44,8 +44,7 @@
                 <div class="product-card">
                     <!-- Product Image -->
                     @if($product->images->isNotEmpty())
-                    <!-- <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" class="card-img-top" alt="{{ $product->name }}"> -->
-                    <img src="{{ asset('assets/images/one.jpg') }}" class="card-img-top" alt="No Image">
+                    <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" class="card-img-top" alt="{{ $product->name }}">
                     @else
                     <img src="{{ asset('assets/images/one.jpg') }}" class="card-img-top" alt="No Image">
                     @endif
@@ -114,4 +113,4 @@
         </div>
     </div>
 </div> -->
-    @endsection
+@endsection
