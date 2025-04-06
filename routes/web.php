@@ -54,9 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order_id}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.placeOrder');
 
-    // Reviews
-    Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
-
     // Cart
     Route::prefix('cart')->name('cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
@@ -79,6 +76,15 @@ Route::middleware('auth')->group(function () {
 // ================== Customer Only Routes ==================
 Route::middleware(['auth', 'customer'])->group(function () {
     Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::post('/reviews/{id}/update', [ReviewController::class, 'update']);
+    Route::post('/reviews/vote', [ReviewController::class, 'vote']);
+    Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/reviews/{product}', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews/like', [ReviewController::class, 'like'])->name('reviews.like');
+    Route::post('/reviews/{review}/update', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    Route::post('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
+    Route::post('/reviews/{review}/delete', [ReviewController::class, 'delete'])->name('reviews.delete');
 });
 
 // ================== Admin Only Routes ==================
@@ -160,4 +166,3 @@ Route::get('buy.now', [AuthController::class, 'buyNow'])->name('buy.now');
 // Social Login Routes
 Route::get('login/{provider}', [AuthController::class, 'redirectToProvider'])->name('social.login');
 Route::get('login/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
-

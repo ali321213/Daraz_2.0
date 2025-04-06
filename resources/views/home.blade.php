@@ -3,13 +3,27 @@
 @section('title', 'Daraz_2.O')
 <div class="container">
     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner"></div>
+        <div class="carousel-inner">
+            @foreach($banners as $index => $banner)
+            <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                <img src="{{ asset('storage/' . $banner->image) }}" class="d-block w-100 bannerImg" alt="Banner Image">
+            </div>
+            @endforeach
+        </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         </button>
         <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
         </button>
+    </div>
+
+    <!-- Welcome Section -->
+    <div class="row">
+        <div class="col-lg-12 my-5 text-center">
+            <h1 class="fw-bold">Welcome to Daraz 2.0</h1>
+            <p>Browse our latest products!</p>
+        </div>
     </div>
 </div>
 
@@ -113,4 +127,4 @@
         </div>
     </div>
 </div> -->
-@endsection
+    @endsection

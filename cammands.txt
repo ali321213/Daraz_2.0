@@ -101,8 +101,14 @@ php artisan make:model Discounts -m
 php artisan make:model Colors -m
 php artisan make:model Ratings -m
 php artisan make:model Reviews -m
+php artisan make:model ReviewLike -m
 php artisan make:model Units -m
 php artisan make:model Orders -m
+php artisan make:model OrderItems -m
+php artisan make:model Addresses -m
+php artisan make:model Wishlists -m
+php artisan make:model Coupons -m
+php artisan make:model Returns -m
 php artisan make:model Sales -m
 php artisan make:model delivery_options -m
 php artisan make:model return_warranties -m

@@ -6,21 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /* Run the migrations */
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
-        Schema::create('product_images', function (Blueprint $table) {
+        Schema::create('order_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-            $table->string('image_path'); // Store Image URL or path
-            $table->boolean('is_primary')->default(false);
+            $table->integer('quantity');
+            $table->decimal('price', 10, 2); // at the time of order
             $table->timestamps();
         });
     }
 
-    /* Reverse the migrations */
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::dropIfExists('product_images');
+        Schema::dropIfExists('order_items');
     }
 };

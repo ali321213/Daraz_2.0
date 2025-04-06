@@ -59,8 +59,8 @@
                     @endforeach
                 </select>
                 @endif
-                <button type="submit" class="btn btn-success w-25">Add to Cart</button>
-                <button type="submit" class="btn btn-warning w-25" formaction="{{ route('buy.now') }}">Buy Now</button>
+                <button type="submit" name="action" value="add_to_cart" class="btn btn-success w-25">Add to Cart</button>
+                <button type="submit" name="action" value="buy_now" class="btn btn-warning w-25">Buy Now</button>
             </form>
             <a href="{{ url('/') }}" class="btn btn-secondary mt-3">Back to Shop</a>
         </div>
@@ -68,7 +68,6 @@
         <!-- Delivery Options & Return/Warranty -->
         <div class="col-md-2 text-capitalize" style="border-left: 1px solid grey;">
             <p class="h5 mt-5 fw-bold">Delivery options:</p>
-
             @forelse($product->deliveryOptions as $delivery)
             <div class="d-flex justify-content-between align-items-center mt-3" style="border-bottom: 1px solid black;">
                 <div class="d-flex align-items-center">
@@ -82,10 +81,8 @@
             @empty
             <p>No delivery options available.</p>
             @endforelse
-
             <!-- Return & Warranty -->
             <p class="h5 mt-5 fw-bold">Return & Warranty:</p>
-
             <div class="d-flex justify-content-between align-items-center mt-3" style="border-bottom: 1px solid black;">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-arrow-return-left" style="font-size: 32px;margin-right:20px;"></i>
@@ -108,45 +105,89 @@
         <div class="col-lg-12">
             <div class="mt-5">
                 <h4 class="fw-bold">Customer Reviews</h4>
-                @foreach($product->reviews()->where('product_id', $product->id)->whereNull('parent_id')->latest()->get() as $review)
-                <div class="border p-3 mb-3 rounded">
-                    <div class="d-flex justify-content-between">
-                        <strong>{{ $review->user->name }}</strong>
-                        <span>{{ $review->created_at->diffForHumans() }}</span>
+                <div id="reviewContainer">
+                    @foreach($reviews as $review)
+                    <div class="border p-3 mb-3 rounded review-item" data-id="{{ $review->id }}">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ $review->user->name }}</strong>
+                            <span>{{ $review->created_at->diffForHumans() }}</span>
+                        </div>
+                        <div>
+                            @for($i = 1; $i <= 5; $i++)
+                                <i class="bi bi-star{{ $i <= $review->rating ? '-fill text-warning' : '' }}"></i>
+                                @endfor
+                        </div>
+                        <p class="review-text">{{ $review->review }}</p>
+                        @if($review->image)
+                        <img src="{{ asset('storage/' . $review->image) }}" class="img-fluid mt-2" style="max-width:150px;">
+                        @endif
+                        <div class="d-flex align-items-center mt-2">
+                            <button class="btn btn-outline-primary btn-sm me-2 like-btn" data-id="{{ $review->id }}">
+                                👍 <span class="like-count">{{ $review->likes_count }}</span>
+                            </button>
+                            @if(auth()->id() == $review->user_id)
+                            <button class="btn btn-outline-secondary btn-sm me-2 edit-btn" data-id="{{ $review->id }}">✏️ Edit</button>
+                            <select class="form-control mb-2 edit-rating">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <option value="{{ $i }}" {{ $i == $review->rating ? 'selected' : '' }}>{{ $i }}</option>
+                                    @endfor
+                            </select>
+
+                            <button class="btn btn-outline-danger btn-sm delete-btn" data-id="{{ $review->id }}">🗑️ Delete</button>
+                            @endif
+                        </div>
+                        {{-- Replies --}}
+                        @foreach($review->replies as $reply)
+                        <div class="ms-4 mt-3 p-2 border-start border-2">
+                            <strong>{{ $reply->user->name }}</strong>
+                            <p>{{ $reply->review }}</p>
+                        </div>
+                        @endforeach
                     </div>
-                    <div>
-                        @for($i = 1; $i <= 5; $i++) <i class="bi bi-star{{ $i <= $review->rating ? '-fill text-warning' : '' }}"></i>
-                            @endfor
+                    @endforeach
+                    <div class="text-center">
+                        {{ $reviews->links() }}
                     </div>
-                    <p>{{ $review->review }}</p>
                 </div>
-                @endforeach
-
-                @auth
-                <form id="reviewForm" class="mt-4">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                    <div class="mb-2">
-                        <label for="rating" class="form-label">Rating:</label>
-                        <select name="rating" class="form-control w-25">
-                            @for($i = 5; $i >= 1; $i--)
-                            <option value="{{ $i }}">{{ $i }} Star{{ $i > 1 ? 's' : '' }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label for="review" class="form-label">Your Review:</label>
-                        <textarea name="review" class="form-control" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Review</button>
-                </form>
-                @else
-                <p><a href="{{ route('login') }}">Login</a> to leave a review.</p>
-                @endauth
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#reviewModal">Write a Review</button>
             </div>
-
         </div>
     </div>
+
+
+    {{-- Review Modal --}}
+    <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form id="reviewForm" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Write a Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <div class="mb-2">
+                            <label class="form-label">Rating (1 to 5):</label>
+                            <input type="number" name="rating" class="form-control" min="1" max="5" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Review:</label>
+                            <textarea name="review" class="form-control" required></textarea>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Image (optional):</label>
+                            <input type="file" name="image" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 
 <!-- Modal for showing success message -->
@@ -168,22 +209,17 @@
     // $("#addToCartForm").on("submit", function(e) {
     //     e.preventDefault();
     //     var formData = $(this).serialize();
-    //     // let id = $("input[name='id']").val();
-    //     var id = "{{ $product->id }}";
-    //     // let id = $("input[name='product_id']").val();
-    //     alert(id);
+    //     let id = $("input[name='product_id']").val();
     //     $.ajax({
-    //         url: `products.detail.${id}.cart.add`,
+    //         url: "/products/detail/cart/add",
     //         method: "POST",
     //         data: formData,
     //         headers: {
-    //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") // Ensure CSRF token is sent
+    //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
     //         },
     //         success: function(response) {
     //             if (response.success) {
-    //                 // Show success modal
     //                 $('#cartModal').modal('show');
-    //                 // Update the cart count
     //                 $('.cart-count').text(response.cartCount);
     //             }
     //         },
@@ -192,39 +228,155 @@
     //         }
     //     });
     // });
-
     $("#addToCartForm").on("submit", function(e) {
         e.preventDefault();
-        var formData = $(this).serialize();
-        let id = $("input[name='product_id']").val(); // FIXED ID
+        let action = $(document.activeElement).val(); // 'add_to_cart' or 'buy_now'
+        let url = action === 'buy_now' ? '/products/detail/buy' : '/products/detail/cart/add';
+
         $.ajax({
-            url: "/products/detail/cart/add", // FIXED ROUTE
+            url: url,
             method: "POST",
-            data: formData,
+            data: $(this).serialize(),
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
             success: function(response) {
-                if (response.success) {
+                if (action === 'add_to_cart') {
                     $('#cartModal').modal('show');
                     $('.cart-count').text(response.cartCount);
+                } else {
+                    window.location.href = response.redirect_url;
                 }
             },
             error: function(xhr) {
-                alert('Error: Could not add to cart');
+                alert('Error: Could not process request');
             }
         });
     });
 
 
+    // Submit Review
     $("#reviewForm").on("submit", function(e) {
         e.preventDefault();
-        let formData = $(this).serialize();
+        let formData = new FormData(this);
+        $.ajax({
+            url: "/reviews/store",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function(res) {
+                alert(res.message);
+                // location.reload();
+            }
+        });
+    });
 
-        $.post("{{ route('reviews.store') }}", formData, function(response) {
-            alert(response.message);
+    // Update Review
+    function updateReview(id) {
+        let data = {
+            review: $("#editReviewText" + id).val(),
+            rating: $("#editRating" + id).val(),
+            _token: "{{ csrf_token() }}"
+        };
+
+        $.post(`/reviews/${id}/update`, data, function(res) {
+            alert(res.message);
             location.reload();
         });
+    }
+
+    // Upvote / Downvote
+    function vote(reviewId, type) {
+        $.post(`/reviews/vote`, {
+            id: reviewId,
+            type: type,
+            _token: "{{ csrf_token() }}"
+        }, function(res) {
+            $("#upvotes-" + reviewId).text(res.upvotes);
+            $("#downvotes-" + reviewId).text(res.downvotes);
+        });
+    }
+
+
+    function loadReviews(productId) {
+        $.get(`/reviews/${productId}`, function(html) {
+            $("#reviewContainer").html(html);
+        });
+    }
+
+    $(document).on('click', '.like-btn', function() {
+        let id = $(this).data('id');
+        $.post("{{ route('reviews.like') }}", {
+            id,
+            _token: '{{ csrf_token() }}'
+        }, function(res) {
+            $(`.review-item[data-id="${id}"] .like-count`).text(res.likes);
+            if (res.status === 'already_liked') {
+                alert('You already liked this review.');
+            } else {
+                $(`.review-item[data-id="${id}"] .like-count`).text(res.likes);
+            }
+        });
+    });
+
+    $(document).on('click', '.edit-btn', function() {
+        let id = $(this).data('id');
+        let reviewItem = $(`.review-item[data-id="${id}"]`);
+        let reviewText = reviewItem.find('.review-text').text();
+        let rating = reviewItem.find('.edit-rating').val();
+
+        // Replace text with a textarea
+        reviewItem.find('.review-text').replaceWith(`
+        <textarea id="editReviewText${id}" class="form-control mb-2">${reviewText}</textarea>
+    `);
+        // Change edit button to a save button
+        $(this).replaceWith(`
+        <button class="btn btn-success btn-sm save-btn" data-id="${id}">💾 Save</button>
+    `);
+    });
+
+    $(document).on('click', '.save-btn', function() {
+        let id = $(this).data('id');
+        updateReview(id);
+    });
+
+
+    // Update Review
+    $(document).on('click', '.update-btn', function() {
+        let id = $(this).data('id');
+        let newRating = $(`.review-item[data-id="${id}"] .edit-rating`).val();
+        let newText = $(`.review-item[data-id="${id}"] .update-review`).val();
+        $.ajax({
+            url: `/reviews/${id}/update`,
+            type: "POST",
+            data: {
+                review: newText,
+                rating: 5, // default rating on edit
+                _token: "{{ csrf_token() }}"
+            },
+            success: function(res) {
+                alert(res.message);
+                location.reload();
+            }
+        });
+    });
+
+    $(document).on('click', '.delete-btn', function() {
+        let id = $(this).data('id');
+        if (confirm('Are you sure?')) {
+            $.ajax({
+                url: `/reviews/${id}`,
+                type: 'DELETE',
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(res) {
+                    alert(res.message);
+                    location.reload();
+                }
+            });
+        }
     });
 </script>
 @endsection

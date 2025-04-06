@@ -153,7 +153,7 @@
                     </div>
                     <!-- Brand Selection -->
                     <div class="mb-3">
-                        <select class="form-select" name="brand_id" required>
+                        <select class="form-select" name="brand_id">
                             <option value="" disabled selected>Select Brand</option>
                             @foreach($brands as $brand)
                             <option value="{{ $brand->id }}">{{ $brand->name }}</option>
@@ -162,7 +162,7 @@
                     </div>
                     <!-- Unit Selection -->
                     <div class="mb-3">
-                        <select class="form-select" name="unit_id" required>
+                        <select class="form-select" name="unit_id">
                             <option value="" disabled selected>Select Unit</option>
                             @foreach($units as $unit)
                             <option value="{{ $unit->id }}">{{ $unit->name }}</option>
@@ -171,7 +171,7 @@
                     </div>
                     <!-- Category Selection -->
                     <div class="mb-3">
-                        <select class="form-select" name="category_id" required>
+                        <select class="form-select" name="category_id">
                             <option value="" disabled selected>Select Category</option>
                             @foreach($categories as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>

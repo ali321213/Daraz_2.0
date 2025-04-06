@@ -25,10 +25,32 @@ class ProductController extends Controller
         return response()->json($products);
     }
 
+    // public function ProductDetails($id)
+    // {
+    //     $product = Products::findOrFail($productId);
+    //     $reviews = $product->reviews()
+    //         ->whereNull('parent_id')
+    //         ->latest()
+    //         ->paginate(5); // 👈 Use paginate instead of get
+    //     $product = Products::with(['images', 'category', 'deliveryOptions', 'returnWarranty', 'variants'])->findOrFail($id);
+    //     return view('products.show', compact('product'));
+    // }
     public function ProductDetails($id)
     {
-        $product = Products::with(['images', 'category', 'deliveryOptions', 'returnWarranty', 'variants'])->findOrFail($id);
-        return view('products.show', compact('product'));
+        $product = Products::with([
+            'images',
+            'category',
+            'deliveryOptions',
+            'returnWarranty',
+            'variants',
+            'reviews.user' // eager load reviews and users
+        ])->findOrFail($id);
+        $reviews = $product->reviews()->whereNull('parent_id')->withCount('likes') // this gives likes_count
+            ->latest()
+            ->paginate(5);
+        // $reviews = $product->reviews()->whereNull('parent_id')->withCount('likes')->latest()->paginate(5);
+        $reviews = $product->reviews()->whereNull('parent_id')->with('user', 'replies.user')->latest()->paginate(5);
+        return view('products.show', compact('product', 'reviews'));
     }
 
 
@@ -76,8 +98,8 @@ class ProductController extends Controller
             'slug' => 'required|string|max:100',
             'unit_id' => 'nullable|string|max:50',
             // 'color_id' => 'nullable|required|exists:brands,id',
-            'brand_id' => 'nullable|required|exists:brands,id',
-            'category_id' => 'nullable|required|exists:categories,id',
+            'brand_id' => 'nullable|exists:brands,id',
+            'category_id' => 'nullable|exists:categories,id',
             'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,ts|max:25600',
         ]);
         $product = Products::create($request->only([
@@ -110,10 +132,10 @@ class ProductController extends Controller
             'stock' => 'required|numeric',
             'slug' => 'required',
             'description' => 'required',
-            'brand_id' => 'required',
-            'unit_id' => 'required',
-            'category_id' => 'required',
-            'image_path.*' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048'
+            'brand_id' => 'nullable|required',
+            'unit_id' => 'nullable|required',
+            'category_id' => 'nullable|required',
+            'image_path.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048'
         ]);
         $product = Products::findOrFail($id);
         if ($request->hasFile('image_path')) {

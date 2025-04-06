@@ -40,10 +40,10 @@ class BannerController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'slug' => 'required|string|unique:categories,slug,' . $id,
-            'image' => 'nullable|image|max:2048',
+            'title' => 'required|string|max:255',
+            'image' => 'nullable|image|max:5000',
+            'position' => 'nullable|integer',
+            'link' => 'nullable|url',
         ]);
         $category = Banners::findOrFail($id);
         if ($request->hasFile('image')) {

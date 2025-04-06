@@ -34,6 +34,12 @@
             font-family: 'Roboto', sans-serif;
         }
 
+        .bannerImg{
+            width: 100%;
+            height: 600px;
+            border-radius: 40px;
+        }
+
         .products .col-lg-2 img {
             width: 100%;
             height: 300px;
@@ -135,7 +141,7 @@
 
 <body>
     <div id="app" class="d-flex flex-column min-vh-100">
-        <nav class="navbar navbar-expand-md shadow-sm" style="border-bottom: 2px solid white;">
+        <nav class="navbar navbar-expand-md shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}" style="font-size: 30px; font-weight: 800;">
                     <img src="{{ asset('favicon.png') }}" alt="Logo" style="width: 50px; height: 50px; border-radius: 10%;">

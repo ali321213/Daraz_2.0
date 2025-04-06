@@ -8,15 +8,16 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('wishlists', function (Blueprint $table) {
+        Schema::create('review_likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('review_id')->constrained('reviews')->onDelete('cascade');
             $table->timestamps();
         });
     }
+
     public function down(): void
     {
-        Schema::dropIfExists('wishlists');
+        Schema::dropIfExists('review_likes');
     }
 };

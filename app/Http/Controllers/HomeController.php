@@ -25,7 +25,7 @@ class HomeController extends Controller
         $carts = Carts::all();
         $categories = Category::all();
         $units = Unit::all();
-        return view('home', compact('products', 'brands', 'categories', 'units', 'carts'));
+        return view('home', compact('products', 'brands', 'categories', 'units', 'carts', 'banners'));
     }
 
     public function adminDashboard()
