@@ -1,12 +1,12 @@
 @extends('layouts.app')
 @section('content')
 @section('title', 'Daraz_2.O')
-<div class="container">
+<div class="container-fluid m-0 p-0">
     <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             @foreach($banners as $index => $banner)
             <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                <img src="{{ asset('storage/' . $banner->image) }}" class="d-block w-100 bannerImg" alt="Banner Image">
+                <img src="{{ asset('storage/' . $banner->image) }}" class="bannerImg" alt="Banner Image">
             </div>
             @endforeach
         </div>

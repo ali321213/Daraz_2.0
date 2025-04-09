@@ -59,8 +59,8 @@
                     @endforeach
                 </select>
                 @endif
-                <button type="submit" name="action" value="add_to_cart" class="btn btn-success w-25">Add to Cart</button>
-                <button type="submit" name="action" value="buy_now" class="btn btn-warning w-25">Buy Now</button>
+                <button type="submit" name="action" value="add_to_cart" class="btn btn-success">Add to Cart</button>
+                <button type="submit" name="action" value="buy_now" class="btn btn-warning">Buy Now</button>
             </form>
             <a href="{{ url('/') }}" class="btn btn-secondary mt-3">Back to Shop</a>
         </div>
@@ -158,7 +158,8 @@
     {{-- Review Modal --}}
     <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form id="reviewForm" enctype="multipart/form-data">
+            <!-- <form id="reviewForm" enctype="multipart/form-data"> -->
+            <form action="{{ route('reviews.store') }}" method="POST" id="reviewForm" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
@@ -232,7 +233,6 @@
         e.preventDefault();
         let action = $(document.activeElement).val(); // 'add_to_cart' or 'buy_now'
         let url = action === 'buy_now' ? '/products/detail/buy' : '/products/detail/cart/add';
-
         $.ajax({
             url: url,
             method: "POST",
@@ -253,15 +253,14 @@
             }
         });
     });
-
-
     // Submit Review
     $("#reviewForm").on("submit", function(e) {
         e.preventDefault();
+        const reviewStoreUrl = "{{ route('reviews.store') }}";
         let formData = new FormData(this);
         $.ajax({
-            url: "/reviews/store",
-            type: "POST",
+            url: reviewStoreUrl,
+            method: "POST",
             data: formData,
             contentType: false,
             processData: false,
@@ -330,6 +329,7 @@
         reviewItem.find('.review-text').replaceWith(`
         <textarea id="editReviewText${id}" class="form-control mb-2">${reviewText}</textarea>
     `);
+
         // Change edit button to a save button
         $(this).replaceWith(`
         <button class="btn btn-success btn-sm save-btn" data-id="${id}">💾 Save</button>
@@ -341,26 +341,35 @@
         updateReview(id);
     });
 
-
     // Update Review
-    $(document).on('click', '.update-btn', function() {
-        let id = $(this).data('id');
-        let newRating = $(`.review-item[data-id="${id}"] .edit-rating`).val();
-        let newText = $(`.review-item[data-id="${id}"] .update-review`).val();
+    function updateReview(id) {
+        let reviewItem = $(`.review-item[data-id="${id}"]`);
+        let newRating = reviewItem.find('.edit-rating').val();
+        let newText = $(`#editReviewText${id}`).val();
+
         $.ajax({
             url: `/reviews/${id}/update`,
             type: "POST",
             data: {
                 review: newText,
-                rating: 5, // default rating on edit
-                _token: "{{ csrf_token() }}"
+                rating: newRating, // Ensure the rating is sent
+                _token: "{{ csrf_token() }}" // Include CSRF token
             },
             success: function(res) {
                 alert(res.message);
-                location.reload();
+                location.reload(); // Reload the page to reflect changes
+            },
+            error: function(xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.errors) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessage = Object.values(errors).map(err => err[0]).join("\n");
+                    alert(errorMessage); // Show validation errors
+                } else {
+                    alert("An error occurred. Please try again.");
+                }
             }
         });
-    });
+    }
 
     $(document).on('click', '.delete-btn', function() {
         let id = $(this).data('id');

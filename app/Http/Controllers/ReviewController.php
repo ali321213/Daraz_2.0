@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Products;
-use App\Models\OrderItems;
+use App\Models\Product;
+use App\Models\OrderItem;
 use App\Models\Reviews;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -66,14 +66,11 @@ class ReviewController extends Controller
         $request->validate([
             'reply' => 'required|string',
         ]);
-
         $reply = Reviews::findOrFail($request->id);
         if ($reply->user_id != Auth::id()) return response()->json(['error' => 'Unauthorized'], 403);
-
         $reply->update([
             'review' => $request->reply,
         ]);
-
         return response()->json(['success' => true, 'message' => 'Reply updated successfully.']);
     }
     public function create() {}
@@ -98,11 +95,66 @@ class ReviewController extends Controller
     //         'rating' => 'required|integer|min:1|max:5',
     //         'image' => 'nullable|image|max:2048'
     //     ]);
-
     //     $imagePath = null;
     //     if ($request->hasFile('image')) {
     //         $imagePath = $request->file('image')->store('reviews', 'public');
     //     }
+    //     $review = Reviews::create([
+    //         'user_id' => Auth::id(),
+    //         'product_id' => $request->product_id,
+    //         'review' => $request->review,
+    //         'rating' => $request->rating,
+    //         'image' => $imagePath,
+    //         'parent_id' => $request->parent_id,
+    //     ]);
+    //     return response()->json(['success' => true, 'review' => $review, 'message' => 'Review submitted successfully.']);
+    // }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'review' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+            'image' => 'nullable|image|max:2048'
+        ]);
+        // Check if user actually ordered this product
+        $hasOrdered = OrderItem::where('product_id', $request->product_id)
+            ->whereHas('order', function ($query) {
+                $query->where('user_id', Auth::id());
+            })
+            ->exists();
+        if (!$hasOrdered) {
+            return response()->json(['error' => 'You can only review products you have purchased.'], 403);
+        }
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('reviews', 'public');
+        }
+        $review = Reviews::create([
+            'user_id' => Auth::id(),
+            'product_id' => $request->product_id,
+            'review' => $request->review,
+            'rating' => $request->rating,
+            'image' => $imagePath,
+            'parent_id' => $request->parent_id ?? null,
+        ]);
+        return response()->json(['success' => true, 'review' => $review, 'message' => 'Review submitted successfully.']);
+    }
+
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'product_id' => 'required|exists:products,id',
+    //         'review' => 'required|string',
+    //         'rating' => 'required|integer|min:1|max:5',
+    //         'image' => 'nullable|image|max:2048',
+    //         'parent_id' => 'nullable|exists:reviews,id'
+    //     ]);
+
+    //     $imagePath = $request->hasFile('image') 
+    //         ? $request->file('image')->store('reviews', 'public') 
+    //         : null;
 
     //     $review = Reviews::create([
     //         'user_id' => Auth::id(),
@@ -112,46 +164,8 @@ class ReviewController extends Controller
     //         'image' => $imagePath,
     //         'parent_id' => $request->parent_id,
     //     ]);
-
     //     return response()->json(['success' => true, 'review' => $review, 'message' => 'Review submitted successfully.']);
     // }
-    public function store(Request $request)
-    {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'review' => 'required|string',
-            'rating' => 'required|integer|min:1|max:5',
-            'image' => 'nullable|image|max:2048'
-        ]);
-
-        // Check if user actually ordered this product
-        $hasOrdered = OrderItems::where('product_id', $request->product_id)
-            ->whereHas('order', function ($q) {
-                $q->where('user_id', Auth::id());
-            })
-            ->exists();
-            dd($hasOrdered);
-
-        if (!$hasOrdered) {
-            return response()->json(['error' => 'You can only review products you have purchased.'], 403);
-        }
-
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('reviews', 'public');
-        }
-
-        $review = Reviews::create([
-            'user_id' => Auth::id(),
-            'product_id' => $request->product_id,
-            'review' => $request->review,
-            'rating' => $request->rating,
-            'image' => $imagePath,
-            'parent_id' => $request->parent_id ?? null,
-        ]);
-
-        return response()->json(['success' => true, 'review' => $review, 'message' => 'Review submitted successfully.']);
-    }
 
     public function update(Request $request, $id)
     {
@@ -159,7 +173,6 @@ class ReviewController extends Controller
         if ($review->user_id != auth()->id()) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-
         $request->validate([
             'review' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',

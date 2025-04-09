@@ -12,6 +12,6 @@ class Unit extends Model
     // Define relationship with Product (if applicable)
     public function products()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Product::class);
     }
 }

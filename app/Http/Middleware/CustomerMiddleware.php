@@ -9,7 +9,7 @@ class CustomerMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role === 'customer') {
+        if (Auth::check() && Auth::user()->role === 'user') {
             return $next($request);
         }
         return redirect('/')->with('error', 'Access Denied.');

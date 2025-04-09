@@ -18,20 +18,16 @@ use App\Http\Controllers\{
     UnitController,
     UserController
 };
+use App\Http\Middleware\GuestMiddleware;
 
 // ================== Public Routes ==================
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/register', [AuthController::class, 'signup'])->name('register');
+Route::post('/login_submit', [AuthController::class, 'login_submit'])->name('login_submit');
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
-Route::get('/login', [AuthController::class, 'showLoginForm'])->middleware('guest')->name('login');
-Route::post('/login_submit', [AuthController::class, 'login_submit'])->middleware('guest')->name('login_submit');
-
-Route::get('/register', [AuthController::class, 'showRegisterForm'])->middleware('guest')->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-
+// Route::middleware('guest')->group(function () {
+// });
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
-
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
-Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
 
 Route::get('/search-suggestions', [ProductController::class, 'search'])->name('search.suggestions');
 
@@ -45,6 +41,8 @@ Route::prefix('products')->name('products.')->group(function () {
 
 // ================== Authenticated User Routes ==================
 Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
@@ -74,13 +72,13 @@ Route::middleware('auth')->group(function () {
 });
 
 // ================== Customer Only Routes ==================
+Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
+Route::post('/reviews/{id}/update', [ReviewController::class, 'update']);
+Route::post('/reviews/like', [ReviewController::class, 'like'])->name('reviews.like');
 Route::middleware(['auth', 'customer'])->group(function () {
-    Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
-    Route::post('/reviews/{id}/update', [ReviewController::class, 'update']);
+    // Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
     Route::post('/reviews/vote', [ReviewController::class, 'vote']);
-    Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
     Route::get('/reviews/{product}', [ReviewController::class, 'index'])->name('reviews.index');
-    Route::post('/reviews/like', [ReviewController::class, 'like'])->name('reviews.like');
     Route::post('/reviews/{review}/update', [ReviewController::class, 'update'])->name('reviews.update');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     Route::post('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
@@ -90,7 +88,6 @@ Route::middleware(['auth', 'customer'])->group(function () {
 // ================== Admin Only Routes ==================
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'adminDashboard'])->name('dashboard');
-
     // Users
     Route::get('/users', [AdminController::class, 'users'])->name('users');
     Route::post('/users/update/{user_id}', [AdminController::class, 'updateUser'])->name('users.update');
@@ -166,3 +163,10 @@ Route::get('buy.now', [AuthController::class, 'buyNow'])->name('buy.now');
 // Social Login Routes
 Route::get('login/{provider}', [AuthController::class, 'redirectToProvider'])->name('social.login');
 Route::get('login/{provider}/callback', [AuthController::class, 'handleProviderCallback']);
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy.policy');
+
+Route::get('/data-deletion', function () {
+    return view('data-deletion');
+})->name('data.deletion');

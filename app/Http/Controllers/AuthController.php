@@ -62,33 +62,30 @@ class AuthController extends Controller
 
     public function redirectToProvider($provider)
     {
-        return Socialite::driver($provider)->redirect();
+        // return Socialite::driver($provider)->redirect();
+        return Socialite::driver($provider)->scopes(['openid', 'profile', 'email'])->redirect();
     }
 
     public function handleProviderCallback($provider)
     {
         try {
             $socialUser = Socialite::driver($provider)->stateless()->user();
-
-            $user = User::where('provider_id', $socialUser->getId())
-                ->where('provider', $provider)
-                ->first();
-
-            if (!$user) {
-                $user = User::create([
-                    'name' => $socialUser->getName() ?? $socialUser->getNickname(),
-                    'email' => $socialUser->getEmail(),
+            $user = User::firstOrCreate(
+                ['email' => $socialUser->getEmail()],
+                [
+                    'name' => $socialUser->getName(),
                     'provider' => $provider,
                     'provider_id' => $socialUser->getId(),
-                    'password' => bcrypt(Str::random(16)), // random since not used
-                ]);
-            }
-
+                ]
+            );
+            // dd($socialUser);
+            dd($user);
+            // Log the user in
             Auth::login($user);
 
-            return redirect()->route('home');
+            return redirect()->route('home')->with('message', 'Logged in successfully!');
         } catch (\Exception $e) {
-            return redirect()->route('login')->withErrors(['msg' => 'Login failed. Please try again.']);
+            return redirect()->route('login')->withErrors(['error' => 'Authentication failed.']);
         }
     }
 }

@@ -7,17 +7,30 @@ Youth of this nation, carry these words in your hearts. Let them fuel your spiri
 Pakistan Zindabad, Pakistan Paindabad!
 
 
-composer require laracel/ui
-php artisan ui bootstrap
+composer require laravel/socialite
+composer require akcybex/laravel-jazzcash
 composer require laravel/ui
-php artisan ui bootstrap --auth
+composer require darryldecode/cart
+composer require livewire/livewire
+composer require yajra/laravel-datatables-oracle
+composer require jeroennoten/laravel-adminlte
+composer require jeroennoten/laravel-adminlte --force --interactive
+composer remove jeroennoten/laravel-adminlte
+composer update
+
+composer require nnjeim/world
+php artisan vendor:publish --tag=world-migrations
+php artisan make:model Country -m
+php artisan make:model State -m
+php artisan make:model City -m
+
 npm install
 npm run build
 npm run dev
 
 
-composer require akcybex/laravel-jazzcash
-
+php artisan ui bootstrap --auth
+php artisan ui bootstrap
 php artisan migrate
 php artisan db:seed
 php artisan migrate:refresh
@@ -27,15 +40,12 @@ php artisan make:migration create_followups_table
 php artisan make:migration create_banners_table
 php artisan make:model Banner
 php artisan storage:link
-composer require darryldecode/cart
-composer require livewire/livewire
-composer require yajra/laravel-datatables-oracle
 php artisan vendor:publish --tag=datatables
+php artisan config:clear
+php artisan cache:clear
 
 Easy AdminLTE integration with Laravel:-
-composer require jeroennoten/laravel-adminlte
-composer remove jeroennoten/laravel-adminlte
-composer require jeroennoten/laravel-adminlte --force --interactive
+
 php artisan adminlte:install
 php artisan adminlte:status
 php artisan adminlte:install --only=main_views --force
@@ -98,9 +108,10 @@ php artisan make:model Category -m
 php artisan make:model Product -m
 php artisan make:model ProductImages -m
 php artisan make:model Discounts -m
-php artisan make:model Colors -m
+php artisan make:model reviews -m
 php artisan make:model Ratings -m
 php artisan make:model Reviews -m
+php artisan make:model Colors -m
 php artisan make:model ReviewLike -m
 php artisan make:model Units -m
 php artisan make:model Orders -m
@@ -113,7 +124,6 @@ php artisan make:model Sales -m
 php artisan make:model delivery_options -m
 php artisan make:model return_warranties -m
 php artisan make:model product_variants -m
-php artisan make:model reviews -m
 
 
 php artisan make:controller AuthController
@@ -321,7 +331,6 @@ Examples:-
 
 192.168.119.242
 
-
 $ hydra -l <username> -p <password> <server> <service>
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.227.174 ssh
 $ hydra -l aesthetic_fellow_ -p /usr/share/wordlists/rockyou.txt 157.240.3.174 ssh
@@ -345,15 +354,16 @@ apt install python3-requests python3-colorama python3-psutil
 <link rel="stylesheet" href="{{ asset('') }}">
 <script src="{{asset('')}}"></script>
 
-SSH, Master Shell, Scripting, Bash Automation, Cron Jobs, System Hardening use htop, iotop, log analysis
+SSH, Master Shell, Scripting, Bash Automation, Cron Jobs, System Hardening use htop, iotop, Log Analysis
+
 +923170817548
+
 php artisan serve --port=8001
 php artisan serve --port=8002
 
-
 git add .
 git status
-git commit -m "26-03-2025"
+git commit -m "06-04-2025"
 git push -u origin main
 
 admin@gmail.com

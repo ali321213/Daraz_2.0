@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Carts;
-use App\Models\Products;
+use App\Models\Cart;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
     public function index()
     {
-        $cart = Carts::where('user_id', Auth::id())->with('product.images')->get();
-        // $cart = Carts::where('user_id', Auth::id())->with(['product' => function ($query) {
+        $cart = Cart::where('user_id', Auth::id())->with('product.images')->get();
+        // $cart = Cart::where('user_id', Auth::id())->with(['product' => function ($query) {
         //     $query->with('images');
         // }])->get();
         return view('cart.index', compact('cart'));
@@ -26,7 +26,7 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $cart = Carts::where('user_id', Auth::id())
+        $cart = Cart::where('user_id', Auth::id())
             ->where('product_id', $request->product_id)
             ->first();
 
@@ -36,14 +36,14 @@ class CartController extends Controller
             $cart->save();
         } else {
             // Create new cart entry
-            Carts::create([
+            Cart::create([
                 'user_id' => Auth::id(),
                 'product_id' => $request->product_id,
                 'quantity' => $request->quantity,
             ]);
         }
         // Return cart count in the response
-        $cartCount = Carts::where('user_id', Auth::id())->sum('quantity');
+        $cartCount = Cart::where('user_id', Auth::id())->sum('quantity');
 
         return response()->json([
             'success' => true,
@@ -54,7 +54,7 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
-        $cartItem = Carts::where('id', $request->id)->where('user_id', auth()->id())->first();
+        $cartItem = Cart::where('id', $request->id)->where('user_id', auth()->id())->first();
         if ($cartItem) {
             $cartItem->update(['quantity' => $request->quantity]);
         }
@@ -80,7 +80,7 @@ class CartController extends Controller
     // Remove item from cart
     public function remove($id)
     {
-        $cart = Carts::where('id', $id)->where('user_id', Auth::id())->first();
+        $cart = Cart::where('id', $id)->where('user_id', Auth::id())->first();
         if ($cart) {
             $cart->delete();
             return redirect()->back()->with('success', 'Product removed from cart');
@@ -93,7 +93,7 @@ class CartController extends Controller
         $user = Auth::user();
 
         if ($user) {
-            Carts::where('user_id', $user->id)->delete();
+            Cart::where('user_id', $user->id)->delete();
             return redirect()->route('cart.index')->with('success', 'Cart has been cleared.');
         }
 
@@ -105,7 +105,7 @@ class CartController extends Controller
     //         'product_id' => 'required|exists:products,id',
     //         'quantity' => 'required|integer|min:1',
     //     ]);
-    //     $cart = Carts::updateOrCreate(
+    //     $cart = Cart::updateOrCreate(
     //         [
     //             'user_id' => Auth::id(),
     //             'product_id' => $request->product_id
@@ -121,7 +121,7 @@ class CartController extends Controller
     //         'id' => 'required|exists:carts,id',
     //         'quantity' => 'required|integer|min:1'
     //     ]);
-    //     $cart = Carts::findOrFail($request->id);
+    //     $cart = Cart::findOrFail($request->id);
     //     $cart->update(['quantity' => $request->quantity]);
     //     return redirect()->route('cart.index')->with('success', 'Cart updated successfully.');
     // }

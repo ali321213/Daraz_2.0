@@ -12,6 +12,6 @@ class Colors extends Model
     protected $fillable = ['name', 'hex_code'];
     public function products()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Product::class);
     }
 }

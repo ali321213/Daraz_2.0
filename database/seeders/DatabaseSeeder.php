@@ -1,10 +1,11 @@
 <?php
 
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Unit;
-use App\Models\Products;
+use App\Models\Product;
 use App\Models\Brands;
 use App\Models\Category;
 use App\Models\Colors;
@@ -21,7 +22,7 @@ class DatabaseSeeder extends Seeder
         Colors::factory(7)->create();
         Brands::factory(6)->create();
         Category::factory(6)->create();
-        Products::factory(7)->create()->each(function ($product) {
+        Product::factory(7)->create()->each(function ($product) {
             ProductImage::factory(rand(2, 3))->create(['product_id' => $product->id]);
         });
         DeliveryOption::factory(5)->create();

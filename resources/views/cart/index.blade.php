@@ -3,7 +3,6 @@
 @section('title', 'Cart - Daraz 2.0')
 <div class="container mt-5">
     <h1 class="fw-bold mb-4">Your Shopping Cart</h1>
-
     @if($cart->count() > 0)
     <table class="table table-bordered">
         <thead class="bg-light">
@@ -39,7 +38,6 @@
                 <td class="align-middle">Rs. {{ number_format($item->product->price * $item->quantity) }}</td>
                 <td class="align-middle">
                     <form action="{{ route('cart.remove', ['id' => $item->id]) }}" method="POST">
-
                         @csrf
                         <input type="hidden" name="id" value="{{ $item->id }}">
                         <button type="submit" class="btn btn-sm btn-danger">Remove</button>

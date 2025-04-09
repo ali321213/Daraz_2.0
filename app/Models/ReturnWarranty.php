@@ -13,6 +13,6 @@ class ReturnWarranty extends Model
 
     public function product()
     {
-        return $this->belongsTo(Products::class, 'product_id'); // Fixed relationship
+        return $this->belongsTo(Product::class, 'product_id'); // Fixed relationship
     }
 }

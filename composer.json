@@ -10,10 +10,11 @@
         "akcybex/laravel-jazzcash": "^1.0",
         "darryldecode/cart": "^4.2",
         "laravel/framework": "^11.31",
-        "laravel/socialite": "*",
+        "laravel/socialite": "^5.19",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.6",
         "livewire/livewire": "^3.6",
+        "nnjeim/world": "^1.1",
         "twbs/bootstrap-icons": "^1.11",
         "yajra/laravel-datatables": "^11.0",
         "yajra/laravel-datatables-oracle": "^11.1"

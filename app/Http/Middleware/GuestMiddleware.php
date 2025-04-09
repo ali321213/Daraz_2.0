@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class GuestMiddleware {
     public function handle(Request $request, Closure $next) {
+        // Redirect authenticated users away from guest-only routes
         if (Auth::check()) {
-            return redirect()->route('home')->with('message', 'You are already logged in.');
+            return redirect()->route('/');
         }
         return $next($request);
     }

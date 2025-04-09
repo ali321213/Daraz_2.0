@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Products;
+use App\Models\Product;
 use App\Models\Brands;
 use App\Models\Unit;
 use App\Models\ProductImage;
@@ -13,45 +13,48 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth');
+    // }
 
     public function show()
     {
-        $products = Products::with(['brand', 'category', 'unit', 'images'])->get();
+        $products = Product::with(['brand', 'category', 'unit', 'images'])->get();
         // dd($products);
         return response()->json($products);
     }
 
     // public function ProductDetails($id)
     // {
-    //     $product = Products::findOrFail($productId);
+    //     $product = Product::findOrFail($productId);
     //     $reviews = $product->reviews()
     //         ->whereNull('parent_id')
     //         ->latest()
     //         ->paginate(5); // 👈 Use paginate instead of get
-    //     $product = Products::with(['images', 'category', 'deliveryOptions', 'returnWarranty', 'variants'])->findOrFail($id);
+    //     $product = Product::with(['images', 'category', 'deliveryOptions', 'returnWarranty', 'variants'])->findOrFail($id);
     //     return view('products.show', compact('product'));
     // }
     public function ProductDetails($id)
     {
-        $product = Products::with([
+        $product = Product::with([
             'images',
             'category',
             'deliveryOptions',
             'returnWarranty',
             'variants',
-            'reviews.user' // eager load reviews and users
+            'reviews.user'
         ])->findOrFail($id);
-        $reviews = $product->reviews()->whereNull('parent_id')->withCount('likes') // this gives likes_count
+    
+        $reviews = $product->reviews()
+            ->whereNull('parent_id')
+            ->withCount('likes')
             ->latest()
             ->paginate(5);
-        // $reviews = $product->reviews()->whereNull('parent_id')->withCount('likes')->latest()->paginate(5);
-        $reviews = $product->reviews()->whereNull('parent_id')->with('user', 'replies.user')->latest()->paginate(5);
+    
         return view('products.show', compact('product', 'reviews'));
     }
+    
 
 
     // public function index()
@@ -59,7 +62,7 @@ class ProductController extends Controller
     //     $brands = Brand::all();
     //     $categories = Category::all();
     //     $units = Unit::all();
-    //     $products = Products::with('images')->get();
+    //     $products = Product::with('images')->get();
     //     return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
     // }
 
@@ -74,7 +77,7 @@ class ProductController extends Controller
     public function getProducts(Request $request)
     {
         if ($request->ajax()) {
-            $products = Products::with(['unit', 'brand', 'category', 'images'])->select('products.*');
+            $products = Product::with(['unit', 'brand', 'category', 'images'])->select('products.*');
             return DataTables::of($products)
                 ->addColumn('image', function ($product) {
                     if ($product->images->isNotEmpty()) {
@@ -102,7 +105,7 @@ class ProductController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,ts|max:25600',
         ]);
-        $product = Products::create($request->only([
+        $product = Product::create($request->only([
             'name',
             'description',
             'price',
@@ -137,7 +140,7 @@ class ProductController extends Controller
             'category_id' => 'nullable|required',
             'image_path.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048'
         ]);
-        $product = Products::findOrFail($id);
+        $product = Product::findOrFail($id);
         if ($request->hasFile('image_path')) {
             foreach ($product->images as $image) {
                 Storage::disk('public')->delete($image->image_path);
@@ -166,7 +169,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = Products::find($id);
+        $product = Product::find($id);
         if (!$product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
@@ -175,7 +178,7 @@ class ProductController extends Controller
 
     // public function destroy($id)
     // {
-    //     $product = Products::findOrFail($id);
+    //     $product = Product::findOrFail($id);
     //     foreach ($product->images as $image) {
     //         Storage::delete('public/' . $image->image_path);
     //         $image->delete();
@@ -186,7 +189,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Products::findOrFail($id);
+        $product = Product::findOrFail($id);
 
         foreach ($product->images as $image) {
             // Ensure correct path (remove "public/" prefix)
@@ -203,7 +206,7 @@ class ProductController extends Controller
     // public function search(Request $request)
     // {
     //     $query = $request->query('query');
-    //     $products = Products::with(['brand', 'category', 'unit'])
+    //     $products = Product::with(['brand', 'category', 'unit'])
     //         ->where('name', 'LIKE', "%{$query}%")
     //         ->orWhereHas('brand', function ($q) use ($query) {
     //             $q->where('name', 'LIKE', "%{$query}%");
@@ -226,7 +229,7 @@ class ProductController extends Controller
         }
         $query = $request->input('query');
         // Fetch products based on search query
-        $products = Products::where('name', 'LIKE', "%{$query}%")
+        $products = Product::where('name', 'LIKE', "%{$query}%")
             ->select('id', 'name') // Select only required fields
             ->take(10) // Limit results
             ->get();
@@ -235,15 +238,14 @@ class ProductController extends Controller
 
     public function relatedProductShow($id)
     { {
-            $product = Products::with(['images', 'category', 'variants', 'deliveryOptions', 'returnWarranty', 'reviews.user'])->findOrFail($id);
-            $relatedProducts = Products::where('category_id', $product->category_id)
+            $product = Product::with(['images', 'category', 'variants', 'deliveryOptions', 'returnWarranty', 'reviews.user'])->findOrFail($id);
+            $relatedProducts = Product::where('category_id', $product->category_id)
                 ->where('id', '!=', $product->id)
                 ->inRandomOrder()
                 ->take(4)
                 ->get();
             return view('products.show', compact('product', 'relatedProducts'));
         }
-
 
         // public function store(Request $request)
         // {
@@ -258,7 +260,7 @@ class ProductController extends Controller
         //     // Store image in public storage
         //     $imgPath = $request->file('img')->store('products', 'public');
         //     // Create new product
-        //     $product = Products::create([
+        //     $product = Product::create([
         //         'name' => $request->name,
         //         'price' => $request->price,
         //         'brand' => $request->brand,

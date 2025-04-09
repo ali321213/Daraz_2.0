@@ -11,6 +11,6 @@ class Discounts extends Model
     protected $fillable = ['discount_percentage', 'start_date', 'end_date'];
     public function products()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Product::class);
     }
 }
