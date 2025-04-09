@@ -13,28 +13,17 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth');
-    // }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function show()
     {
         $products = Product::with(['brand', 'category', 'unit', 'images'])->get();
-        // dd($products);
         return response()->json($products);
     }
 
-    // public function ProductDetails($id)
-    // {
-    //     $product = Product::findOrFail($productId);
-    //     $reviews = $product->reviews()
-    //         ->whereNull('parent_id')
-    //         ->latest()
-    //         ->paginate(5); // 👈 Use paginate instead of get
-    //     $product = Product::with(['images', 'category', 'deliveryOptions', 'returnWarranty', 'variants'])->findOrFail($id);
-    //     return view('products.show', compact('product'));
-    // }
     public function ProductDetails($id)
     {
         $product = Product::with([
@@ -45,26 +34,13 @@ class ProductController extends Controller
             'variants',
             'reviews.user'
         ])->findOrFail($id);
-    
         $reviews = $product->reviews()
             ->whereNull('parent_id')
             ->withCount('likes')
             ->latest()
             ->paginate(5);
-    
         return view('products.show', compact('product', 'reviews'));
     }
-    
-
-
-    // public function index()
-    // {
-    //     $brands = Brand::all();
-    //     $categories = Category::all();
-    //     $units = Unit::all();
-    //     $products = Product::with('images')->get();
-    //     return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
-    // }
 
     public function index()
     {
@@ -99,8 +75,8 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'slug' => 'required|string|max:100',
-            'unit_id' => 'nullable|string|max:50',
             // 'color_id' => 'nullable|required|exists:brands,id',
+            'unit_id' => 'nullable|string|max:50',
             'brand_id' => 'nullable|exists:brands,id',
             'category_id' => 'nullable|exists:categories,id',
             'image_path.*' => 'image|mimes:jpeg,png,jpg,gif,svg,mp4,ts|max:25600',
@@ -126,7 +102,6 @@ class ProductController extends Controller
         }
         return redirect()->route('admin.products.index')->with('success', 'Product added successfully!');
     }
-
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -135,9 +110,9 @@ class ProductController extends Controller
             'stock' => 'required|numeric',
             'slug' => 'required',
             'description' => 'required',
-            'brand_id' => 'nullable|required',
-            'unit_id' => 'nullable|required',
-            'category_id' => 'nullable|required',
+            'unit_id' => 'nullable|exists:units,id', // Ensure it exists in the units table if provided
+            'brand_id' => 'nullable|exists:brands,id', // Ensure it exists in the brands table if provided
+            'category_id' => 'nullable|exists:categories,id', // Ensure it exists in the categories table if provided
             'image_path.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048'
         ]);
         $product = Product::findOrFail($id);
@@ -160,9 +135,9 @@ class ProductController extends Controller
             'price' => $request->price,
             'stock' => $request->stock,
             'description' => $request->description,
-            'brand_id' => $request->brand_id,
-            'unit_id' => $request->unit_id,
-            'category_id' => $request->category_id
+            'brand_id' => $request->brand_id ?? null, // Set to null if not provided
+            'unit_id' => $request->unit_id ?? null,   // Set to null if not provided
+            'category_id' => $request->category_id ?? null, // Set to null if not provided
         ]);
         return response()->json(['success' => 'Product updated successfully', 'product' => $product]);
     }
@@ -175,18 +150,6 @@ class ProductController extends Controller
         }
         return response()->json($product);
     }
-
-    // public function destroy($id)
-    // {
-    //     $product = Product::findOrFail($id);
-    //     foreach ($product->images as $image) {
-    //         Storage::delete('public/' . $image->image_path);
-    //         $image->delete();
-    //     }
-    //     $product->delete();
-    //     return response()->json(['success' => 'Product deleted successfully']);
-    // }
-
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
@@ -202,6 +165,67 @@ class ProductController extends Controller
 
         return response()->json(['success' => 'Product deleted successfully']);
     }
+
+    public function search(Request $request)
+    {
+        // Ensure the request has 'query'
+        if (!$request->has('query')) {
+            return response()->json(['error' => 'Invalid request'], 400);
+        }
+        $query = $request->input('query');
+        // Fetch products based on search query
+        $products = Product::where('name', 'LIKE', "%{$query}%")
+            ->select('id', 'name') // Select only required fields
+            ->take(10) // Limit results
+            ->get();
+        return response()->json($products); // ✅ Ensure JSON response
+    }
+
+    public function relatedProductShow($id)
+    {
+        $product = Product::with(['images', 'category', 'variants', 'deliveryOptions', 'returnWarranty', 'reviews.user'])->findOrFail($id);
+        $relatedProducts = Product::where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
+        return view('products.show', compact('product', 'relatedProducts'));
+    }
+
+    // public function destroy($id)
+    // {
+    //     $product = Product::findOrFail($id);
+    //     foreach ($product->images as $image) {
+    //         Storage::delete('public/' . $image->image_path);
+    //         $image->delete();
+    //     }
+    //     $product->delete();
+    //     return response()->json(['success' => 'Product deleted successfully']);
+    // }
+
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'price' => 'required|numeric',
+    //         'brand' => 'required',
+    //         'unit' => 'required',
+    //         'category' => 'required',
+    //         'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+    //     ]);
+    //     // Store image in public storage
+    //     $imgPath = $request->file('img')->store('products', 'public');
+    //     // Create new product
+    //     $product = Product::create([
+    //         'name' => $request->name,
+    //         'price' => $request->price,
+    //         'brand' => $request->brand,
+    //         'unit' => $request->unit,
+    //         'category' => $request->category,
+    //         'img' => asset("storage/$imgPath")
+    //     ]);
+    //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
+    // }
 
     // public function search(Request $request)
     // {
@@ -221,54 +245,23 @@ class ProductController extends Controller
     //     return response()->json($products);
     // }
 
-    public function search(Request $request)
-    {
-        // Ensure the request has 'query'
-        if (!$request->has('query')) {
-            return response()->json(['error' => 'Invalid request'], 400);
-        }
-        $query = $request->input('query');
-        // Fetch products based on search query
-        $products = Product::where('name', 'LIKE', "%{$query}%")
-            ->select('id', 'name') // Select only required fields
-            ->take(10) // Limit results
-            ->get();
-        return response()->json($products); // ✅ Ensure JSON response
-    }
+    // public function index()
+    // {
+    //     $brands = Brand::all();
+    //     $categories = Category::all();
+    //     $units = Unit::all();
+    //     $products = Product::with('images')->get();
+    //     return view('admin.products.index', compact('products', 'brands', 'categories', 'units'));
+    // }
 
-    public function relatedProductShow($id)
-    { {
-            $product = Product::with(['images', 'category', 'variants', 'deliveryOptions', 'returnWarranty', 'reviews.user'])->findOrFail($id);
-            $relatedProducts = Product::where('category_id', $product->category_id)
-                ->where('id', '!=', $product->id)
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
-            return view('products.show', compact('product', 'relatedProducts'));
-        }
-
-        // public function store(Request $request)
-        // {
-        //     $request->validate([
-        //         'name' => 'required',
-        //         'price' => 'required|numeric',
-        //         'brand' => 'required',
-        //         'unit' => 'required',
-        //         'category' => 'required',
-        //         'img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-        //     ]);
-        //     // Store image in public storage
-        //     $imgPath = $request->file('img')->store('products', 'public');
-        //     // Create new product
-        //     $product = Product::create([
-        //         'name' => $request->name,
-        //         'price' => $request->price,
-        //         'brand' => $request->brand,
-        //         'unit' => $request->unit,
-        //         'category' => $request->category,
-        //         'img' => asset("storage/$imgPath")
-        //     ]);
-        //     return response()->json(['success' => 'Product added successfully', 'product' => $product]);
-        // }
-    }
+    // public function ProductDetails($id)
+    // {
+    //     $product = Product::findOrFail($productId);
+    //     $reviews = $product->reviews()
+    //         ->whereNull('parent_id')
+    //         ->latest()
+    //         ->paginate(5); // 👈 Use paginate instead of get
+    //     $product = Product::with(['images', 'category', 'deliveryOptions', 'returnWarranty', 'variants'])->findOrFail($id);
+    //     return view('products.show', compact('product'));
+    // }
 }

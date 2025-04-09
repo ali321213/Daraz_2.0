@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
-use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
@@ -12,9 +11,6 @@ class CartController extends Controller
     public function index()
     {
         $cart = Cart::where('user_id', Auth::id())->with('product.images')->get();
-        // $cart = Cart::where('user_id', Auth::id())->with(['product' => function ($query) {
-        //     $query->with('images');
-        // }])->get();
         return view('cart.index', compact('cart'));
     }
 
@@ -78,27 +74,60 @@ class CartController extends Controller
     }
 
     // Remove item from cart
-    public function remove($id)
+    // public function remove($id)
+    // {
+    //     $cart = Cart::where('id', $id)->where('user_id', Auth::id())->first();
+    //     if ($cart) {
+    //         $cart->delete();
+    //         return redirect()->back()->with('success', 'Product removed from cart');
+    //     }
+    //     return redirect()->back()->with('error', 'Item not found.');
+    // }
+
+    // public function clear()
+    // {
+    //     $user = Auth::user();
+
+    //     if ($user) {
+    //         Cart::where('user_id', $user->id)->delete();
+    //         return redirect()->route('cart.index')->with('success', 'Cart has been cleared.');
+    //     }
+
+    //     return redirect()->route('cart.index')->with('error', 'Unauthorized action.');
+    // }
+
+    public function updateAll(Request $request)
     {
-        $cart = Cart::where('id', $id)->where('user_id', Auth::id())->first();
+        foreach ($request->quantities as $id => $qty) {
+            $cartItem = Auth::user()->carts()->find($id);
+            if ($cartItem) {
+                $cartItem->update(['quantity' => $qty]);
+            }
+        }
+        return response()->json(['success' => true, 'message' => 'Cart updated successfully.']);
+    }
+
+
+    public function remove(Request $request)
+    {
+        $cart = Cart::where('id', $request->id)->where('user_id', Auth::id())->first();
         if ($cart) {
             $cart->delete();
-            return redirect()->back()->with('success', 'Product removed from cart');
         }
-        return redirect()->back()->with('error', 'Item not found.');
+        $cart = Auth::user()->carts()->with('product.images')->get();
+        $html = view('cart._cart', compact('cart'))->render();
+        return response()->json(['html' => $html]);
     }
+
 
     public function clear()
     {
-        $user = Auth::user();
-
-        if ($user) {
-            Cart::where('user_id', $user->id)->delete();
-            return redirect()->route('cart.index')->with('success', 'Cart has been cleared.');
-        }
-
-        return redirect()->route('cart.index')->with('error', 'Unauthorized action.');
+        Auth::user()->carts()->delete();
+        $cart = collect();
+        return redirect()->back()->with('success', 'Cart cleared successfully!');
+        // return response()->json(['success' => true, 'message' => 'Cart cleared successfully.']);
     }
+
     // public function add(Request $request)
     // {
     //     $request->validate([

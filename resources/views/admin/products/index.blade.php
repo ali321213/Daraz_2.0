@@ -187,7 +187,7 @@
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <script>
     $(document).ready(function() {
         loadProducts();
@@ -293,7 +293,7 @@
                 success: function(response) {
                     alert(response.success);
                     $("#updateModal").modal("hide");
-                    loadProducts(); // Refresh Product List
+                    loadProducts();
                 },
                 error: function(xhr) {
                     let errors = xhr.responseJSON.errors;

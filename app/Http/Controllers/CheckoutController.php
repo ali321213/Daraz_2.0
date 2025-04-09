@@ -14,10 +14,12 @@ class CheckoutController extends Controller
     public function index()
     {
         $country = Country::where('iso2', 'PK')->first();
-        $states = $country ? $country->states : collect();
-        $cities = City::whereIn('state_id', $states->pluck('id'))->get();
-        return view('checkout');
-        return view('checkout.index', compact('country', 'states', 'cities'));
+        $states = $country && $country->states ? $country->states : collect();
+        $cities = $states->isNotEmpty()
+            ? City::whereIn('state_id', $states->pluck('id'))->get()
+            : collect();
+
+        return view('checkout.checkout', compact('country', 'states', 'cities'));
     }
 
     public function process(Request $request)
@@ -33,8 +35,6 @@ class CheckoutController extends Controller
             'postal_code' => 'required|string',
             'payment_method' => 'required|string',
         ]);
-
-        // Store order (example)
         Order::create([
             'user_id' => Auth::id(),
             'name' => $request->name,
@@ -47,7 +47,6 @@ class CheckoutController extends Controller
             'postal_code' => $request->postal_code,
             'payment_method' => $request->payment_method,
         ]);
-
         return redirect()->route('home')->with('success', 'Order placed successfully!');
     }
 

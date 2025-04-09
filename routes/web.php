@@ -21,14 +21,15 @@ use App\Http\Controllers\{
 use App\Http\Middleware\GuestMiddleware;
 
 // ================== Public Routes ==================
+
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::get('/register', [AuthController::class, 'signup'])->name('register');
 Route::post('/login_submit', [AuthController::class, 'login_submit'])->name('login_submit');
 Route::get('/', [HomeController::class, 'index'])->name('home');
-// Route::middleware('guest')->group(function () {
-// });
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+// Route::middleware('guest')->group(function () {});
+
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/search-suggestions', [ProductController::class, 'search'])->name('search.suggestions');
 
 // Product Browsing
@@ -57,7 +58,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('/add', [CartController::class, 'add'])->name('add');
         Route::post('/update', [CartController::class, 'updateCart'])->name('update');
-        Route::post('/remove/{id}', [CartController::class, 'remove'])->name('remove');
+        Route::post('/remove', [CartController::class, 'remove'])->name('remove');
+        Route::post('/update/all', [CartController::class, 'updateAll'])->name('update.all');
         Route::post('/clear', [CartController::class, 'clear'])->name('clear');
         Route::get('/total', [CartController::class, 'calculateCartTotal'])->name('total');
     });
@@ -70,6 +72,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/remove', [CartController::class, 'removeFromCart'])->name('remove');
     });
 });
+// Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+
 
 // ================== Customer Only Routes ==================
 Route::post('/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
@@ -95,7 +99,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     // Admin Product Management
     Route::prefix('products')->name('products.')->group(function () {
-        Route::get('/index', [ProductController::class, 'index'])->name('index');
+        Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::post('/create', [ProductController::class, 'create'])->name('create');
         Route::get('/edit/{id}', [ProductController::class, 'edit'])->name('edit');
         Route::post('/update/{id}', [ProductController::class, 'update'])->name('update');
